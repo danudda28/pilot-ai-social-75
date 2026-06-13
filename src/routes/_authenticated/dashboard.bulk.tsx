@@ -62,12 +62,33 @@ function BulkPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold flex items-center gap-2">
-          <Layers className="h-7 w-7 text-primary" /> Bulk generate
-        </h1>
-        <p className="text-muted-foreground mt-1">Generează 2–15 postări dintr-un singur click. Perfect pentru a-ți pregăti conținutul pe o săptămână întreagă.</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="font-display text-3xl font-bold flex items-center gap-2">
+            <Layers className="h-7 w-7 text-primary" /> Bulk generate
+          </h1>
+          <p className="text-muted-foreground mt-1">Generează 2–15 postări dintr-un singur click. Perfect pentru a-ți pregăti conținutul pe o săptămână întreagă.</p>
+        </div>
+        {remaining !== null && (
+          <div className="glass rounded-xl px-4 py-2 text-xs">
+            <div className="text-muted-foreground">Plan {plan.toUpperCase()}</div>
+            <div className="font-bold text-primary text-base">{remaining} postări rămase</div>
+          </div>
+        )}
       </div>
+
+      {overQuota && (
+        <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="text-sm">
+            <div className="font-semibold text-amber-200">Depășești cota planului tău</div>
+            <div className="text-amber-100/80 mt-1">
+              Ai cerut {form.count} postări dar mai ai doar {remaining}. Redu numărul sau{" "}
+              <Link to="/preturi" className="underline font-medium">fă upgrade</Link>.
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="glass-strong rounded-2xl p-6">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Pornește de la un template</div>
