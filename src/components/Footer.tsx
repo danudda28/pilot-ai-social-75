@@ -1,0 +1,45 @@
+import { Link } from "@tanstack/react-router";
+import { Sparkles, Mail, Phone } from "lucide-react";
+
+export function Footer() {
+  return (
+    <footer className="mt-32 border-t border-border/50 glass-strong">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid gap-10 md:grid-cols-4">
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2 font-display text-lg font-bold">
+              <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg">
+                <Sparkles className="h-4 w-4 text-white" />
+              </span>
+              AdPilot <span className="gradient-text">Social</span>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground max-w-sm">
+              Automatizare AI pentru Instagram și Facebook. Postări generate, programate și publicate fără efort.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm mb-4">Navigare</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/" className="hover:text-foreground">Acasă</Link></li>
+              <li><Link to="/despre" className="hover:text-foreground">Despre noi</Link></li>
+              <li><Link to="/preturi" className="hover:text-foreground">Prețuri</Link></li>
+              <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
+              <li><Link to="/auth" className="hover:text-foreground">Login</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-sm mb-4">Contact</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> 0784 227 844</li>
+              <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> bogdansergiu.arghir@gmail.com</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-10 pt-6 border-t border-border/40 text-xs text-muted-foreground flex flex-col md:flex-row justify-between gap-2">
+          <p>© {new Date().getFullYear()} AdPilot Social. Toate drepturile rezervate.</p>
+          <p>Făcut pentru antreprenori care vor mai multă prezență online.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
