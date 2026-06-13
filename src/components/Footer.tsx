@@ -11,7 +11,7 @@ export function Footer() {
               <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg">
                 <Sparkles className="h-4 w-4 text-white" />
               </span>
-              Social Spark <span className="gradient-text">Social</span>
+              Social <span className="gradient-text">Spark</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground max-w-sm">
               Automatizare AI pentru Instagram și Facebook. Postări generate, programate și publicate fără efort.

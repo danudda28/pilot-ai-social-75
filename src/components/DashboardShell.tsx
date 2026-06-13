@@ -24,7 +24,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg glow">
               <Sparkles className="h-4 w-4 text-white" />
             </span>
-            Social Spark <span className="gradient-text">Social</span>
+            Social <span className="gradient-text">Spark</span>
           </Link>
         </div>
         <nav className="px-3 flex lg:flex-col gap-1 overflow-x-auto pb-3 lg:pb-0">

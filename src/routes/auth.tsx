@@ -62,7 +62,7 @@ function Auth() {
           <span className="grid h-9 w-9 place-items-center rounded-lg gradient-bg glow">
             <Sparkles className="h-4 w-4 text-white" />
           </span>
-          Social Spark <span className="gradient-text">Social</span>
+          Social <span className="gradient-text">Spark</span>
         </Link>
 
         <div className="glass-strong rounded-2xl p-8">
