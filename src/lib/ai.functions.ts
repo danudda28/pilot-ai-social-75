@@ -20,6 +20,17 @@ export const generatePost = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
 
+    // Plan / quota check
+    const { data: profile } = await context.supabase
+      .from("users_profiles")
+      .select("posts_remaining,subscription_plan")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (profile && (profile.posts_remaining ?? 0) <= 0) {
+      throw new Error(`Limita planului ${profile.subscription_plan?.toUpperCase() ?? "FREE"} a fost atinsă. Fă upgrade pentru mai multe postări.`);
+    }
+
+
     const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
     const gateway = createLovableAiGatewayProvider(apiKey);
 
@@ -93,6 +104,14 @@ Răspunde STRICT cu JSON valid, fără markdown, fără text înainte sau după.
       .single();
 
     if (error) throw new Error(error.message);
+
+    // Decrement quota (best effort)
+    if (profile) {
+      await context.supabase
+        .from("users_profiles")
+        .update({ posts_remaining: Math.max(0, (profile.posts_remaining ?? 0) - 1) })
+        .eq("user_id", context.userId);
+    }
 
     return {
       post: inserted,
