@@ -8,7 +8,7 @@ export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
       { title: "Prețuri — Social Spark" },
-      { name: "description", content: "Alege planul potrivit afacerii tale: Basic 29€, Pro 79€, Business 199€ pe lună." },
+      { name: "description", content: "Alege planul potrivit afacerii tale: Basic 20€, Pro 45€, Business 60€ pe lună." },
       { property: "og:title", content: "Prețuri — Social Spark" },
       { property: "og:description", content: "3 abonamente clare pentru orice tip de afacere." },
     ],
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/preturi")({
 
 const plans = [
   {
-    id: "basic", name: "Basic", price: "29€", featured: false,
+    id: "basic", name: "Basic", price: "20€", featured: false,
     features: [
       "12 postări generate lunar",
       "Texte pentru Instagram și Facebook",
@@ -30,7 +30,7 @@ const plans = [
     cta: "Alege Basic",
   },
   {
-    id: "pro", name: "Pro", price: "79€", featured: true,
+    id: "pro", name: "Pro", price: "45€", featured: true,
     features: [
       "30 postări generate lunar",
       "Postări statice cu design AI",
@@ -44,7 +44,7 @@ const plans = [
     cta: "Alege Pro",
   },
   {
-    id: "business", name: "Business", price: "199€", featured: false,
+    id: "business", name: "Business", price: "60€", featured: false,
     features: [
       "90 postări generate lunar",
       "Mai multe branduri / pagini",
