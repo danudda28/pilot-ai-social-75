@@ -119,6 +119,34 @@ function Generate() {
       {result && (
         <div className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5 animate-fade-in">
           <h2 className="font-display text-2xl font-bold gradient-text">{result.post.title}</h2>
+
+          <Section label="Imagine generată">
+            {imgLoading ? (
+              <div className="aspect-square w-full max-w-md mx-auto rounded-xl bg-secondary/40 grid place-items-center text-muted-foreground">
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <span className="text-xs">AI desenează imaginea...</span>
+                </div>
+              </div>
+            ) : imgUrl ? (
+              <div className="space-y-3">
+                <img src={imgUrl} alt={result.post.title ?? "Imagine postare"}
+                  className="w-full max-w-md mx-auto rounded-xl shadow-lg" />
+                <button
+                  onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                  className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary">
+                  <RefreshCw className="h-3 w-3" /> Regenerează imaginea
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                className="inline-flex items-center gap-2 rounded-xl glass-strong px-4 py-2.5 text-sm">
+                <ImageIcon className="h-4 w-4" /> Generează imagine
+              </button>
+            )}
+          </Section>
+
           <Section label="Copy complet"><p className="whitespace-pre-wrap text-sm">{result.post.copy}</p></Section>
           <Section label="Variantă scurtă"><p className="text-sm">{result.post.short_copy}</p></Section>
           <Section label="Hashtaguri"><p className="text-sm text-accent">{result.post.hashtags}</p></Section>
