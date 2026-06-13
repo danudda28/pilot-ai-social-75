@@ -5,7 +5,7 @@ import { Calendar as CalIcon, ChevronDown } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/calendar")({
-  head: () => ({ meta: [{ title: "Calendar — AdPilot Social" }] }),
+  head: () => ({ meta: [{ title: "Calendar — Social Spark" }] }),
   component: CalendarPage,
 });
 

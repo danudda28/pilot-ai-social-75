@@ -9,9 +9,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — AdPilot Social" },
+      { title: "Contact — Social Spark" },
       { name: "description", content: "Contactează-ne pentru o demonstrație sau întrebări. Telefon 0784227844, email bogdansergiu.arghir@gmail.com." },
-      { property: "og:title", content: "Contact — AdPilot Social" },
+      { property: "og:title", content: "Contact — Social Spark" },
       { property: "og:description", content: "Vorbește cu noi despre automatizarea social media." },
     ],
   }),
@@ -49,7 +49,7 @@ function Contact() {
             Hai să <span className="gradient-text">discutăm</span>
           </h1>
           <p className="mt-6 text-muted-foreground max-w-2xl mx-auto">
-            Vrei să vezi cum poate AdPilot Social să îți automatizeze prezența online? Contactează-ne și îți arătăm cum poți economisi timp, bani și energie în fiecare lună.
+            Vrei să vezi cum poate Social Spark să îți automatizeze prezența online? Contactează-ne și îți arătăm cum poți economisi timp, bani și energie în fiecare lună.
           </p>
         </div>
       </section>

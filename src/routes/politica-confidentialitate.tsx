@@ -4,10 +4,10 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const Route = createFileRoute("/politica-confidentialitate")({
   head: () => ({
     meta: [
-      { title: "Politica de Confidențialitate — AdPilot Social" },
-      { name: "description", content: "Cum colectează, folosește și protejează AdPilot Social datele tale personale. Conform GDPR." },
-      { property: "og:title", content: "Politica de Confidențialitate — AdPilot Social" },
-      { property: "og:description", content: "Cum colectează, folosește și protejează AdPilot Social datele tale personale. Conform GDPR." },
+      { title: "Politica de Confidențialitate — Social Spark" },
+      { name: "description", content: "Cum colectează, folosește și protejează Social Spark datele tale personale. Conform GDPR." },
+      { property: "og:title", content: "Politica de Confidențialitate — Social Spark" },
+      { property: "og:description", content: "Cum colectează, folosește și protejează Social Spark datele tale personale. Conform GDPR." },
     ],
   }),
   component: PrivacyPage,
@@ -25,7 +25,7 @@ function PrivacyPage() {
         <div className="space-y-8 text-foreground/90 leading-relaxed">
           <Section title="1. Cine suntem">
             <p>
-              AdPilot Social („noi", „aplicația") este o platformă SaaS de automatizare a postărilor pe rețele sociale
+              Social Spark („noi", „aplicația") este o platformă SaaS de automatizare a postărilor pe rețele sociale
               prin inteligență artificială. Operator de date:{" "}
               <strong>Bogdan Sergiu Arghir</strong>, contact: <a href="mailto:bogdansergiu.arghir@gmail.com" className="text-primary hover:underline">bogdansergiu.arghir@gmail.com</a>,
               telefon: <a href="tel:+40784227844" className="text-primary hover:underline">0784 227 844</a>.

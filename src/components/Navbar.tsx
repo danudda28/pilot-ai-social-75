@@ -29,7 +29,7 @@ export function Navbar() {
             <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg glow">
               <Sparkles className="h-4 w-4 text-white" />
             </span>
-            <span>AdPilot <span className="gradient-text">Social</span></span>
+            <span>Social <span className="gradient-text">Spark</span></span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

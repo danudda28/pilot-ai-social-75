@@ -8,7 +8,7 @@ import { Wand2, Loader2, ImageIcon, RefreshCw } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
-  head: () => ({ meta: [{ title: "Generează postare — AdPilot Social" }] }),
+  head: () => ({ meta: [{ title: "Generează postare — Social Spark" }] }),
   component: Generate,
 });
 

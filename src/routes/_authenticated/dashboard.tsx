@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Wand2, Plug, Sparkles, CheckCircle, Clock, FileText, Send } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — AdPilot Social" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Social Spark" }] }),
   component: DashboardLayout,
 });
 

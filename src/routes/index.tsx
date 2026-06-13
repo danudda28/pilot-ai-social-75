@@ -9,9 +9,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AdPilot Social — Postări AI pentru Instagram și Facebook" },
+      { title: "Social Spark — Postări AI pentru Instagram și Facebook" },
       { name: "description", content: "Generează, programează și publică postări AI pentru Instagram și Facebook. Fără agenție, fără idei blocate." },
-      { property: "og:title", content: "AdPilot Social — Postări AI pentru Instagram și Facebook" },
+      { property: "og:title", content: "Social Spark — Postări AI pentru Instagram și Facebook" },
       { property: "og:description", content: "Postările afacerii tale, create automat cu AI." },
     ],
   }),
@@ -37,7 +37,7 @@ const steps = [
 ];
 
 const faqs = [
-  { q: "Trebuie să am cunoștințe tehnice?", a: "Nu. AdPilot Social e gândit pentru antreprenori, nu pentru specialiști IT. Te înregistrezi, conectezi paginile și AI-ul se ocupă de restul." },
+  { q: "Trebuie să am cunoștințe tehnice?", a: "Nu. Social Spark e gândit pentru antreprenori, nu pentru specialiști IT. Te înregistrezi, conectezi paginile și AI-ul se ocupă de restul." },
   { q: "Pot edita postările înainte să fie publicate?", a: "Da, fiecare postare trece prin starea „draft” unde o poți edita, aproba sau respinge." },
   { q: "Pot anula abonamentul oricând?", a: "Da, fără penalități. Te abonezi și dezabonezi când vrei, direct din dashboard." },
   { q: "Conținutul este unic?", a: "Da. AI-ul generează texte originale, adaptate brandului și domeniului tău." },
@@ -64,7 +64,7 @@ function Home() {
             <span className="gradient-text">create automat cu AI.</span>
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground animate-fade-in">
-            AdPilot Social te ajută să creezi, programezi și publici postări pentru Instagram și Facebook fără să pierzi timp, fără agenție și fără idei blocate.
+            Social Spark te ajută să creezi, programezi și publici postări pentru Instagram și Facebook fără să pierzi timp, fără agenție și fără idei blocate.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Link to="/auth" className="inline-flex items-center justify-center gap-2 rounded-xl gradient-bg glow px-8 py-4 text-base font-semibold text-white card-hover">
@@ -130,7 +130,7 @@ function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold">Antreprenori care folosesc deja AdPilot</h2>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold">Antreprenori care folosesc deja Social Spark</h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {testimonials.map(t => (

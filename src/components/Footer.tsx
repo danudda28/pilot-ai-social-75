@@ -11,7 +11,7 @@ export function Footer() {
               <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg">
                 <Sparkles className="h-4 w-4 text-white" />
               </span>
-              AdPilot <span className="gradient-text">Social</span>
+              Social <span className="gradient-text">Spark</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground max-w-sm">
               Automatizare AI pentru Instagram și Facebook. Postări generate, programate și publicate fără efort.
@@ -36,7 +36,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-border/40 text-xs text-muted-foreground flex flex-col md:flex-row justify-between gap-3">
-          <p>© {new Date().getFullYear()} AdPilot Social. Toate drepturile rezervate.</p>
+          <p>© {new Date().getFullYear()} Social Spark. Toate drepturile rezervate.</p>
           <div className="flex gap-4">
             <Link to="/politica-confidentialitate" className="hover:text-foreground">Politica de confidențialitate</Link>
             <Link to="/termeni-si-conditii" className="hover:text-foreground">Termeni și condiții</Link>
