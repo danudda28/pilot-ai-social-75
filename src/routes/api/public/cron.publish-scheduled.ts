@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/public/cron/publish-scheduled")({
             }
 
             const text = [post.title, post.copy ?? post.short_copy, post.hashtags, post.call_to_action]
-              .filter(Boolean).map((s: string) => s.trim()).join("\n\n");
+              .filter((s): s is string => Boolean(s)).map(s => s.trim()).join("\n\n");
 
             let imageUrl: string | undefined;
             if (post.image_url) {
