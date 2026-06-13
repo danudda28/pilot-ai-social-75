@@ -2,8 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePost } from "@/lib/ai.functions";
+import { generatePostImage } from "@/lib/image.functions";
 import { toast } from "sonner";
-import { Wand2, Loader2 } from "lucide-react";
+import { Wand2, Loader2, ImageIcon, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
   head: () => ({ meta: [{ title: "Generează postare — AdPilot Social" }] }),
@@ -39,7 +40,10 @@ const contentTypes = [
 function Generate() {
   const navigate = useNavigate();
   const generate = useServerFn(generatePost);
+  const generateImage = useServerFn(generatePostImage);
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [form, setForm] = useState({
     domain: "", businessType: "", tone: "profesional", goal: "vanzare",
@@ -49,11 +53,13 @@ function Generate() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.domain || !form.businessType) { toast.error("Completează domeniul și tipul afacerii."); return; }
-    setLoading(true); setResult(null);
+    setLoading(true); setResult(null); setImgUrl(null);
     try {
       const r = await generate({ data: form as any });
       setResult(r);
-      toast.success("Postare generată!");
+      toast.success("Postare generată! Generez și imaginea...");
+      const imgPrompt = r.post.visual_idea || r.ai?.image_suggestion || `${form.businessType}, ${form.domain}`;
+      generateImageFor(r.post.id, imgPrompt);
     } catch (e: any) {
       const msg = String(e?.message ?? "");
       if (msg.includes("402")) toast.error("Creditele AI s-au epuizat. Reîncarcă în Settings.");
@@ -61,6 +67,18 @@ function Generate() {
       else toast.error(msg || "Eroare la generare.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function generateImageFor(postId: string, prompt: string) {
+    setImgLoading(true);
+    try {
+      const { signedUrl } = await generateImage({ data: { postId, prompt } });
+      setImgUrl(signedUrl);
+    } catch (e: any) {
+      toast.error(e?.message || "Eroare la generarea imaginii.");
+    } finally {
+      setImgLoading(false);
     }
   }
 
@@ -101,6 +119,34 @@ function Generate() {
       {result && (
         <div className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5 animate-fade-in">
           <h2 className="font-display text-2xl font-bold gradient-text">{result.post.title}</h2>
+
+          <Section label="Imagine generată">
+            {imgLoading ? (
+              <div className="aspect-square w-full max-w-md mx-auto rounded-xl bg-secondary/40 grid place-items-center text-muted-foreground">
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <span className="text-xs">AI desenează imaginea...</span>
+                </div>
+              </div>
+            ) : imgUrl ? (
+              <div className="space-y-3">
+                <img src={imgUrl} alt={result.post.title ?? "Imagine postare"}
+                  className="w-full max-w-md mx-auto rounded-xl shadow-lg" />
+                <button
+                  onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                  className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary">
+                  <RefreshCw className="h-3 w-3" /> Regenerează imaginea
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                className="inline-flex items-center gap-2 rounded-xl glass-strong px-4 py-2.5 text-sm">
+                <ImageIcon className="h-4 w-4" /> Generează imagine
+              </button>
+            )}
+          </Section>
+
           <Section label="Copy complet"><p className="whitespace-pre-wrap text-sm">{result.post.copy}</p></Section>
           <Section label="Variantă scurtă"><p className="text-sm">{result.post.short_copy}</p></Section>
           <Section label="Hashtaguri"><p className="text-sm text-accent">{result.post.hashtags}</p></Section>
