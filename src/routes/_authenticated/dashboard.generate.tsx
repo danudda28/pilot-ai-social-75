@@ -2,8 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePost } from "@/lib/ai.functions";
+import { generatePostImage } from "@/lib/image.functions";
 import { toast } from "sonner";
-import { Wand2, Loader2 } from "lucide-react";
+import { Wand2, Loader2, ImageIcon, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
   head: () => ({ meta: [{ title: "Generează postare — AdPilot Social" }] }),
@@ -39,7 +40,10 @@ const contentTypes = [
 function Generate() {
   const navigate = useNavigate();
   const generate = useServerFn(generatePost);
+  const generateImage = useServerFn(generatePostImage);
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [form, setForm] = useState({
     domain: "", businessType: "", tone: "profesional", goal: "vanzare",
@@ -49,11 +53,13 @@ function Generate() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.domain || !form.businessType) { toast.error("Completează domeniul și tipul afacerii."); return; }
-    setLoading(true); setResult(null);
+    setLoading(true); setResult(null); setImgUrl(null);
     try {
       const r = await generate({ data: form as any });
       setResult(r);
-      toast.success("Postare generată!");
+      toast.success("Postare generată! Generez și imaginea...");
+      const imgPrompt = r.post.visual_idea || r.ai?.image_suggestion || `${form.businessType}, ${form.domain}`;
+      generateImageFor(r.post.id, imgPrompt);
     } catch (e: any) {
       const msg = String(e?.message ?? "");
       if (msg.includes("402")) toast.error("Creditele AI s-au epuizat. Reîncarcă în Settings.");
@@ -61,6 +67,18 @@ function Generate() {
       else toast.error(msg || "Eroare la generare.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function generateImageFor(postId: string, prompt: string) {
+    setImgLoading(true);
+    try {
+      const { signedUrl } = await generateImage({ data: { postId, prompt } });
+      setImgUrl(signedUrl);
+    } catch (e: any) {
+      toast.error(e?.message || "Eroare la generarea imaginii.");
+    } finally {
+      setImgLoading(false);
     }
   }
 
