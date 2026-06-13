@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles, Mail, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
+import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 
 export function Footer() {
   return (
