@@ -59,9 +59,7 @@ function Auth() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "var(--gradient-hero)" }}>
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold justify-center mb-8">
-          <span className="grid h-9 w-9 place-items-center rounded-lg gradient-bg glow">
-            <Sparkles className="h-4 w-4 text-white" />
-          </span>
+          <img src={logoAsset.url} alt="Social Spark" className="h-10 w-10 object-contain" />
           Social <span className="gradient-text">Spark</span>
         </Link>
 
