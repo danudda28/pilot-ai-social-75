@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      connected_accounts: {
+        Row: {
+          access_token_placeholder: string | null
+          account_id: string | null
+          account_name: string | null
+          created_at: string
+          id: string
+          platform: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          access_token_placeholder?: string | null
+          account_id?: string | null
+          account_name?: string | null
+          created_at?: string
+          id?: string
+          platform: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          access_token_placeholder?: string | null
+          account_id?: string | null
+          account_name?: string | null
+          created_at?: string
+          id?: string
+          platform?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      generated_posts: {
+        Row: {
+          call_to_action: string | null
+          content_type: string
+          copy: string | null
+          created_at: string
+          hashtags: string | null
+          id: string
+          platform: string
+          scheduled_date: string | null
+          short_copy: string | null
+          status: string
+          title: string | null
+          user_id: string
+          visual_idea: string | null
+        }
+        Insert: {
+          call_to_action?: string | null
+          content_type: string
+          copy?: string | null
+          created_at?: string
+          hashtags?: string | null
+          id?: string
+          platform: string
+          scheduled_date?: string | null
+          short_copy?: string | null
+          status?: string
+          title?: string | null
+          user_id: string
+          visual_idea?: string | null
+        }
+        Update: {
+          call_to_action?: string | null
+          content_type?: string
+          copy?: string | null
+          created_at?: string
+          hashtags?: string | null
+          id?: string
+          platform?: string
+          scheduled_date?: string | null
+          short_copy?: string | null
+          status?: string
+          title?: string | null
+          user_id?: string
+          visual_idea?: string | null
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          gdpr_accepted: boolean
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          gdpr_accepted?: boolean
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          gdpr_accepted?: boolean
+          id?: string
+        }
+        Relationships: []
+      }
+      users_profiles: {
+        Row: {
+          business_type: string | null
+          company_name: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          posts_remaining: number
+          subscription_plan: string
+          subscription_status: string
+          user_id: string
+        }
+        Insert: {
+          business_type?: string | null
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          posts_remaining?: number
+          subscription_plan?: string
+          subscription_status?: string
+          user_id: string
+        }
+        Update: {
+          business_type?: string | null
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          posts_remaining?: number
+          subscription_plan?: string
+          subscription_status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
