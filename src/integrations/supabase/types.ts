@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      connected_accounts: {
-        Row: {
-          access_token_placeholder: string | null
-          account_id: string | null
-          account_name: string | null
-          created_at: string
-          id: string
-          platform: string
-          status: string
-          user_id: string
-        }
-        Insert: {
-          access_token_placeholder?: string | null
-          account_id?: string | null
-          account_name?: string | null
-          created_at?: string
-          id?: string
-          platform: string
-          status?: string
-          user_id: string
-        }
-        Update: {
-          access_token_placeholder?: string | null
-          account_id?: string | null
-          account_name?: string | null
-          created_at?: string
-          id?: string
-          platform?: string
-          status?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       contact_messages: {
         Row: {
           created_at: string
@@ -122,6 +89,51 @@ export type Database = {
           title?: string | null
           user_id?: string
           visual_idea?: string | null
+        }
+        Relationships: []
+      }
+      meta_connections: {
+        Row: {
+          created_at: string
+          fb_user_id: string
+          fb_user_name: string | null
+          id: string
+          ig_business_id: string | null
+          ig_username: string | null
+          page_access_token: string
+          page_id: string
+          page_name: string
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fb_user_id: string
+          fb_user_name?: string | null
+          id?: string
+          ig_business_id?: string | null
+          ig_username?: string | null
+          page_access_token: string
+          page_id: string
+          page_name: string
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fb_user_id?: string
+          fb_user_name?: string | null
+          id?: string
+          ig_business_id?: string | null
+          ig_username?: string | null
+          page_access_token?: string
+          page_id?: string
+          page_name?: string
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

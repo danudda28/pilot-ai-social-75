@@ -1,0 +1,154 @@
+/**
+ * Meta Graph API helpers. SERVER ONLY (uses META_APP_SECRET).
+ * Docs: https://developers.facebook.com/docs/graph-api
+ */
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+const GRAPH = "https://graph.facebook.com/v21.0";
+
+export const META_SCOPES = [
+  "pages_show_list",
+  "pages_manage_posts",
+  "pages_read_engagement",
+  "instagram_basic",
+  "instagram_content_publish",
+  "business_management",
+  "public_profile",
+];
+
+function appCreds() {
+  const id = process.env.META_APP_ID;
+  const secret = process.env.META_APP_SECRET;
+  if (!id || !secret) throw new Error("META_APP_ID / META_APP_SECRET nu sunt configurate.");
+  return { id, secret };
+}
+
+// ---------- State signing (CSRF + user binding) ----------
+
+export function signState(payload: { userId: string; origin: string }): string {
+  const { secret } = appCreds();
+  const body = Buffer.from(
+    JSON.stringify({ ...payload, ts: Date.now(), nonce: Math.random().toString(36).slice(2) }),
+  ).toString("base64url");
+  const sig = createHmac("sha256", secret).update(body).digest("base64url");
+  return `${body}.${sig}`;
+}
+
+export function verifyState(state: string): { userId: string; origin: string } {
+  const { secret } = appCreds();
+  const [body, sig] = state.split(".");
+  if (!body || !sig) throw new Error("State malformat.");
+  const expected = createHmac("sha256", secret).update(body).digest("base64url");
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) throw new Error("State invalid.");
+  const parsed = JSON.parse(Buffer.from(body, "base64url").toString()) as {
+    userId: string; origin: string; ts: number;
+  };
+  if (Date.now() - parsed.ts > 10 * 60 * 1000) throw new Error("State expirat (>10 min).");
+  return { userId: parsed.userId, origin: parsed.origin };
+}
+
+// ---------- OAuth ----------
+
+export function buildAuthUrl(redirectUri: string, state: string): string {
+  const { id } = appCreds();
+  const params = new URLSearchParams({
+    client_id: id,
+    redirect_uri: redirectUri,
+    state,
+    scope: META_SCOPES.join(","),
+    response_type: "code",
+  });
+  return `https://www.facebook.com/v21.0/dialog/oauth?${params.toString()}`;
+}
+
+export async function exchangeCodeForToken(code: string, redirectUri: string): Promise<string> {
+  const { id, secret } = appCreds();
+  const url = `${GRAPH}/oauth/access_token?client_id=${id}&client_secret=${secret}&redirect_uri=${encodeURIComponent(redirectUri)}&code=${encodeURIComponent(code)}`;
+  const res = await fetch(url);
+  const json = await res.json() as any;
+  if (!res.ok || json.error) throw new Error(`Token exchange: ${json.error?.message ?? res.status}`);
+  return json.access_token as string;
+}
+
+export async function exchangeForLongLivedToken(shortToken: string): Promise<{ token: string; expiresIn: number }> {
+  const { id, secret } = appCreds();
+  const url = `${GRAPH}/oauth/access_token?grant_type=fb_exchange_token&client_id=${id}&client_secret=${secret}&fb_exchange_token=${shortToken}`;
+  const res = await fetch(url);
+  const json = await res.json() as any;
+  if (!res.ok || json.error) throw new Error(`Long-lived token: ${json.error?.message ?? res.status}`);
+  return { token: json.access_token, expiresIn: json.expires_in ?? 60 * 24 * 3600 };
+}
+
+// ---------- Pages & IG ----------
+
+export type FbPage = {
+  id: string;
+  name: string;
+  access_token: string;
+  instagram_business_account?: { id: string; username?: string };
+};
+
+export async function getMeAndPages(userToken: string): Promise<{ user: { id: string; name: string }; pages: FbPage[] }> {
+  const meRes = await fetch(`${GRAPH}/me?fields=id,name&access_token=${userToken}`);
+  const me = await meRes.json() as any;
+  if (!meRes.ok || me.error) throw new Error(`Me: ${me.error?.message ?? meRes.status}`);
+
+  const pagesRes = await fetch(`${GRAPH}/me/accounts?fields=id,name,access_token,instagram_business_account{id,username}&access_token=${userToken}`);
+  const pagesJson = await pagesRes.json() as any;
+  if (!pagesRes.ok || pagesJson.error) throw new Error(`Pages: ${pagesJson.error?.message ?? pagesRes.status}`);
+
+  return {
+    user: { id: me.id, name: me.name },
+    pages: (pagesJson.data ?? []) as FbPage[],
+  };
+}
+
+// ---------- Publishing ----------
+
+export async function publishToFacebookPage(args: {
+  pageId: string;
+  pageAccessToken: string;
+  message: string;
+  imageUrl?: string;
+}): Promise<{ id: string }> {
+  const { pageId, pageAccessToken, message, imageUrl } = args;
+  const endpoint = imageUrl ? `${GRAPH}/${pageId}/photos` : `${GRAPH}/${pageId}/feed`;
+  const body = new URLSearchParams({ access_token: pageAccessToken });
+  if (imageUrl) {
+    body.set("url", imageUrl);
+    body.set("caption", message);
+  } else {
+    body.set("message", message);
+  }
+  const res = await fetch(endpoint, { method: "POST", body });
+  const json = await res.json() as any;
+  if (!res.ok || json.error) throw new Error(`FB publish: ${json.error?.message ?? res.status}`);
+  return { id: json.id ?? json.post_id };
+}
+
+export async function publishToInstagram(args: {
+  igBusinessId: string;
+  pageAccessToken: string;
+  imageUrl: string; // IG requires image
+  caption: string;
+}): Promise<{ id: string }> {
+  const { igBusinessId, pageAccessToken, imageUrl, caption } = args;
+  // 1. Create container
+  const containerBody = new URLSearchParams({
+    image_url: imageUrl,
+    caption,
+    access_token: pageAccessToken,
+  });
+  const cRes = await fetch(`${GRAPH}/${igBusinessId}/media`, { method: "POST", body: containerBody });
+  const cJson = await cRes.json() as any;
+  if (!cRes.ok || cJson.error) throw new Error(`IG container: ${cJson.error?.message ?? cRes.status}`);
+
+  // 2. Publish container
+  const pBody = new URLSearchParams({ creation_id: cJson.id, access_token: pageAccessToken });
+  const pRes = await fetch(`${GRAPH}/${igBusinessId}/media_publish`, { method: "POST", body: pBody });
+  const pJson = await pRes.json() as any;
+  if (!pRes.ok || pJson.error) throw new Error(`IG publish: ${pJson.error?.message ?? pRes.status}`);
+  return { id: pJson.id };
+}
