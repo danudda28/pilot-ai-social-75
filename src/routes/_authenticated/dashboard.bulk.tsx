@@ -134,8 +134,8 @@ function BulkPage() {
             className="mt-2 w-full accent-primary" />
           <div className="flex justify-between text-xs text-muted-foreground mt-1"><span>2</span><span>15</span></div>
         </div>
-        <button disabled={loading}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl gradient-bg glow px-6 py-3.5 text-sm font-semibold text-white disabled:opacity-50">
+        <button disabled={loading || overQuota}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl gradient-bg glow px-6 py-3.5 text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed">
           {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Generez {form.count} postări...</> : <><Wand2 className="h-4 w-4" /> Generează {form.count} postări</>}
         </button>
         <p className="text-xs text-muted-foreground">Va consuma {form.count} postări din planul tău.</p>
