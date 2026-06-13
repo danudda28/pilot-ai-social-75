@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePost } from "@/lib/ai.functions";
 import { generatePostImage, uploadPostImage } from "@/lib/image.functions";
+import { updatePost } from "@/lib/posts.functions";
 import { toast } from "sonner";
-import { Wand2, Loader2, ImageIcon, RefreshCw, Upload } from "lucide-react";
+import { Wand2, Loader2, ImageIcon, RefreshCw, Upload, Pencil, Check as CheckIcon } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
@@ -43,15 +44,47 @@ function Generate() {
   const generate = useServerFn(generatePost);
   const generateImage = useServerFn(generatePostImage);
   const uploadImage = useServerFn(uploadPostImage);
+  const savePost = useServerFn(updatePost);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [edit, setEdit] = useState({ title: "", copy: "", short_copy: "", hashtags: "", call_to_action: "" });
   const [form, setForm] = useState({
     domain: "", businessType: "", tone: "profesional", goal: "vanzare",
     platform: "instagram", contentType: "static", extraContext: "",
   });
+
+  useEffect(() => {
+    if (result?.post) {
+      setEdit({
+        title: result.post.title ?? "",
+        copy: result.post.copy ?? "",
+        short_copy: result.post.short_copy ?? "",
+        hashtags: result.post.hashtags ?? "",
+        call_to_action: result.post.call_to_action ?? "",
+      });
+      setEditing(false);
+    }
+  }, [result?.post?.id]);
+
+  async function saveEdits() {
+    if (!result?.post?.id) return;
+    setSaving(true);
+    try {
+      await savePost({ data: { postId: result.post.id, ...edit } });
+      setResult({ ...result, post: { ...result.post, ...edit } });
+      setEditing(false);
+      toast.success("Modificări salvate.");
+    } catch (e: any) {
+      toast.error(e?.message || "Salvare eșuată.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -151,7 +184,26 @@ function Generate() {
 
       {result && (
         <div className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5 animate-fade-in">
-          <h2 className="font-display text-2xl font-bold gradient-text">{result.post.title}</h2>
+          <div className="flex items-start justify-between gap-4">
+            {editing ? (
+              <input value={edit.title} onChange={e => setEdit({ ...edit, title: e.target.value })}
+                className="flex-1 font-display text-2xl font-bold bg-input/50 border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
+            ) : (
+              <h2 className="font-display text-2xl font-bold gradient-text flex-1">{edit.title || result.post.title}</h2>
+            )}
+            {editing ? (
+              <button onClick={saveEdits} disabled={saving}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-lg gradient-bg px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">
+                {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckIcon className="h-3 w-3" />}
+                Salvează
+              </button>
+            ) : (
+              <button onClick={() => setEditing(true)}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-lg glass-strong px-3 py-2 text-xs font-medium hover:bg-secondary">
+                <Pencil className="h-3 w-3" /> Editează
+              </button>
+            )}
+          </div>
 
           <Section label="Imagine generată">
             {imgLoading ? (
@@ -201,13 +253,20 @@ function Generate() {
             />
           </Section>
 
-          <Section label="Copy complet"><p className="whitespace-pre-wrap text-sm">{result.post.copy}</p></Section>
-          <Section label="Variantă scurtă"><p className="text-sm">{result.post.short_copy}</p></Section>
-          <Section label="Hashtaguri"><p className="text-sm text-accent">{result.post.hashtags}</p></Section>
+          <EditableSection label="Copy complet" editing={editing} value={edit.copy}
+            onChange={v => setEdit({ ...edit, copy: v })} rows={8} />
+          <EditableSection label="Variantă scurtă" editing={editing} value={edit.short_copy}
+            onChange={v => setEdit({ ...edit, short_copy: v })} rows={2} />
+          <EditableSection label="Hashtaguri" editing={editing} value={edit.hashtags}
+            onChange={v => setEdit({ ...edit, hashtags: v })} rows={2} accent />
           <Section label="Idee vizuală"><p className="text-sm">{result.post.visual_idea}</p></Section>
-          <Section label="Call to action"><p className="text-sm font-medium">{result.post.call_to_action}</p></Section>
+          <EditableSection label="Call to action" editing={editing} value={edit.call_to_action}
+            onChange={v => setEdit({ ...edit, call_to_action: v })} rows={1} />
           {result.ai?.image_suggestion && <Section label="Sugestie imagine/video"><p className="text-sm">{result.ai.image_suggestion}</p></Section>}
           {result.ai?.recommended_date && <Section label="Dată recomandată"><p className="text-sm">{result.ai.recommended_date}</p></Section>}
+          <Section label="Preview Instagram/Facebook">
+            <SocialPreview title={edit.title} copy={edit.copy} hashtags={edit.hashtags} imageUrl={imgUrl} />
+          </Section>
           <Section label="Publicare">
             <PublishActions postId={result.post.id} defaultPlatform={form.platform} />
           </Section>
@@ -218,6 +277,49 @@ function Generate() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function EditableSection({ label, editing, value, onChange, rows, accent }: {
+  label: string; editing: boolean; value: string; onChange: (v: string) => void; rows: number; accent?: boolean;
+}) {
+  return (
+    <div>
+      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">{label}</div>
+      <div className="glass rounded-xl p-4">
+        {editing ? (
+          <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows}
+            className="w-full bg-input/50 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary resize-y" />
+        ) : (
+          <p className={`whitespace-pre-wrap text-sm ${accent ? "text-accent" : ""}`}>{value}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SocialPreview({ title, copy, hashtags, imageUrl }: {
+  title: string; copy: string; hashtags: string; imageUrl: string | null;
+}) {
+  return (
+    <div className="max-w-sm mx-auto bg-white text-black rounded-xl overflow-hidden shadow-xl">
+      <div className="flex items-center gap-2 p-3 border-b border-gray-200">
+        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500" />
+        <span className="text-xs font-semibold">your_business</span>
+      </div>
+      {imageUrl ? (
+        <img src={imageUrl} alt="preview" className="w-full aspect-square object-cover" />
+      ) : (
+        <div className="w-full aspect-square bg-gray-100 grid place-items-center text-xs text-gray-400">
+          [imagine]
+        </div>
+      )}
+      <div className="p-3 space-y-1">
+        {title && <p className="text-sm font-bold">{title}</p>}
+        <p className="text-xs whitespace-pre-wrap line-clamp-6">{copy}</p>
+        {hashtags && <p className="text-xs text-blue-700">{hashtags}</p>}
+      </div>
     </div>
   );
 }

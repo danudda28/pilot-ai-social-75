@@ -116,9 +116,38 @@ function Pricing() {
           ))}
         </div>
         <p className="mt-10 text-center text-xs text-muted-foreground max-w-xl mx-auto">
-          Plățile se procesează securizat prin Stripe. Poți anula sau schimba planul oricând din dashboard.
+          Plățile se procesează securizat. Poți anula sau schimba planul oricând din dashboard.
         </p>
+      </section>
+
+      <section className="py-20">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-center">
+            Întrebări <span className="gradient-text">frecvente</span>
+          </h2>
+          <div className="mt-12 space-y-4">
+            {faqs.map((f, i) => (
+              <details key={i} className="group glass rounded-2xl p-6 cursor-pointer">
+                <summary className="font-semibold list-none flex items-center justify-between">
+                  {f.q}
+                  <span className="text-primary text-xl group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </section>
     </PublicLayout>
   );
 }
+
+const faqs = [
+  { q: "Pot anula oricând?", a: "Da. Anulezi din dashboard în orice moment, fără penalități. Păstrezi accesul până la sfârșitul perioadei plătite." },
+  { q: "Ce se întâmplă dacă depășesc numărul de postări?", a: "Te anunțăm înainte și îți propunem un upgrade la planul superior. Poți face upgrade oricând și plătești doar diferența pe luna în curs." },
+  { q: "AI-ul scrie cu adevărat în română?", a: "Da, cu diacritice și ton natural pentru România. Modelele folosite (Gemini 2.5) sunt antrenate pe corpusuri mari de text românesc." },
+  { q: "Pot conecta mai multe pagini Instagram/Facebook?", a: "În planul Business poți conecta mai multe branduri și pagini. Basic și Pro permit un singur business." },
+  { q: "Postările se publică automat?", a: "Da. După ce conectezi Instagram/Facebook prin Meta, programezi data și ora, iar sistemul publică în locul tău." },
+  { q: "Există perioadă de probă?", a: "Da. Planul Free îți oferă 3 postări lunar, ca să testezi platforma fără card." },
+  { q: "Cum funcționează facturarea?", a: "Facturare lunară, cu factură fiscală emisă pe firma sau persoana ta. TVA inclus pentru clienți din UE." },
+];
