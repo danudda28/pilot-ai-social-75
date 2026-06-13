@@ -105,3 +105,55 @@ export const getPostImageUrl = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { signedUrl: signed.signedUrl };
   });
+
+/**
+ * Uploads a user-provided image (base64 data URL) for a post.
+ * Max ~6 MB after decoding. Accepts PNG/JPG/WEBP.
+ */
+export const uploadPostImage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      postId: z.string().uuid(),
+      dataUrl: z.string().min(20),
+      mimeType: z.enum(["image/png", "image/jpeg", "image/webp"]),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    // Verify ownership
+    const { data: post, error: pErr } = await context.supabase
+      .from("generated_posts")
+      .select("id")
+      .eq("id", data.postId)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (pErr || !post) throw new Error("Postare inexistentă.");
+
+    const base64 = data.dataUrl.replace(/^data:[^;]+;base64,/, "");
+    if (base64.length > 8_500_000) throw new Error("Imagine prea mare (max 6 MB).");
+
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+    const ext = data.mimeType === "image/jpeg" ? "jpg" : data.mimeType === "image/webp" ? "webp" : "png";
+    const path = `${context.userId}/${data.postId}-upload-${Date.now()}.${ext}`;
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error: upErr } = await supabaseAdmin.storage
+      .from("post-images")
+      .upload(path, bytes, { contentType: data.mimeType, upsert: true });
+    if (upErr) throw new Error(`Upload eșuat: ${upErr.message}`);
+
+    await context.supabase
+      .from("generated_posts")
+      .update({ image_url: path })
+      .eq("id", data.postId)
+      .eq("user_id", context.userId);
+
+    const { data: signed, error: sErr } = await supabaseAdmin.storage
+      .from("post-images")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (sErr) throw new Error(sErr.message);
+    return { path, signedUrl: signed.signedUrl };
+  });
