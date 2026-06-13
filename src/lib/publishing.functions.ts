@@ -133,22 +133,27 @@ export const publishPost = createServerFn({ method: "POST" })
     return { results };
   });
 
-/** Marks post as scheduled in DB. Automated publishing at scheduled_date requires a cron (TBD). */
+/** Marks post as scheduled in DB. The cron worker picks it up at scheduled_date. */
 export const schedulePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
     postId: z.string().uuid(),
     scheduledDate: z.string(),
-    profileIds: z.array(z.string()).min(1),
+    profileIds: z.array(z.string().regex(/^[0-9a-f-]{36}:(fb|ig)$/i)).min(1),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("generated_posts")
-      .update({ status: "scheduled", scheduled_date: data.scheduledDate })
+      .update({
+        status: "scheduled",
+        scheduled_date: data.scheduledDate,
+        target_profile_ids: data.profileIds,
+        last_publish_error: null,
+      })
       .eq("id", data.postId)
       .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
-    return { ok: true, note: "Salvat ca programat. Publicare automată în curând (cron)." };
+    return { ok: true };
   });
 
 export const getPostAnalytics = createServerFn({ method: "GET" })

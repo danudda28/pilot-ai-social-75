@@ -50,10 +50,13 @@ export type Database = {
           hashtags: string | null
           id: string
           image_url: string | null
+          last_publish_error: string | null
           platform: string
+          published_at: string | null
           scheduled_date: string | null
           short_copy: string | null
           status: string
+          target_profile_ids: string[]
           title: string | null
           user_id: string
           visual_idea: string | null
@@ -66,10 +69,13 @@ export type Database = {
           hashtags?: string | null
           id?: string
           image_url?: string | null
+          last_publish_error?: string | null
           platform: string
+          published_at?: string | null
           scheduled_date?: string | null
           short_copy?: string | null
           status?: string
+          target_profile_ids?: string[]
           title?: string | null
           user_id: string
           visual_idea?: string | null
@@ -82,10 +88,13 @@ export type Database = {
           hashtags?: string | null
           id?: string
           image_url?: string | null
+          last_publish_error?: string | null
           platform?: string
+          published_at?: string | null
           scheduled_date?: string | null
           short_copy?: string | null
           status?: string
+          target_profile_ids?: string[]
           title?: string | null
           user_id?: string
           visual_idea?: string | null
