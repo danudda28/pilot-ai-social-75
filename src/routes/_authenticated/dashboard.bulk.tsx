@@ -1,10 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePostsBulk } from "@/lib/bulk.functions";
 import { TEMPLATES } from "@/lib/templates";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Layers, Loader2, Wand2 } from "lucide-react";
+import { AlertTriangle, Layers, Loader2, Wand2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard/bulk")({
   head: () => ({ meta: [{ title: "Bulk generate — Social Spark" }] }),
@@ -15,10 +16,22 @@ function BulkPage() {
   const navigate = useNavigate();
   const bulk = useServerFn(generatePostsBulk);
   const [loading, setLoading] = useState(false);
+  const [remaining, setRemaining] = useState<number | null>(null);
+  const [plan, setPlan] = useState<string>("free");
   const [form, setForm] = useState({
     domain: "", businessType: "", tone: "prietenos", goal: "vanzare",
     platform: "instagram", contentType: "static", extraContext: "", count: 5,
   });
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("users_profiles")
+        .select("posts_remaining,subscription_plan").eq("user_id", user.id).maybeSingle();
+      if (data) { setRemaining(data.posts_remaining); setPlan(data.subscription_plan); }
+    })();
+  }, []);
 
   function applyTemplate(id: string) {
     const t = TEMPLATES.find(x => x.id === id);
@@ -26,9 +39,12 @@ function BulkPage() {
     setForm(f => ({ ...f, domain: t.domain, businessType: t.businessType, tone: t.tone, goal: t.goal, extraContext: t.extraContext ?? "" }));
   }
 
+  const overQuota = remaining !== null && form.count > remaining;
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.domain || !form.businessType) { toast.error("Completează domeniul și tipul afacerii."); return; }
+    if (overQuota) { toast.error(`Ai doar ${remaining} postări rămase. Redu numărul sau fă upgrade.`); return; }
     setLoading(true);
     try {
       const r = await bulk({ data: form as any });
