@@ -2,13 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  connectSocialAccount,
   disconnectSocialAccount,
   getConnectedAccounts,
-  listBufferProfilesFn,
 } from "@/lib/publishing.functions";
 import { toast } from "sonner";
-import { Instagram, Facebook, Plug, Trash2, RefreshCw, CheckCircle2 } from "lucide-react";
+import { Instagram, Facebook, Plug, Trash2, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard/integrari")({
   head: () => ({ meta: [{ title: "Integrări — AdPilot Social" }] }),
@@ -16,7 +14,6 @@ export const Route = createFileRoute("/_authenticated/dashboard/integrari")({
 });
 
 type Account = { id: string; platform: string; account_name: string | null; account_id: string | null; status: string };
-type Profile = { id: string; service: string; username: string; avatar?: string };
 
 function serviceIcon(s: string) {
   if (s === "instagram") return <Instagram className="h-5 w-5 text-pink-400" />;
