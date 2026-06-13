@@ -1,6 +1,6 @@
 /**
- * Social publishing stubs. Wire to Ayrshare / Publer / Buffer once
- * SOCIAL_PUBLISHING_API_KEY and SOCIAL_PUBLISHING_API_URL are configured.
+ * Social publishing via Buffer API (https://buffer.com/developers/api).
+ * Requires BUFFER_ACCESS_TOKEN secret.
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -11,20 +11,18 @@ export const connectSocialAccount = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({
     platform: z.enum(["instagram", "facebook"]),
     account_name: z.string().min(1).max(100),
+    buffer_profile_id: z.string().min(1).max(100),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const apiUrl = process.env.SOCIAL_PUBLISHING_API_URL;
-    const apiKey = process.env.SOCIAL_PUBLISHING_API_KEY;
-    // TODO: real OAuth/connect call to apiUrl with apiKey.
-    const placeholder = `placeholder_token_${Date.now()}`;
     const { data: row, error } = await context.supabase
       .from("connected_accounts")
       .insert({
         user_id: context.userId,
         platform: data.platform,
         account_name: data.account_name,
-        access_token_placeholder: placeholder,
-        status: apiUrl && apiKey ? "connected" : "pending_api_key",
+        account_id: data.buffer_profile_id,
+        access_token_placeholder: "buffer",
+        status: "connected",
       })
       .select()
       .single();
@@ -53,14 +51,57 @@ export const disconnectSocialAccount = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Listează profilurile Buffer disponibile pentru contul conectat. */
+export const listBufferProfilesFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { listBufferProfiles } = await import("./buffer.server");
+    const profiles = await listBufferProfiles();
+    return profiles.map(p => ({
+      id: p.id,
+      service: p.service,
+      username: p.service_username ?? p.formatted_username ?? p.id,
+      avatar: p.avatar,
+    }));
+  });
+
+async function buildPostText(post: any): Promise<string> {
+  const parts = [post.title, post.copy ?? post.short_copy, post.hashtags, post.call_to_action]
+    .filter(Boolean)
+    .map((s: string) => s.trim());
+  return parts.join("\n\n");
+}
+
+async function getPublicImageUrl(imagePath: string | null): Promise<string | undefined> {
+  if (!imagePath) return undefined;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .storage
+    .from("post-images")
+    .createSignedUrl(imagePath, 60 * 60 * 24 * 7); // 7 zile
+  if (error) return undefined;
+  return data.signedUrl;
+}
+
 export const schedulePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
     postId: z.string().uuid(),
     scheduledDate: z.string(),
+    profileIds: z.array(z.string()).min(1),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    // TODO: call publishing API to schedule with apiUrl + apiKey.
+    const { data: post, error: pErr } = await context.supabase
+      .from("generated_posts").select("*").eq("id", data.postId).eq("user_id", context.userId).single();
+    if (pErr || !post) throw new Error(pErr?.message ?? "Postare inexistentă.");
+
+    const text = await buildPostText(post);
+    const imageUrl = await getPublicImageUrl(post.image_url);
+    const scheduledAt = Math.floor(new Date(data.scheduledDate).getTime() / 1000);
+
+    const { createBufferUpdate } = await import("./buffer.server");
+    await createBufferUpdate({ profileIds: data.profileIds, text, scheduledAt, imageUrl });
+
     const { error } = await context.supabase
       .from("generated_posts")
       .update({ status: "scheduled", scheduled_date: data.scheduledDate })
@@ -72,9 +113,21 @@ export const schedulePost = createServerFn({ method: "POST" })
 
 export const publishPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ postId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({
+    postId: z.string().uuid(),
+    profileIds: z.array(z.string()).min(1),
+  }).parse(d))
   .handler(async ({ data, context }) => {
-    // TODO: call publishing API to publish now.
+    const { data: post, error: pErr } = await context.supabase
+      .from("generated_posts").select("*").eq("id", data.postId).eq("user_id", context.userId).single();
+    if (pErr || !post) throw new Error(pErr?.message ?? "Postare inexistentă.");
+
+    const text = await buildPostText(post);
+    const imageUrl = await getPublicImageUrl(post.image_url);
+
+    const { createBufferUpdate } = await import("./buffer.server");
+    await createBufferUpdate({ profileIds: data.profileIds, text, now: true, imageUrl });
+
     const { error } = await context.supabase
       .from("generated_posts")
       .update({ status: "published" })
@@ -87,7 +140,6 @@ export const publishPost = createServerFn({ method: "POST" })
 export const getPostAnalytics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    // TODO: call publishing API for real analytics.
     const { data, error } = await context.supabase
       .from("generated_posts")
       .select("status")
