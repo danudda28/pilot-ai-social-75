@@ -7,9 +7,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
-      { title: "Prețuri — AdPilot Social" },
+      { title: "Prețuri — Social Spark" },
       { name: "description", content: "Alege planul potrivit afacerii tale: Basic 29€, Pro 79€, Business 199€ pe lună." },
-      { property: "og:title", content: "Prețuri — AdPilot Social" },
+      { property: "og:title", content: "Prețuri — Social Spark" },
       { property: "og:description", content: "3 abonamente clare pentru orice tip de afacere." },
     ],
   }),

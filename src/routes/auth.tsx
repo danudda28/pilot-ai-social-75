@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Autentificare — AdPilot Social" }] }),
+  head: () => ({ meta: [{ title: "Autentificare — Social Spark" }] }),
   component: Auth,
 });
 
@@ -62,7 +62,7 @@ function Auth() {
           <span className="grid h-9 w-9 place-items-center rounded-lg gradient-bg glow">
             <Sparkles className="h-4 w-4 text-white" />
           </span>
-          AdPilot <span className="gradient-text">Social</span>
+          Social Spark <span className="gradient-text">Social</span>
         </Link>
 
         <div className="glass-strong rounded-2xl p-8">

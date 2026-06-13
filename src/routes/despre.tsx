@@ -5,9 +5,9 @@ import { Heart, Zap, Palette } from "lucide-react";
 export const Route = createFileRoute("/despre")({
   head: () => ({
     meta: [
-      { title: "Despre noi — AdPilot Social" },
-      { name: "description", content: "AdPilot Social ajută antreprenorii să fie prezenți pe Instagram și Facebook fără efort, folosind AI." },
-      { property: "og:title", content: "Despre noi — AdPilot Social" },
+      { title: "Despre noi — Social Spark" },
+      { name: "description", content: "Social Spark ajută antreprenorii să fie prezenți pe Instagram și Facebook fără efort, folosind AI." },
+      { property: "og:title", content: "Despre noi — Social Spark" },
       { property: "og:description", content: "Construit pentru antreprenori care vor mai multă prezență online." },
     ],
   }),
@@ -29,7 +29,7 @@ function About() {
             Construit pentru <span className="gradient-text">antreprenori</span>, nu pentru agenții.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Știm cât de greu e să fii prezent pe social media când conduci o afacere. AdPilot Social rezolvă asta.
+            Știm cât de greu e să fii prezent pe social media când conduci o afacere. Social Spark rezolvă asta.
           </p>
         </div>
       </section>
@@ -38,10 +38,10 @@ function About() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="glass-strong rounded-2xl p-8 sm:p-12 space-y-5 text-base leading-relaxed">
             <p>
-              <strong>AdPilot Social</strong> a fost creat pentru antreprenorii care știu că prezența online contează, dar nu au timp să stea zilnic să gândească postări, texte, idei și campanii. Aplicația noastră folosește inteligența artificială pentru a transforma orice afacere într-un brand activ, coerent și profesionist pe social media.
+              <strong>Social Spark</strong> a fost creat pentru antreprenorii care știu că prezența online contează, dar nu au timp să stea zilnic să gândească postări, texte, idei și campanii. Aplicația noastră folosește inteligența artificială pentru a transforma orice afacere într-un brand activ, coerent și profesionist pe social media.
             </p>
             <p>
-              Fie că ai un salon, restaurant, clinică, service auto, magazin online, firmă de construcții sau orice alt tip de business, AdPilot Social te ajută să comunici mai clar, mai des și mai convingător cu publicul tău.
+              Fie că ai un salon, restaurant, clinică, service auto, magazin online, firmă de construcții sau orice alt tip de business, Social Spark te ajută să comunici mai clar, mai des și mai convingător cu publicul tău.
             </p>
             <p>
               Nu înlocuim creativitatea umană, ci eliminăm blocajele, lipsa de timp și haosul din postări. <span className="gradient-text font-semibold">Tu te ocupi de afacere, iar AI-ul nostru te ajută să fii prezent constant online.</span>

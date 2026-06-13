@@ -46,7 +46,7 @@ export function NewsletterForm() {
       </div>
       <label className="mt-4 flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
         <input type="checkbox" checked={gdpr} onChange={e => setGdpr(e.target.checked)} className="mt-0.5" />
-        Sunt de acord să primesc noutăți și promoții despre AdPilot Social.
+        Sunt de acord să primesc noutăți și promoții despre Social Spark.
       </label>
     </form>
   );

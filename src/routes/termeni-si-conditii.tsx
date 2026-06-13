@@ -4,10 +4,10 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const Route = createFileRoute("/termeni-si-conditii")({
   head: () => ({
     meta: [
-      { title: "Termeni și Condiții — AdPilot Social" },
-      { name: "description", content: "Termenii și condițiile de utilizare ale platformei AdPilot Social pentru automatizare postări sociale cu AI." },
-      { property: "og:title", content: "Termeni și Condiții — AdPilot Social" },
-      { property: "og:description", content: "Termenii și condițiile de utilizare ale platformei AdPilot Social." },
+      { title: "Termeni și Condiții — Social Spark" },
+      { name: "description", content: "Termenii și condițiile de utilizare ale platformei Social Spark pentru automatizare postări sociale cu AI." },
+      { property: "og:title", content: "Termeni și Condiții — Social Spark" },
+      { property: "og:description", content: "Termenii și condițiile de utilizare ale platformei Social Spark." },
     ],
   }),
   component: TermsPage,
@@ -25,7 +25,7 @@ function TermsPage() {
         <div className="space-y-8 text-foreground/90 leading-relaxed">
           <Section title="1. Părțile">
             <p>
-              Acești termeni reglementează utilizarea platformei <strong>AdPilot Social</strong>,
+              Acești termeni reglementează utilizarea platformei <strong>Social Spark</strong>,
               operată de Bogdan Sergiu Arghir, contact:{" "}
               <a href="mailto:bogdansergiu.arghir@gmail.com" className="text-primary hover:underline">bogdansergiu.arghir@gmail.com</a>,
               tel. <a href="tel:+40784227844" className="text-primary hover:underline">0784 227 844</a>.
@@ -35,7 +35,7 @@ function TermsPage() {
 
           <Section title="2. Descrierea serviciului">
             <p>
-              AdPilot Social este o platformă SaaS care permite generarea automată cu AI a postărilor
+              Social Spark este o platformă SaaS care permite generarea automată cu AI a postărilor
               pentru Instagram și Facebook, programarea și publicarea lor, precum și gestionarea unui
               calendar de conținut.
             </p>
@@ -61,7 +61,7 @@ function TermsPage() {
           </Section>
 
           <Section title="5. Utilizare acceptabilă">
-            <p>Este interzis să folosești AdPilot Social pentru:</p>
+            <p>Este interzis să folosești Social Spark pentru:</p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Conținut ilegal, defăimător, discriminatoriu, pornografic sau care încalcă drepturi de autor.</li>
               <li>Spam, phishing sau practici comerciale înșelătoare.</li>
@@ -77,7 +77,7 @@ function TermsPage() {
             <p>
               Postările generate cu AI sunt instrumente, nu garanții. Ești <strong>singurul responsabil</strong>{" "}
               pentru ce publici prin contul tău. Recomandăm să revizuiești fiecare postare înainte de
-              programare. AdPilot nu răspunde pentru consecințele publicării.
+              programare. Social Spark nu răspunde pentru consecințele publicării.
             </p>
           </Section>
 
@@ -91,7 +91,7 @@ function TermsPage() {
 
           <Section title="8. Proprietate intelectuală">
             <ul className="list-disc pl-6 space-y-1">
-              <li>Platforma, brandul și codul AdPilot Social ne aparțin.</li>
+              <li>Platforma, brandul și codul Social Spark ne aparțin.</li>
               <li>Conținutul generat (text, imagini) îți aparține; ne acorzi licență limitată pentru a-l procesa și publica în numele tău.</li>
             </ul>
           </Section>
@@ -105,7 +105,7 @@ function TermsPage() {
 
           <Section title="10. Limitarea răspunderii">
             <p>
-              În măsura permisă de lege, AdPilot Social nu răspunde pentru daune indirecte, pierderi de
+              În măsura permisă de lege, Social Spark nu răspunde pentru daune indirecte, pierderi de
               profit, date sau reputație. Răspunderea totală este limitată la suma plătită de tine în
               ultimele 12 luni.
             </p>

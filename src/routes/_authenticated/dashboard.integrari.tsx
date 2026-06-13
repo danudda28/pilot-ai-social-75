@@ -16,7 +16,7 @@ const search = z.object({
 }).partial();
 
 export const Route = createFileRoute("/_authenticated/dashboard/integrari")({
-  head: () => ({ meta: [{ title: "Integrări — AdPilot Social" }] }),
+  head: () => ({ meta: [{ title: "Integrări — Social Spark" }] }),
   validateSearch: search,
   component: Integrations,
 });
