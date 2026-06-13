@@ -8,6 +8,7 @@ const links = [
   { to: "/", label: "Acasă" },
   { to: "/despre", label: "Despre noi" },
   { to: "/preturi", label: "Prețuri" },
+  { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
 ];
 

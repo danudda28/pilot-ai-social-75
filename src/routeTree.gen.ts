@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VsHootsuiteBufferRouteImport } from './routes/vs-hootsuite-buffer'
 import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -16,9 +17,11 @@ import { Route as PreturiRouteImport } from './routes/preturi'
 import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
 import { Route as DespreRouteImport } from './routes/despre'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
 import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
@@ -27,6 +30,11 @@ import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authen
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 
+const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
+  id: '/vs-hootsuite-buffer',
+  path: '/vs-hootsuite-buffer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
   id: '/termeni-si-conditii',
   path: '/termeni-si-conditii',
@@ -63,6 +71,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -76,6 +89,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -122,6 +140,7 @@ const ApiPublicAuthMetaCallbackRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -129,7 +148,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
+  '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -140,6 +161,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -147,7 +169,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
+  '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -160,6 +184,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -167,7 +192,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
+  '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
   '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -180,6 +207,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/despre'
     | '/politica-confidentialitate'
@@ -187,7 +215,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
+    | '/vs-hootsuite-buffer'
     | '/dashboard'
+    | '/blog/$slug'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
     | '/dashboard/generate'
@@ -198,6 +228,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/despre'
     | '/politica-confidentialitate'
@@ -205,7 +236,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
+    | '/vs-hootsuite-buffer'
     | '/dashboard'
+    | '/blog/$slug'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
     | '/dashboard/generate'
@@ -217,6 +250,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/blog'
     | '/contact'
     | '/despre'
     | '/politica-confidentialitate'
@@ -224,7 +258,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
+    | '/vs-hootsuite-buffer'
     | '/_authenticated/dashboard'
+    | '/blog/$slug'
     | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
     | '/_authenticated/dashboard/generate'
@@ -237,6 +273,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   DespreRoute: typeof DespreRoute
   PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
@@ -244,12 +281,20 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermeniSiConditiiRoute: typeof TermeniSiConditiiRoute
+  VsHootsuiteBufferRoute: typeof VsHootsuiteBufferRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicAuthMetaCallbackRoute: typeof ApiPublicAuthMetaCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vs-hootsuite-buffer': {
+      id: '/vs-hootsuite-buffer'
+      path: '/vs-hootsuite-buffer'
+      fullPath: '/vs-hootsuite-buffer'
+      preLoaderRoute: typeof VsHootsuiteBufferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/termeni-si-conditii': {
       id: '/termeni-si-conditii'
       path: '/termeni-si-conditii'
@@ -299,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -319,6 +371,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -403,10 +462,21 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   DespreRoute: DespreRoute,
   PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
@@ -414,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermeniSiConditiiRoute: TermeniSiConditiiRoute,
+  VsHootsuiteBufferRoute: VsHootsuiteBufferRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicAuthMetaCallbackRoute: ApiPublicAuthMetaCallbackRoute,
 }

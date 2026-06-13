@@ -7,12 +7,16 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const { BLOG_POSTS } = await import("@/lib/blog");
         const entries = [
           { path: "/", priority: "1.0", changefreq: "weekly" },
           { path: "/despre", priority: "0.8", changefreq: "monthly" },
           { path: "/preturi", priority: "0.9", changefreq: "monthly" },
           { path: "/contact", priority: "0.7", changefreq: "monthly" },
+          { path: "/blog", priority: "0.8", changefreq: "weekly" },
+          { path: "/vs-hootsuite-buffer", priority: "0.7", changefreq: "monthly" },
           { path: "/auth", priority: "0.5", changefreq: "yearly" },
+          ...BLOG_POSTS.map(p => ({ path: `/blog/${p.slug}`, priority: "0.7", changefreq: "monthly" as const })),
         ];
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
