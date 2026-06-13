@@ -9,9 +9,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 font-display text-lg font-bold">
-              <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg">
-                <Sparkles className="h-4 w-4 text-white" />
-              </span>
+              <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
               Social <span className="gradient-text">Spark</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground max-w-sm">
