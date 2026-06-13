@@ -29,7 +29,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
         <nav className="px-3 flex lg:flex-col gap-1 overflow-x-auto pb-3 lg:pb-0">
           {nav.map(n => (
-            <Link key={n.to} to={n.to} activeOptions={{ exact: n.exact }}
+            <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n ? n.exact : false }}
               className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground whitespace-nowrap"
               activeProps={{ className: "bg-secondary text-foreground" }}>
               <n.icon className="h-4 w-4" /> {n.label}
