@@ -101,8 +101,8 @@
   }
   body {
     background-image:
-      radial-gradient(ellipse 1200px 600px at 10% -10%, oklch(0.65 0.24 290 / 0.18), transparent 60%),
-      radial-gradient(ellipse 1000px 500px at 90% 0%, oklch(0.62 0.22 260 / 0.15), transparent 60%);
+      radial-gradient(ellipse 1200px 600px at 10% -10%, oklch(0.62 0.22 250 / 0.2), transparent 60%),
+      radial-gradient(ellipse 1000px 500px at 90% 0%, oklch(0.68 0.18 220 / 0.16), transparent 60%);
     background-attachment: fixed;
   }
 }
