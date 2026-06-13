@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePost } from "@/lib/ai.functions";
-import { generatePostImage } from "@/lib/image.functions";
+import { generatePostImage, uploadPostImage } from "@/lib/image.functions";
 import { toast } from "sonner";
-import { Wand2, Loader2, ImageIcon, RefreshCw } from "lucide-react";
+import { Wand2, Loader2, ImageIcon, RefreshCw, Upload } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
@@ -42,6 +42,8 @@ function Generate() {
   const navigate = useNavigate();
   const generate = useServerFn(generatePost);
   const generateImage = useServerFn(generatePostImage);
+  const uploadImage = useServerFn(uploadPostImage);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const [imgUrl, setImgUrl] = useState<string | null>(null);
@@ -80,6 +82,36 @@ function Generate() {
       toast.error(e?.message || "Eroare la generarea imaginii.");
     } finally {
       setImgLoading(false);
+    }
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !result?.post?.id) return;
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      toast.error("Format acceptat: PNG, JPG sau WEBP."); return;
+    }
+    if (file.size > 6 * 1024 * 1024) {
+      toast.error("Imagine prea mare (max 6 MB)."); return;
+    }
+    setImgLoading(true);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result as string);
+        r.onerror = () => reject(new Error("Citire eșuată"));
+        r.readAsDataURL(file);
+      });
+      const { signedUrl } = await uploadImage({
+        data: { postId: result.post.id, dataUrl, mimeType: file.type as any },
+      });
+      setImgUrl(signedUrl);
+      toast.success("Imagine încărcată!");
+    } catch (e: any) {
+      toast.error(e?.message || "Upload eșuat.");
+    } finally {
+      setImgLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
@@ -133,19 +165,40 @@ function Generate() {
               <div className="space-y-3">
                 <img src={imgUrl} alt={result.post.title ?? "Imagine postare"}
                   className="w-full max-w-md mx-auto rounded-xl shadow-lg" />
-                <button
-                  onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
-                  className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary">
-                  <RefreshCw className="h-3 w-3" /> Regenerează imaginea
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                    className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary">
+                    <RefreshCw className="h-3 w-3" /> Regenerează cu AI
+                  </button>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary">
+                    <Upload className="h-3 w-3" /> Înlocuiește cu poza ta
+                  </button>
+                </div>
               </div>
             ) : (
-              <button
-                onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
-                className="inline-flex items-center gap-2 rounded-xl glass-strong px-4 py-2.5 text-sm">
-                <ImageIcon className="h-4 w-4" /> Generează imagine
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => generateImageFor(result.post.id, result.post.visual_idea ?? "")}
+                  className="inline-flex items-center gap-2 rounded-xl glass-strong px-4 py-2.5 text-sm">
+                  <ImageIcon className="h-4 w-4" /> Generează cu AI
+                </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-xl glass-strong px-4 py-2.5 text-sm">
+                  <Upload className="h-4 w-4" /> Încarcă poza ta
+                </button>
+              </div>
             )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
           </Section>
 
           <Section label="Copy complet"><p className="whitespace-pre-wrap text-sm">{result.post.copy}</p></Section>
