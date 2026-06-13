@@ -85,6 +85,22 @@
   --shadow-elegant: 0 20px 60px -20px oklch(0.05 0 0 / 0.6);
 }
 
+html.light {
+  --background: oklch(0.99 0.005 250);
+  --foreground: oklch(0.15 0.02 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.95 0.01 250);
+  --secondary-foreground: oklch(0.18 0.02 250);
+  --muted: oklch(0.96 0.005 250);
+  --muted-foreground: oklch(0.45 0.02 245);
+  --border: oklch(0.15 0.02 250 / 12%);
+  --input: oklch(0.15 0.02 250 / 8%);
+  --glass: oklch(0.15 0.02 250 / 4%);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
