@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PreturiRouteImport } from './routes/preturi'
+import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
 import { Route as DespreRouteImport } from './routes/despre'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -21,6 +23,11 @@ import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
 
+const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
+  id: '/termeni-si-conditii',
+  path: '/termeni-si-conditii',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -31,6 +38,12 @@ const PreturiRoute = PreturiRouteImport.update({
   path: '/preturi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PoliticaConfidentialitateRoute =
+  PoliticaConfidentialitateRouteImport.update({
+    id: '/politica-confidentialitate',
+    path: '/politica-confidentialitate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DespreRoute = DespreRouteImport.update({
   id: '/despre',
   path: '/despre',
@@ -84,8 +97,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -96,8 +111,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -110,8 +127,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
@@ -124,8 +143,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/despre'
+    | '/politica-confidentialitate'
     | '/preturi'
     | '/sitemap.xml'
+    | '/termeni-si-conditii'
     | '/dashboard'
     | '/dashboard/calendar'
     | '/dashboard/generate'
@@ -136,8 +157,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/despre'
+    | '/politica-confidentialitate'
     | '/preturi'
     | '/sitemap.xml'
+    | '/termeni-si-conditii'
     | '/dashboard'
     | '/dashboard/calendar'
     | '/dashboard/generate'
@@ -149,8 +172,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/despre'
+    | '/politica-confidentialitate'
     | '/preturi'
     | '/sitemap.xml'
+    | '/termeni-si-conditii'
     | '/_authenticated/dashboard'
     | '/_authenticated/dashboard/calendar'
     | '/_authenticated/dashboard/generate'
@@ -163,12 +188,21 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DespreRoute: typeof DespreRoute
+  PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
   PreturiRoute: typeof PreturiRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermeniSiConditiiRoute: typeof TermeniSiConditiiRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termeni-si-conditii': {
+      id: '/termeni-si-conditii'
+      path: '/termeni-si-conditii'
+      fullPath: '/termeni-si-conditii'
+      preLoaderRoute: typeof TermeniSiConditiiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -181,6 +215,13 @@ declare module '@tanstack/react-router' {
       path: '/preturi'
       fullPath: '/preturi'
       preLoaderRoute: typeof PreturiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-confidentialitate': {
+      id: '/politica-confidentialitate'
+      path: '/politica-confidentialitate'
+      fullPath: '/politica-confidentialitate'
+      preLoaderRoute: typeof PoliticaConfidentialitateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/despre': {
@@ -284,9 +325,21 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DespreRoute: DespreRoute,
+  PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
   PreturiRoute: PreturiRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermeniSiConditiiRoute: TermeniSiConditiiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
