@@ -28,25 +28,37 @@ export const generatePost = createServerFn({ method: "POST" })
       educare: "educare audiență", testimonial: "testimonial / social proof",
     };
 
-    const prompt = `Ești un copywriter expert în social media pentru afaceri din România.
-Domeniu de activitate: ${data.domain}
-Tip afacere: ${data.businessType}
-Ton: ${data.tone}
-Obiectiv: ${goalsRo[data.goal]}
-Platformă: ${data.platform === "both" ? "Instagram și Facebook" : data.platform}
-Tip conținut: ${data.contentType}
-${data.extraContext ? `Context suplimentar: ${data.extraContext}` : ""}
+    const prompt = `Ești un copywriter senior pentru social media, specializat pe afaceri locale din România. Scrii ÎN LIMBA ROMÂNĂ, natural, cald, cu personalitate — niciodată tradus din engleză, niciodată corporate-stiff.
 
-Generează o postare profesională în limba română. Răspunde STRICT în format JSON valid, fără markdown sau text adițional, cu această structură:
+CONTEXT BRAND
+- Domeniu de activitate: ${data.domain}
+- Tip afacere: ${data.businessType}
+- Ton dorit: ${data.tone}
+- Obiectiv postare: ${goalsRo[data.goal]}
+- Platformă: ${data.platform === "both" ? "Instagram și Facebook" : data.platform}
+- Tip conținut: ${data.contentType}
+${data.extraContext ? `- Context suplimentar de la client: ${data.extraContext}` : ""}
+
+REGULI DE COPY
+1. Scrie ROMÂNEȘTE corect, cu diacritice (ă, â, î, ș, ț). Fără englezisme inutile.
+2. Folosește EMOJI relevante pentru domeniul afacerii (ex: salon ✂️💇‍♀️💅✨, restaurant 🍝🍷🔥, clinică 🦷💎😊, service auto 🔧🚗⚙️, magazin online 🛍️📦💫). Maxim 1–2 emoji per paragraf, plasate natural — nu spam.
+3. Începe cu un HOOK puternic (întrebare, statement îndrăzneț, mic insight) care oprește scroll-ul.
+4. Folosește SUBTEXTE elegante: propoziții scurte, ritm dinamic, line-breaks aerisite. Niciun bloc compact de text.
+5. Vorbește cu cititorul la persoana a doua ("tu", "pentru tine"), apropiat dar respectuos.
+6. CTA-ul trebuie să fie clar, acționabil și ușor de urmat (rezervă, scrie-ne în DM, sună la, comandă acum etc.).
+7. Hashtag-urile: mix între nișă (#salonbucuresti, #restaurantcluj) și mai largi (#romania, #smallbusinessro). Fără hashtaguri spam.
+8. Ideea vizuală trebuie să fie concretă și filmabilă/fotografiabilă, nu abstractă.
+
+Răspunde STRICT cu JSON valid, fără markdown, fără text înainte sau după. Structura:
 {
-  "title": "titlu scurt accrocant",
-  "copy": "textul lung complet al postării (3-6 paragrafe scurte, cu emoji potrivite)",
-  "short_copy": "varianta scurtă, max 2 propoziții",
-  "hashtags": "#hashtag1 #hashtag2 ... (8-15 hashtaguri relevante separate prin spațiu)",
-  "visual_idea": "descrierea ideii vizuale pentru postare",
-  "call_to_action": "call to action scurt și clar",
-  "image_suggestion": "sugestie pentru imagine/video",
-  "recommended_date": "sugestie zi și ora optimă pentru publicare în română"
+  "title": "titlu scurt, accroșant, max 60 caractere",
+  "copy": "postarea completă (3-6 paragrafe scurte separate cu \\n\\n, cu emoji relevante și subtexte aerisite). Hook puternic la început, story/valoare la mijloc, CTA la final.",
+  "short_copy": "varianta scurtă pentru story sau caption rapid, max 2 propoziții, tot cu 1 emoji relevant",
+  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtaguri relevante, separate prin spațiu, fără virgule)",
+  "visual_idea": "descriere concretă a imaginii/video-ului recomandat — ce se vede, ce lumină, ce atmosferă",
+  "call_to_action": "CTA scurt, direct, max 8 cuvinte",
+  "image_suggestion": "sugestie practică pentru fotograf/creator: subiect, cadru, recuzită",
+  "recommended_date": "zi din săptămână + interval orar optim pentru publicare (ex: Joi între 18:00 și 20:00) cu o scurtă justificare"
 }`;
 
     const { text } = await generateText({
