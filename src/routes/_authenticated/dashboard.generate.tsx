@@ -156,6 +156,19 @@ function Generate() {
         <p className="text-muted-foreground mt-1">Spune-i AI-ului ce vrei și primești în câteva secunde.</p>
       </div>
 
+      <div className="glass-strong rounded-2xl p-5">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Pornește rapid de la un template</div>
+        <div className="flex flex-wrap gap-2">
+          {TEMPLATES.map(t => (
+            <button key={t.id} type="button"
+              onClick={() => setForm(f => ({ ...f, domain: t.domain, businessType: t.businessType, tone: t.tone, goal: t.goal, extraContext: t.extraContext ?? "" }))}
+              className="rounded-full glass px-3 py-1.5 text-xs hover:bg-secondary transition">
+              {t.emoji} {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <form onSubmit={submit} className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5">
         <div className="grid sm:grid-cols-2 gap-4">
           <Input label="Domeniu de activitate" placeholder="ex: frumusețe, food, auto, fitness"
