@@ -82,6 +82,7 @@ export type Database = {
           created_at: string
           hashtags: string | null
           id: string
+          image_url: string | null
           platform: string
           scheduled_date: string | null
           short_copy: string | null
@@ -97,6 +98,7 @@ export type Database = {
           created_at?: string
           hashtags?: string | null
           id?: string
+          image_url?: string | null
           platform: string
           scheduled_date?: string | null
           short_copy?: string | null
@@ -112,6 +114,7 @@ export type Database = {
           created_at?: string
           hashtags?: string | null
           id?: string
+          image_url?: string | null
           platform?: string
           scheduled_date?: string | null
           short_copy?: string | null
