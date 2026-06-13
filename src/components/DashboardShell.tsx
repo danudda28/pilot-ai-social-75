@@ -22,9 +22,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <aside className="lg:w-64 glass-strong border-b lg:border-b-0 lg:border-r border-border/50 lg:min-h-screen">
         <div className="p-5">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg glow">
-              <Sparkles className="h-4 w-4 text-white" />
-            </span>
+            <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
             Social <span className="gradient-text">Spark</span>
           </Link>
         </div>
