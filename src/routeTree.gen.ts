@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PreturiRouteImport } from './routes/preturi'
 import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
 import { Route as DespreRouteImport } from './routes/despre'
@@ -33,6 +34,11 @@ const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PreturiRoute = PreturiRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/despre': typeof DespreRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/preturi': typeof PreturiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/despre'
     | '/politica-confidentialitate'
     | '/preturi'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/dashboard'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/despre'
     | '/politica-confidentialitate'
     | '/preturi'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/dashboard'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/despre'
     | '/politica-confidentialitate'
     | '/preturi'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/_authenticated/dashboard'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   DespreRoute: typeof DespreRoute
   PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
   PreturiRoute: typeof PreturiRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermeniSiConditiiRoute: typeof TermeniSiConditiiRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
@@ -236,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/preturi': {
@@ -369,6 +389,7 @@ const rootRouteChildren: RootRouteChildren = {
   DespreRoute: DespreRoute,
   PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
   PreturiRoute: PreturiRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermeniSiConditiiRoute: TermeniSiConditiiRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
@@ -377,3 +398,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
