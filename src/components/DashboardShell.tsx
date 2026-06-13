@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, LayoutDashboard, Wand2, Plug, Calendar, LogOut } from "lucide-react";
+import { LayoutDashboard, Wand2, Plug, Calendar, LogOut } from "lucide-react";
+import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
