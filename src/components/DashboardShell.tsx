@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Wand2, Plug, Calendar, LogOut } from "lucide-react";
+import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/generate", label: "Generează postare", icon: Wand2 },
+  { to: "/dashboard/bulk", label: "Bulk generate", icon: Layers },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { to: "/dashboard/integrari", label: "Integrări", icon: Plug },
 ] as const;

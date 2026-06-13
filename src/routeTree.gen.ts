@@ -23,6 +23,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
 import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
+import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 
@@ -99,6 +100,12 @@ const AuthenticatedDashboardCalendarRoute =
     path: '/calendar',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardBulkRoute =
+  AuthenticatedDashboardBulkRouteImport.update({
+    id: '/bulk',
+    path: '/bulk',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const ApiPublicCronPublishScheduledRoute =
   ApiPublicCronPublishScheduledRouteImport.update({
     id: '/api/public/cron/publish-scheduled',
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
@@ -140,6 +148,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
@@ -159,6 +168,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/dashboard'
+    | '/dashboard/bulk'
     | '/dashboard/calendar'
     | '/dashboard/generate'
     | '/dashboard/integrari'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/dashboard'
+    | '/dashboard/bulk'
     | '/dashboard/calendar'
     | '/dashboard/generate'
     | '/dashboard/integrari'
@@ -213,6 +225,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/termeni-si-conditii'
     | '/_authenticated/dashboard'
+    | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
     | '/_authenticated/dashboard/generate'
     | '/_authenticated/dashboard/integrari'
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardCalendarRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/bulk': {
+      id: '/_authenticated/dashboard/bulk'
+      path: '/bulk'
+      fullPath: '/dashboard/bulk'
+      preLoaderRoute: typeof AuthenticatedDashboardBulkRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/api/public/cron/publish-scheduled': {
       id: '/api/public/cron/publish-scheduled'
       path: '/api/public/cron/publish-scheduled'
@@ -353,6 +373,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardBulkRoute: typeof AuthenticatedDashboardBulkRoute
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
   AuthenticatedDashboardGenerateRoute: typeof AuthenticatedDashboardGenerateRoute
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
@@ -360,6 +381,7 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardBulkRoute: AuthenticatedDashboardBulkRoute,
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
     AuthenticatedDashboardGenerateRoute: AuthenticatedDashboardGenerateRoute,
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
@@ -398,3 +420,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
