@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 
 const links = [
   { to: "/", label: "Acasă" },
@@ -26,9 +27,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg glow">
-              <Sparkles className="h-4 w-4 text-white" />
-            </span>
+            <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
             <span>Social <span className="gradient-text">Spark</span></span>
           </Link>
 
