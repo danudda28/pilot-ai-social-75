@@ -7,6 +7,7 @@ import { updatePost } from "@/lib/posts.functions";
 import { toast } from "sonner";
 import { Wand2, Loader2, ImageIcon, RefreshCw, Upload, Pencil, Check as CheckIcon } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
+import { TEMPLATES } from "@/lib/templates";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
   head: () => ({ meta: [{ title: "Generează postare — Social Spark" }] }),
