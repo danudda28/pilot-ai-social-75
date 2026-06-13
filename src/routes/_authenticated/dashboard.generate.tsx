@@ -5,6 +5,7 @@ import { generatePost } from "@/lib/ai.functions";
 import { generatePostImage } from "@/lib/image.functions";
 import { toast } from "sonner";
 import { Wand2, Loader2, ImageIcon, RefreshCw } from "lucide-react";
+import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
   head: () => ({ meta: [{ title: "Generează postare — AdPilot Social" }] }),
@@ -154,6 +155,9 @@ function Generate() {
           <Section label="Call to action"><p className="text-sm font-medium">{result.post.call_to_action}</p></Section>
           {result.ai?.image_suggestion && <Section label="Sugestie imagine/video"><p className="text-sm">{result.ai.image_suggestion}</p></Section>}
           {result.ai?.recommended_date && <Section label="Dată recomandată"><p className="text-sm">{result.ai.recommended_date}</p></Section>}
+          <Section label="Publicare">
+            <PublishActions postId={result.post.id} defaultPlatform={form.platform} />
+          </Section>
           <div className="pt-4 flex gap-3">
             <button onClick={() => navigate({ to: "/dashboard" })} className="rounded-xl glass-strong px-5 py-2.5 text-sm font-semibold">
               Vezi în dashboard

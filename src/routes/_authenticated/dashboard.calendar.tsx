@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar as CalIcon } from "lucide-react";
+import { Calendar as CalIcon, ChevronDown } from "lucide-react";
+import { PublishActions } from "@/components/PublishActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/calendar")({
   head: () => ({ meta: [{ title: "Calendar — AdPilot Social" }] }),
@@ -49,16 +50,31 @@ function CalendarPage() {
               <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">{day}</div>
               <div className="space-y-2">
                 {ps.map(p => (
-                  <div key={p.id} className="glass rounded-xl p-4 flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{p.title ?? "(fără titlu)"}</div>
-                      <div className="text-xs text-muted-foreground capitalize">{p.platform} · {p.status}</div>
-                    </div>
-                  </div>
+                  <PostRow key={p.id} post={p} />
                 ))}
               </div>
             </div>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PostRow({ post }: { post: Post }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="glass rounded-xl overflow-hidden">
+      <button onClick={() => setOpen(o => !o)} className="w-full p-4 flex items-center justify-between text-left hover:bg-white/[0.02]">
+        <div>
+          <div className="font-medium">{post.title ?? "(fără titlu)"}</div>
+          <div className="text-xs text-muted-foreground capitalize">{post.platform} · {post.status}</div>
+        </div>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="border-t border-border/40 p-4">
+          <PublishActions postId={post.id} defaultPlatform={post.platform} />
         </div>
       )}
     </div>
