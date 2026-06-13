@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { DashboardShell } from "@/components/DashboardShell";
+import { OnboardingDialog } from "@/components/OnboardingDialog";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Wand2, Plug, Sparkles, CheckCircle, Clock, FileText, Send } from "lucide-react";
@@ -11,10 +12,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function DashboardLayout() {
   const pathname = useRouterState({ select: s => s.location.pathname });
-  if (pathname !== "/dashboard") {
-    return <DashboardShell><Outlet /></DashboardShell>;
-  }
-  return <DashboardShell><DashboardHome /></DashboardShell>;
+  return (
+    <DashboardShell>
+      <OnboardingDialog />
+      {pathname !== "/dashboard" ? <Outlet /> : <DashboardHome />}
+    </DashboardShell>
+  );
 }
 
 type Post = {

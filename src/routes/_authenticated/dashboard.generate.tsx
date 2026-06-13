@@ -7,6 +7,7 @@ import { updatePost } from "@/lib/posts.functions";
 import { toast } from "sonner";
 import { Wand2, Loader2, ImageIcon, RefreshCw, Upload, Pencil, Check as CheckIcon } from "lucide-react";
 import { PublishActions } from "@/components/PublishActions";
+import { TEMPLATES } from "@/lib/templates";
 
 export const Route = createFileRoute("/_authenticated/dashboard/generate")({
   head: () => ({ meta: [{ title: "Generează postare — Social Spark" }] }),
@@ -153,6 +154,19 @@ function Generate() {
       <div>
         <h1 className="font-display text-3xl font-bold">Generează postare cu AI</h1>
         <p className="text-muted-foreground mt-1">Spune-i AI-ului ce vrei și primești în câteva secunde.</p>
+      </div>
+
+      <div className="glass-strong rounded-2xl p-5">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Pornește rapid de la un template</div>
+        <div className="flex flex-wrap gap-2">
+          {TEMPLATES.map(t => (
+            <button key={t.id} type="button"
+              onClick={() => setForm(f => ({ ...f, domain: t.domain, businessType: t.businessType, tone: t.tone, goal: t.goal, extraContext: t.extraContext ?? "" }))}
+              className="rounded-full glass px-3 py-1.5 text-xs hover:bg-secondary transition">
+              {t.emoji} {t.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <form onSubmit={submit} className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5">
