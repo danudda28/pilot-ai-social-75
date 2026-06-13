@@ -1,0 +1,12 @@
+{
+  "name": "Social Spark — AI postări Instagram & Facebook",
+  "short_name": "Social Spark",
+  "description": "Generează automat postări pentru afacerea ta cu AI.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#9333ea",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "64x64", "type": "image/x-icon" }
+  ]
+}
