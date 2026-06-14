@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { NewsletterForm } from "@/components/NewsletterForm";
-import { supabase } from "@/integrations/supabase/client";
 import {
   Sparkles, Calendar, Hash, Video, Send, BarChart3, Clock, Brain,
-  UserPlus, Plug, Target, Wand2, ArrowRight, Check, Star,
+  UserPlus, Plug, Target, Wand2, ArrowRight, Check,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -45,23 +43,8 @@ const faqs = [
   { q: "Conținutul este unic?", a: "Da. AI-ul generează texte originale, adaptate brandului și domeniului tău." },
 ];
 
-const fallbackTestimonials = [
-  { author_name: "Andreea M.", author_role: "Salon de înfrumusețare", content: "Am 3 postări pe săptămână fără să mai stau să mă gândesc ce să scriu. Clientele mă întreabă constant cine îmi face conținutul.", rating: 5, avatar_url: null },
-  { author_name: "Mihai V.", author_role: "Restaurant", content: "Reels-urile generate aici mi-au dublat rezervările pe weekend. Cea mai bună investiție în marketing.", rating: 5, avatar_url: null },
-  { author_name: "Cristian D.", author_role: "Service auto", content: "Nu credeam că AI-ul poate suna ca brandul meu. M-a surprins. Postările sunt directe și convertesc.", rating: 5, avatar_url: null },
-];
-
 function Home() {
-  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
 
-  useEffect(() => {
-    supabase.from("testimonials")
-      .select("author_name,author_role,content,rating,avatar_url")
-      .eq("published", true)
-      .order("display_order")
-      .limit(6)
-      .then(({ data }) => { if (data && data.length > 0) setTestimonials(data as any); });
-  }, []);
 
   return (
     <PublicLayout>
@@ -86,14 +69,6 @@ function Home() {
             <Link to="/preturi" className="inline-flex items-center justify-center rounded-xl glass-strong px-8 py-4 text-base font-semibold">
               Vezi abonamentele
             </Link>
-          </div>
-          <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto text-center">
-            {[["1.000+", "Postări generate"], ["98%", "Clienți mulțumiți"], ["10h", "Economisite/lună"]].map(([n, l]) => (
-              <div key={l} className="glass rounded-xl p-4">
-                <div className="font-display text-2xl font-bold gradient-text">{n}</div>
-                <div className="text-xs text-muted-foreground mt-1">{l}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -139,28 +114,6 @@ function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold">Antreprenori care folosesc deja Social Spark</h2>
-          </div>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {testimonials.map((t, i) => (
-              <div key={`${t.author_name}-${i}`} className="glass rounded-2xl p-6 card-hover">
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: t.rating ?? 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
-                </div>
-                <p className="text-sm">"{t.content}"</p>
-                <div className="mt-4 pt-4 border-t border-border/50">
-                  <div className="font-semibold text-sm">{t.author_name}</div>
-                  {t.author_role && <div className="text-xs text-muted-foreground">{t.author_role}</div>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* TRUST BADGES */}
       <section className="py-10">
