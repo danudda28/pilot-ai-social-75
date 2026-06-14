@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const links = [
   { to: "/", label: "Acasă" },
   { to: "/despre", label: "Despre noi" },
-  { to: "/preturi", label: "Prețuri" },
+  { to: "/preturi", label: "Abonamente" },
   { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
 ];
