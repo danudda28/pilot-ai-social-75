@@ -110,6 +110,8 @@ function Pricing() {
                 <span className="font-display text-5xl font-bold">{p.price}</span>
                 <span className="text-muted-foreground">/lună</span>
               </div>
+              <p className="mt-3 text-sm font-medium text-foreground/90">{p.tagline}</p>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.description}</p>
               <ul className="mt-8 space-y-3 flex-1">
                 {p.features.map(f => (
                   <li key={f} className="flex items-start gap-3 text-sm">
