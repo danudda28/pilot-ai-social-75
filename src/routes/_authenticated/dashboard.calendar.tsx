@@ -115,7 +115,16 @@ function CalendarPage() {
         ))}
       </div>
 
-      {view === "week" ? (
+      {view === "month" ? (
+        <MonthView
+          anchor={monthAnchor}
+          setAnchor={setMonthAnchor}
+          posts={filtered}
+          dragOver={dragOver}
+          setDragOver={setDragOver}
+          onDrop={handleDrop}
+        />
+      ) : view === "week" ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between glass rounded-xl p-3">
             <button onClick={() => setWeekStart(addDays(weekStart, -7))} className="rounded-md p-1.5 hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
@@ -167,6 +176,80 @@ function CalendarPage() {
       ) : (
         <ListView posts={filtered} />
       )}
+    </div>
+  );
+}
+
+function MonthView({
+  anchor, setAnchor, posts, dragOver, setDragOver, onDrop,
+}: {
+  anchor: Date;
+  setAnchor: (d: Date) => void;
+  posts: Post[];
+  dragOver: string | null;
+  setDragOver: (v: string | null) => void;
+  onDrop: (postId: string, day: Date) => void;
+}) {
+  const monthStart = new Date(anchor);
+  monthStart.setDate(1);
+  const gridStart = startOfWeek(monthStart);
+  const cells: Date[] = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i));
+  const monthLabel = anchor.toLocaleDateString("ro-RO", { month: "long", year: "numeric" });
+
+  function prevMonth() { const d = new Date(anchor); d.setMonth(d.getMonth() - 1); setAnchor(d); }
+  function nextMonth() { const d = new Date(anchor); d.setMonth(d.getMonth() + 1); setAnchor(d); }
+  function thisMonth() { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); setAnchor(d); }
+
+  const weekdayLabels = ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between glass rounded-xl p-3">
+        <button onClick={prevMonth} className="rounded-md p-1.5 hover:bg-secondary" aria-label="Luna anterioară"><ChevronLeft className="h-4 w-4" /></button>
+        <div className="text-sm font-medium capitalize">{monthLabel}</div>
+        <div className="flex gap-2">
+          <button onClick={thisMonth} className="text-xs px-2 py-1 rounded-md border border-border/60 hover:bg-secondary">Luna asta</button>
+          <button onClick={nextMonth} className="rounded-md p-1.5 hover:bg-secondary" aria-label="Luna următoare"><ChevronRight className="h-4 w-4" /></button>
+        </div>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-[10px] uppercase tracking-wider text-muted-foreground px-1">
+        {weekdayLabels.map(w => <div key={w} className="text-center">{w}</div>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map(day => {
+          const inMonth = day.getMonth() === anchor.getMonth();
+          const isToday = sameDay(day, new Date());
+          const key = day.toISOString();
+          const dayPosts = posts.filter(p => {
+            const d = p.scheduled_date ?? p.published_at;
+            return d ? sameDay(new Date(d), day) : false;
+          });
+          return (
+            <div
+              key={key}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(key); }}
+              onDragLeave={() => setDragOver(dragOver === key ? null : dragOver)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(null);
+                const id = e.dataTransfer.getData("text/plain");
+                if (id) onDrop(id, day);
+              }}
+              className={`glass rounded-lg p-1.5 min-h-[90px] flex flex-col gap-1 transition-colors ${
+                !inMonth ? "opacity-40" : ""
+              } ${dragOver === key ? "border-primary/60 bg-primary/5" : ""} ${isToday ? "ring-1 ring-primary/40" : ""}`}
+            >
+              <div className={`text-[10px] font-semibold text-right px-0.5 ${isToday ? "text-primary" : ""}`}>{day.getDate()}</div>
+              {dayPosts.slice(0, 2).map(p => (
+                <DragPostCard key={p.id} post={p} compact />
+              ))}
+              {dayPosts.length > 2 && (
+                <div className="text-[9px] text-muted-foreground text-center">+{dayPosts.length - 2}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
