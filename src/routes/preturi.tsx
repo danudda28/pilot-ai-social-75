@@ -30,7 +30,7 @@ const plans = [
       "Calendar simplu cu ce ai de postat",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Alege Basic",
+    cta: "Începe gratis 7 zile",
   },
   {
     id: "pro", name: "Pro", price: "225 lei", featured: true,
@@ -47,7 +47,7 @@ const plans = [
       "Calendar complet cu toate postările",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Alege Pro",
+    cta: "Începe gratis 7 zile",
   },
   {
     id: "business", name: "Business", price: "299 lei", featured: false,
@@ -64,7 +64,7 @@ const plans = [
       "Suport prioritar (răspundem primii)",
       "Funcții avansate de programare și publicare",
     ],
-    cta: "Alege Business",
+    cta: "Începe gratis 7 zile",
   },
 ];
 
@@ -79,7 +79,7 @@ function Pricing() {
       return;
     }
     // Stripe placeholder — to be wired with enable_stripe_payments
-    toast.info(`Plan ${planId} selectat. Stripe checkout va fi disponibil în curând.`);
+    toast.info(`Plan ${planId} selectat — primești 7 zile gratuite, fără plată acum. Stripe checkout va fi disponibil în curând.`);
   }
 
   return (
