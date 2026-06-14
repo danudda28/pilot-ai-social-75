@@ -42,6 +42,7 @@ export function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {authed ? (
               <>
                 <Link to="/dashboard" className="text-sm">Dashboard</Link>
