@@ -22,7 +22,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/" className="hover:text-foreground">Acasă</Link></li>
               <li><Link to="/despre" className="hover:text-foreground">Despre noi</Link></li>
-              <li><Link to="/preturi" className="hover:text-foreground">Prețuri</Link></li>
+              <li><Link to="/preturi" className="hover:text-foreground">Abonamente</Link></li>
               <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
               <li><Link to="/auth" className="hover:text-foreground">Login</Link></li>
             </ul>
