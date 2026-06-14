@@ -48,8 +48,11 @@ function sameDay(a: Date, b: Date) {
 function CalendarPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filter, setFilter] = useState("all");
-  const [view, setView] = useState<"week" | "list">("week");
+  const [view, setView] = useState<"month" | "week" | "list">("month");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [monthAnchor, setMonthAnchor] = useState(() => {
+    const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); return d;
+  });
   const [dragOver, setDragOver] = useState<string | null>(null);
   const reschedule = useServerFn(reschedulePost);
 
@@ -96,6 +99,7 @@ function CalendarPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => setView("month")} className={`rounded-lg px-3 py-1.5 text-xs border ${view === "month" ? "border-primary bg-primary/10" : "border-border/60 text-muted-foreground"}`}>Lună</button>
           <button onClick={() => setView("week")} className={`rounded-lg px-3 py-1.5 text-xs border ${view === "week" ? "border-primary bg-primary/10" : "border-border/60 text-muted-foreground"}`}>Săptămână</button>
           <button onClick={() => setView("list")} className={`rounded-lg px-3 py-1.5 text-xs border ${view === "list" ? "border-primary bg-primary/10" : "border-border/60 text-muted-foreground"}`}>Listă</button>
         </div>
@@ -111,7 +115,16 @@ function CalendarPage() {
         ))}
       </div>
 
-      {view === "week" ? (
+      {view === "month" ? (
+        <MonthView
+          anchor={monthAnchor}
+          setAnchor={setMonthAnchor}
+          posts={filtered}
+          dragOver={dragOver}
+          setDragOver={setDragOver}
+          onDrop={handleDrop}
+        />
+      ) : view === "week" ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between glass rounded-xl p-3">
             <button onClick={() => setWeekStart(addDays(weekStart, -7))} className="rounded-md p-1.5 hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
@@ -167,7 +180,81 @@ function CalendarPage() {
   );
 }
 
-function DragPostCard({ post }: { post: Post }) {
+function MonthView({
+  anchor, setAnchor, posts, dragOver, setDragOver, onDrop,
+}: {
+  anchor: Date;
+  setAnchor: (d: Date) => void;
+  posts: Post[];
+  dragOver: string | null;
+  setDragOver: (v: string | null) => void;
+  onDrop: (postId: string, day: Date) => void;
+}) {
+  const monthStart = new Date(anchor);
+  monthStart.setDate(1);
+  const gridStart = startOfWeek(monthStart);
+  const cells: Date[] = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i));
+  const monthLabel = anchor.toLocaleDateString("ro-RO", { month: "long", year: "numeric" });
+
+  function prevMonth() { const d = new Date(anchor); d.setMonth(d.getMonth() - 1); setAnchor(d); }
+  function nextMonth() { const d = new Date(anchor); d.setMonth(d.getMonth() + 1); setAnchor(d); }
+  function thisMonth() { const d = new Date(); d.setDate(1); d.setHours(0,0,0,0); setAnchor(d); }
+
+  const weekdayLabels = ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between glass rounded-xl p-3">
+        <button onClick={prevMonth} className="rounded-md p-1.5 hover:bg-secondary" aria-label="Luna anterioară"><ChevronLeft className="h-4 w-4" /></button>
+        <div className="text-sm font-medium capitalize">{monthLabel}</div>
+        <div className="flex gap-2">
+          <button onClick={thisMonth} className="text-xs px-2 py-1 rounded-md border border-border/60 hover:bg-secondary">Luna asta</button>
+          <button onClick={nextMonth} className="rounded-md p-1.5 hover:bg-secondary" aria-label="Luna următoare"><ChevronRight className="h-4 w-4" /></button>
+        </div>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-[10px] uppercase tracking-wider text-muted-foreground px-1">
+        {weekdayLabels.map(w => <div key={w} className="text-center">{w}</div>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map(day => {
+          const inMonth = day.getMonth() === anchor.getMonth();
+          const isToday = sameDay(day, new Date());
+          const key = day.toISOString();
+          const dayPosts = posts.filter(p => {
+            const d = p.scheduled_date ?? p.published_at;
+            return d ? sameDay(new Date(d), day) : false;
+          });
+          return (
+            <div
+              key={key}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(key); }}
+              onDragLeave={() => setDragOver(dragOver === key ? null : dragOver)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(null);
+                const id = e.dataTransfer.getData("text/plain");
+                if (id) onDrop(id, day);
+              }}
+              className={`glass rounded-lg p-1.5 min-h-[90px] flex flex-col gap-1 transition-colors ${
+                !inMonth ? "opacity-40" : ""
+              } ${dragOver === key ? "border-primary/60 bg-primary/5" : ""} ${isToday ? "ring-1 ring-primary/40" : ""}`}
+            >
+              <div className={`text-[10px] font-semibold text-right px-0.5 ${isToday ? "text-primary" : ""}`}>{day.getDate()}</div>
+              {dayPosts.slice(0, 2).map(p => (
+                <DragPostCard key={p.id} post={p} compact />
+              ))}
+              {dayPosts.length > 2 && (
+                <div className="text-[9px] text-muted-foreground text-center">+{dayPosts.length - 2}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DragPostCard({ post, compact = false }: { post: Post; compact?: boolean }) {
   const time = post.scheduled_date
     ? new Date(post.scheduled_date).toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })
     : null;
@@ -184,16 +271,22 @@ function DragPostCard({ post }: { post: Post }) {
         e.dataTransfer.setData("text/plain", post.id);
         e.dataTransfer.effectAllowed = "move";
       }}
-      className={`group cursor-grab active:cursor-grabbing rounded-md bg-background/40 border border-border/40 border-l-2 ${statusColor[post.status] ?? statusColor.draft} px-2 py-1.5 text-xs hover:bg-secondary/40 transition-colors`}
+      className={`group cursor-grab active:cursor-grabbing rounded-md bg-background/40 border border-border/40 border-l-2 ${statusColor[post.status] ?? statusColor.draft} hover:bg-secondary/40 transition-colors ${compact ? "px-1.5 py-0.5 text-[10px]" : "px-2 py-1.5 text-xs"}`}
       title={post.title ?? "(fără titlu)"}
     >
-      <div className="flex items-center gap-1">
-        <GripVertical className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 shrink-0" />
-        <span className="font-medium truncate">{post.title ?? "(fără titlu)"}</span>
-      </div>
-      <div className="text-[10px] text-muted-foreground capitalize mt-0.5">
-        {post.platform}{time ? ` · ${time}` : ""}
-      </div>
+      {compact ? (
+        <div className="truncate font-medium">{time ? `${time} · ` : ""}{post.title ?? "(fără titlu)"}</div>
+      ) : (
+        <>
+          <div className="flex items-center gap-1">
+            <GripVertical className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 shrink-0" />
+            <span className="font-medium truncate">{post.title ?? "(fără titlu)"}</span>
+          </div>
+          <div className="text-[10px] text-muted-foreground capitalize mt-0.5">
+            {post.platform}{time ? ` · ${time}` : ""}
+          </div>
+        </>
+      )}
     </div>
   );
 }

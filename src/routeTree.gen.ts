@@ -31,6 +31,7 @@ import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authen
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
+import { Route as AuthenticatedDashboardImportRouteImport } from './routes/_authenticated/dashboard.import'
 import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
 import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
@@ -41,6 +42,7 @@ import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
+import { Route as ApiPublicWebhooksMetaDeauthorizeRouteImport } from './routes/api/public/webhooks/meta.deauthorize'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 
 const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
@@ -159,6 +161,12 @@ const AuthenticatedDashboardIntegrariRoute =
     path: '/integrari',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardImportRoute =
+  AuthenticatedDashboardImportRouteImport.update({
+    id: '/import',
+    path: '/import',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardHistoryRoute =
   AuthenticatedDashboardHistoryRouteImport.update({
     id: '/history',
@@ -219,6 +227,12 @@ const ApiPublicCronPublishScheduledRoute =
     path: '/api/public/cron/publish-scheduled',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWebhooksMetaDeauthorizeRoute =
+  ApiPublicWebhooksMetaDeauthorizeRouteImport.update({
+    id: '/api/public/webhooks/meta/deauthorize',
+    path: '/api/public/webhooks/meta/deauthorize',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicAuthMetaCallbackRoute =
   ApiPublicAuthMetaCallbackRouteImport.update({
     id: '/api/public/auth/meta/callback',
@@ -249,6 +263,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -259,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
+  '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -283,6 +299,7 @@ export interface FileRoutesByTo {
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -293,6 +310,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
+  '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -319,6 +337,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
+  '/_authenticated/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -329,6 +348,7 @@ export interface FileRoutesById {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
+  '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -355,6 +375,7 @@ export interface FileRouteTypes {
     | '/dashboard/calendar'
     | '/dashboard/generate'
     | '/dashboard/history'
+    | '/dashboard/import'
     | '/dashboard/integrari'
     | '/dashboard/referral'
     | '/dashboard/settings'
@@ -365,6 +386,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
+    | '/api/public/webhooks/meta/deauthorize'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -389,6 +411,7 @@ export interface FileRouteTypes {
     | '/dashboard/calendar'
     | '/dashboard/generate'
     | '/dashboard/history'
+    | '/dashboard/import'
     | '/dashboard/integrari'
     | '/dashboard/referral'
     | '/dashboard/settings'
@@ -399,6 +422,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
+    | '/api/public/webhooks/meta/deauthorize'
   id:
     | '__root__'
     | '/'
@@ -424,6 +448,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/calendar'
     | '/_authenticated/dashboard/generate'
     | '/_authenticated/dashboard/history'
+    | '/_authenticated/dashboard/import'
     | '/_authenticated/dashboard/integrari'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
@@ -434,6 +459,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
+    | '/api/public/webhooks/meta/deauthorize'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -457,6 +483,7 @@ export interface RootRouteChildren {
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
   ApiPublicCronSyncMetaInsightsRoute: typeof ApiPublicCronSyncMetaInsightsRoute
   ApiPublicAuthMetaCallbackRoute: typeof ApiPublicAuthMetaCallbackRoute
+  ApiPublicWebhooksMetaDeauthorizeRoute: typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -615,6 +642,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIntegrariRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/import': {
+      id: '/_authenticated/dashboard/import'
+      path: '/import'
+      fullPath: '/dashboard/import'
+      preLoaderRoute: typeof AuthenticatedDashboardImportRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/history': {
       id: '/_authenticated/dashboard/history'
       path: '/history'
@@ -685,6 +719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronPublishScheduledRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/meta/deauthorize': {
+      id: '/api/public/webhooks/meta/deauthorize'
+      path: '/api/public/webhooks/meta/deauthorize'
+      fullPath: '/api/public/webhooks/meta/deauthorize'
+      preLoaderRoute: typeof ApiPublicWebhooksMetaDeauthorizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/auth/meta/callback': {
       id: '/api/public/auth/meta/callback'
       path: '/api/public/auth/meta/callback'
@@ -702,6 +743,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
   AuthenticatedDashboardGenerateRoute: typeof AuthenticatedDashboardGenerateRoute
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
+  AuthenticatedDashboardImportRoute: typeof AuthenticatedDashboardImportRoute
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
@@ -717,6 +759,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
     AuthenticatedDashboardGenerateRoute: AuthenticatedDashboardGenerateRoute,
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
+    AuthenticatedDashboardImportRoute: AuthenticatedDashboardImportRoute,
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
@@ -771,6 +814,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
   ApiPublicCronSyncMetaInsightsRoute: ApiPublicCronSyncMetaInsightsRoute,
   ApiPublicAuthMetaCallbackRoute: ApiPublicAuthMetaCallbackRoute,
+  ApiPublicWebhooksMetaDeauthorizeRoute: ApiPublicWebhooksMetaDeauthorizeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

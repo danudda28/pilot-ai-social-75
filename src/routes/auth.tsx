@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { translateAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Autentificare — Social Spark" }] }),
@@ -41,7 +42,7 @@ function Auth() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
       toast.success("Ți-am trimis un email cu link de resetare.");
       setMode("login");
       return;
@@ -59,7 +60,7 @@ function Auth() {
         },
       });
       setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
 
       // Apply referral code from URL ?ref=CODE
       const refCode = new URLSearchParams(window.location.search).get("ref");
@@ -81,7 +82,7 @@ function Auth() {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
-      if (error) { toast.error("Email sau parolă incorecte."); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
       navigate({ to: "/dashboard" });
     }
   }
