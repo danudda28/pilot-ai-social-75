@@ -160,7 +160,8 @@ function Pricing() {
 }
 
 const faqs = [
-  { q: "Pot anula oricând?", a: "Da. Anulezi din dashboard în orice moment, fără penalități. Păstrezi accesul până la sfârșitul perioadei plătite." },
+  { q: "Pot anula oricând?", a: "Da. Anulezi din dashboard în orice moment, fără penalități. În cele 7 zile de probă nu se reține nimic de pe card. După perioada de probă, păstrezi accesul până la sfârșitul lunii plătite." },
+  { q: "Cum funcționează cele 7 zile gratuite?", a: "La fiecare abonament primești 7 zile complet gratuite cu acces total la toate funcțiile. Dacă anulezi în cele 7 zile, nu se reține nimic. Dacă păstrezi abonamentul, plata se face automat în ziua a 8-a." },
   { q: "Ce se întâmplă dacă depășesc numărul de postări?", a: "Te anunțăm înainte și îți propunem un upgrade la planul superior. Poți face upgrade oricând și plătești doar diferența pe luna în curs." },
   { q: "AI-ul scrie cu adevărat în română?", a: "Da, cu diacritice și ton natural pentru România. Modelele folosite (Gemini 2.5) sunt antrenate pe corpusuri mari de text românesc." },
   { q: "Pot conecta mai multe pagini Instagram/Facebook?", a: "În planul Business poți conecta mai multe branduri și pagini. Basic și Pro permit un singur business." },
