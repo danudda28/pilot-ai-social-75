@@ -87,14 +87,6 @@ function Home() {
               Vezi abonamentele
             </Link>
           </div>
-          <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto text-center">
-            {[["1.000+", "Postări generate"], ["98%", "Clienți mulțumiți"], ["10h", "Economisite/lună"]].map(([n, l]) => (
-              <div key={l} className="glass rounded-xl p-4">
-                <div className="font-display text-2xl font-bold gradient-text">{n}</div>
-                <div className="text-xs text-muted-foreground mt-1">{l}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
