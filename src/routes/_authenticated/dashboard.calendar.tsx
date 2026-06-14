@@ -254,7 +254,7 @@ function MonthView({
   );
 }
 
-function DragPostCard({ post }: { post: Post }) {
+function DragPostCard({ post, compact = false }: { post: Post; compact?: boolean }) {
   const time = post.scheduled_date
     ? new Date(post.scheduled_date).toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" })
     : null;
@@ -271,16 +271,22 @@ function DragPostCard({ post }: { post: Post }) {
         e.dataTransfer.setData("text/plain", post.id);
         e.dataTransfer.effectAllowed = "move";
       }}
-      className={`group cursor-grab active:cursor-grabbing rounded-md bg-background/40 border border-border/40 border-l-2 ${statusColor[post.status] ?? statusColor.draft} px-2 py-1.5 text-xs hover:bg-secondary/40 transition-colors`}
+      className={`group cursor-grab active:cursor-grabbing rounded-md bg-background/40 border border-border/40 border-l-2 ${statusColor[post.status] ?? statusColor.draft} hover:bg-secondary/40 transition-colors ${compact ? "px-1.5 py-0.5 text-[10px]" : "px-2 py-1.5 text-xs"}`}
       title={post.title ?? "(fără titlu)"}
     >
-      <div className="flex items-center gap-1">
-        <GripVertical className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 shrink-0" />
-        <span className="font-medium truncate">{post.title ?? "(fără titlu)"}</span>
-      </div>
-      <div className="text-[10px] text-muted-foreground capitalize mt-0.5">
-        {post.platform}{time ? ` · ${time}` : ""}
-      </div>
+      {compact ? (
+        <div className="truncate font-medium">{time ? `${time} · ` : ""}{post.title ?? "(fără titlu)"}</div>
+      ) : (
+        <>
+          <div className="flex items-center gap-1">
+            <GripVertical className="h-3 w-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 shrink-0" />
+            <span className="font-medium truncate">{post.title ?? "(fără titlu)"}</span>
+          </div>
+          <div className="text-[10px] text-muted-foreground capitalize mt-0.5">
+            {post.platform}{time ? ` · ${time}` : ""}
+          </div>
+        </>
+      )}
     </div>
   );
 }
