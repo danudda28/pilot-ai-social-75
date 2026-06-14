@@ -48,8 +48,11 @@ function sameDay(a: Date, b: Date) {
 function CalendarPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filter, setFilter] = useState("all");
-  const [view, setView] = useState<"week" | "list">("week");
+  const [view, setView] = useState<"month" | "week" | "list">("month");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [monthAnchor, setMonthAnchor] = useState(() => {
+    const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); return d;
+  });
   const [dragOver, setDragOver] = useState<string | null>(null);
   const reschedule = useServerFn(reschedulePost);
 
