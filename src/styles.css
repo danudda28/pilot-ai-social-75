@@ -135,6 +135,17 @@ html.light {
   border: 1px solid oklch(1 0 0 / 14%);
 }
 
+html.light .glass,
+html.light [class*="glass"]:not([class*="glass-strong"]) {
+  background: oklch(0.15 0.02 250 / 4%);
+  border-color: oklch(0.15 0.02 250 / 10%);
+}
+html.light .glass-strong {
+  background: oklch(1 0 0 / 80%);
+  border-color: oklch(0.15 0.02 250 / 12%);
+  box-shadow: 0 4px 20px -8px oklch(0.15 0.02 250 / 10%);
+}
+
 @utility gradient-text {
   background: var(--gradient-primary);
   background-clip: text;

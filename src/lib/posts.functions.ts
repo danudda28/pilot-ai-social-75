@@ -25,6 +25,24 @@ export const updatePost = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const RescheduleInput = z.object({
+  postId: z.string().uuid(),
+  scheduledDate: z.string().datetime(),
+});
+
+export const reschedulePost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => RescheduleInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("generated_posts")
+      .update({ scheduled_date: data.scheduledDate, status: "scheduled" })
+      .eq("id", data.postId)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const setApprovalStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
