@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { NewsletterForm } from "@/components/NewsletterForm";
-import { supabase } from "@/integrations/supabase/client";
 import {
   Sparkles, Calendar, Hash, Video, Send, BarChart3, Clock, Brain,
-  UserPlus, Plug, Target, Wand2, ArrowRight, Check, Star,
+  UserPlus, Plug, Target, Wand2, ArrowRight, Check,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
