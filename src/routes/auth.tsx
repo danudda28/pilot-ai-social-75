@@ -60,7 +60,7 @@ function Auth() {
         },
       });
       setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
 
       // Apply referral code from URL ?ref=CODE
       const refCode = new URLSearchParams(window.location.search).get("ref");
