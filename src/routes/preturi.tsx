@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
