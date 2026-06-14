@@ -39,7 +39,7 @@ export function Footer() {
           <div className="flex flex-wrap items-center gap-4">
             <span className="text-xs text-muted-foreground">Protecția consumatorului:</span>
             <a
-              href="https://anpc.ro/ce-este-sal/"
+              href="https://eservicii.anpc.ro/?_gl=1*1w1z9e0*_ga*Mjk1NjI5ODA5LjE3ODE0NDAxNjk.*_ga_FDVTGP2007*czE3ODE0NDAxNjgkbzEkZzAkdDE3ODE0NDAxNzYkajUyJGwwJGgw"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="ANPC — Soluționarea Alternativă a Litigiilor"
