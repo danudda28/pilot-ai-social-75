@@ -60,6 +60,22 @@ function Auth() {
       });
       setLoading(false);
       if (error) { toast.error(error.message); return; }
+
+      // Apply referral code from URL ?ref=CODE
+      const refCode = new URLSearchParams(window.location.search).get("ref");
+      if (refCode) {
+        try {
+          const { applyReferralCode } = await import("@/lib/posts.functions");
+          // Wait a moment for session to land, then apply
+          setTimeout(async () => {
+            try {
+              const res = await applyReferralCode({ data: { code: refCode } });
+              toast.success(`Cont creat + ${(res as any).bonus} postări bonus din referral!`);
+            } catch {}
+          }, 800);
+        } catch {}
+      }
+
       toast.success("Cont creat! Te redirecționăm...");
       navigate({ to: "/dashboard" });
     } else {

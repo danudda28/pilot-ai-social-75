@@ -14,7 +14,9 @@ import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-condi
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PreturiRouteImport } from './routes/preturi'
+import { Route as PostariAiSaloaneRouteImport } from './routes/postari-ai-saloane'
 import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
+import { Route as InstagramAutomationRestauranteRouteImport } from './routes/instagram-automation-restaurante'
 import { Route as DespreRouteImport } from './routes/despre'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -24,6 +26,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
@@ -34,7 +37,9 @@ import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
+import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
+import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 
@@ -63,10 +68,21 @@ const PreturiRoute = PreturiRouteImport.update({
   path: '/preturi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PostariAiSaloaneRoute = PostariAiSaloaneRouteImport.update({
+  id: '/postari-ai-saloane',
+  path: '/postari-ai-saloane',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PoliticaConfidentialitateRoute =
   PoliticaConfidentialitateRouteImport.update({
     id: '/politica-confidentialitate',
     path: '/politica-confidentialitate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const InstagramAutomationRestauranteRoute =
+  InstagramAutomationRestauranteRouteImport.update({
+    id: '/instagram-automation-restaurante',
+    path: '/instagram-automation-restaurante',
     getParentRoute: () => rootRouteImport,
   } as any)
 const DespreRoute = DespreRouteImport.update({
@@ -113,6 +129,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardVideoRoute =
+  AuthenticatedDashboardVideoRouteImport.update({
+    id: '/video',
+    path: '/video',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardTeamRoute =
   AuthenticatedDashboardTeamRouteImport.update({
     id: '/team',
@@ -173,10 +195,22 @@ const AuthenticatedDashboardAnalyticsRoute =
     path: '/analytics',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const ApiPublicCronSyncMetaInsightsRoute =
+  ApiPublicCronSyncMetaInsightsRouteImport.update({
+    id: '/api/public/cron/sync-meta-insights',
+    path: '/api/public/cron/sync-meta-insights',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronResetQuotasRoute =
   ApiPublicCronResetQuotasRouteImport.update({
     id: '/api/public/cron/reset-quotas',
     path: '/api/public/cron/reset-quotas',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronRefreshMetaTokensRoute =
+  ApiPublicCronRefreshMetaTokensRouteImport.update({
+    id: '/api/public/cron/refresh-meta-tokens',
+    path: '/api/public/cron/refresh-meta-tokens',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronPublishScheduledRoute =
@@ -198,7 +232,9 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
+  '/postari-ai-saloane': typeof PostariAiSaloaneRoute
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -217,8 +253,11 @@ export interface FileRoutesByFullPath {
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
+  '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
+  '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
+  '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
 }
 export interface FileRoutesByTo {
@@ -227,7 +266,9 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
+  '/postari-ai-saloane': typeof PostariAiSaloaneRoute
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -246,8 +287,11 @@ export interface FileRoutesByTo {
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
+  '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
+  '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
+  '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
 }
 export interface FileRoutesById {
@@ -258,7 +302,9 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/despre': typeof DespreRoute
+  '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
+  '/postari-ai-saloane': typeof PostariAiSaloaneRoute
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -277,8 +323,11 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
+  '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
+  '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
+  '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
 }
 export interface FileRouteTypes {
@@ -289,7 +338,9 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/despre'
+    | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
+    | '/postari-ai-saloane'
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
@@ -308,8 +359,11 @@ export interface FileRouteTypes {
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
+    | '/dashboard/video'
     | '/api/public/cron/publish-scheduled'
+    | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
+    | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -318,7 +372,9 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/despre'
+    | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
+    | '/postari-ai-saloane'
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
@@ -337,8 +393,11 @@ export interface FileRouteTypes {
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
+    | '/dashboard/video'
     | '/api/public/cron/publish-scheduled'
+    | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
+    | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
   id:
     | '__root__'
@@ -348,7 +407,9 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/despre'
+    | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
+    | '/postari-ai-saloane'
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
@@ -367,8 +428,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/team'
+    | '/_authenticated/dashboard/video'
     | '/api/public/cron/publish-scheduled'
+    | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
+    | '/api/public/cron/sync-meta-insights'
     | '/api/public/auth/meta/callback'
   fileRoutesById: FileRoutesById
 }
@@ -379,7 +443,9 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   DespreRoute: typeof DespreRoute
+  InstagramAutomationRestauranteRoute: typeof InstagramAutomationRestauranteRoute
   PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
+  PostariAiSaloaneRoute: typeof PostariAiSaloaneRoute
   PreturiRoute: typeof PreturiRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -387,7 +453,9 @@ export interface RootRouteChildren {
   VsHootsuiteBufferRoute: typeof VsHootsuiteBufferRoute
   InvitatieTokenRoute: typeof InvitatieTokenRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
+  ApiPublicCronRefreshMetaTokensRoute: typeof ApiPublicCronRefreshMetaTokensRoute
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
+  ApiPublicCronSyncMetaInsightsRoute: typeof ApiPublicCronSyncMetaInsightsRoute
   ApiPublicAuthMetaCallbackRoute: typeof ApiPublicAuthMetaCallbackRoute
 }
 
@@ -428,11 +496,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreturiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/postari-ai-saloane': {
+      id: '/postari-ai-saloane'
+      path: '/postari-ai-saloane'
+      fullPath: '/postari-ai-saloane'
+      preLoaderRoute: typeof PostariAiSaloaneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/politica-confidentialitate': {
       id: '/politica-confidentialitate'
       path: '/politica-confidentialitate'
       fullPath: '/politica-confidentialitate'
       preLoaderRoute: typeof PoliticaConfidentialitateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instagram-automation-restaurante': {
+      id: '/instagram-automation-restaurante'
+      path: '/instagram-automation-restaurante'
+      fullPath: '/instagram-automation-restaurante'
+      preLoaderRoute: typeof InstagramAutomationRestauranteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/despre': {
@@ -497,6 +579,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/video': {
+      id: '/_authenticated/dashboard/video'
+      path: '/video'
+      fullPath: '/dashboard/video'
+      preLoaderRoute: typeof AuthenticatedDashboardVideoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/team': {
       id: '/_authenticated/dashboard/team'
@@ -568,11 +657,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/api/public/cron/sync-meta-insights': {
+      id: '/api/public/cron/sync-meta-insights'
+      path: '/api/public/cron/sync-meta-insights'
+      fullPath: '/api/public/cron/sync-meta-insights'
+      preLoaderRoute: typeof ApiPublicCronSyncMetaInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/reset-quotas': {
       id: '/api/public/cron/reset-quotas'
       path: '/api/public/cron/reset-quotas'
       fullPath: '/api/public/cron/reset-quotas'
       preLoaderRoute: typeof ApiPublicCronResetQuotasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/refresh-meta-tokens': {
+      id: '/api/public/cron/refresh-meta-tokens'
+      path: '/api/public/cron/refresh-meta-tokens'
+      fullPath: '/api/public/cron/refresh-meta-tokens'
+      preLoaderRoute: typeof ApiPublicCronRefreshMetaTokensRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/publish-scheduled': {
@@ -603,6 +706,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
+  AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -617,6 +721,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
+    AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
@@ -652,7 +757,9 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   DespreRoute: DespreRoute,
+  InstagramAutomationRestauranteRoute: InstagramAutomationRestauranteRoute,
   PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
+  PostariAiSaloaneRoute: PostariAiSaloaneRoute,
   PreturiRoute: PreturiRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -660,7 +767,9 @@ const rootRouteChildren: RootRouteChildren = {
   VsHootsuiteBufferRoute: VsHootsuiteBufferRoute,
   InvitatieTokenRoute: InvitatieTokenRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
+  ApiPublicCronRefreshMetaTokensRoute: ApiPublicCronRefreshMetaTokensRoute,
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
+  ApiPublicCronSyncMetaInsightsRoute: ApiPublicCronSyncMetaInsightsRoute,
   ApiPublicAuthMetaCallbackRoute: ApiPublicAuthMetaCallbackRoute,
 }
 export const routeTree = rootRouteImport
