@@ -87,10 +87,10 @@ function Pricing() {
       <section className="pt-20 pb-10 text-center">
         <div className="mx-auto max-w-3xl px-4">
           <h1 className="font-display text-4xl sm:text-6xl font-bold">
-            Prețuri simple, <span className="gradient-text">rezultate reale</span>
+            Abonamente simple, <span className="gradient-text">rezultate reale</span>
           </h1>
           <p className="mt-6 text-muted-foreground">
-            Alege planul care se potrivește ritmului afacerii tale. Anulezi oricând.
+            Toate abonamentele includ <strong className="text-foreground">7 zile gratuite</strong> de probă. Fără card cerut acum, anulezi oricând în cele 7 zile fără să plătești nimic.
           </p>
         </div>
       </section>
@@ -110,6 +110,9 @@ function Pricing() {
                 <span className="font-display text-5xl font-bold">{p.price}</span>
                 <span className="text-muted-foreground">/lună</span>
               </div>
+              <div className="mt-3 inline-flex items-center gap-2 self-start rounded-full bg-primary/15 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary">
+                <Gift className="h-3.5 w-3.5" /> 7 zile gratis · anulezi oricând
+              </div>
               <p className="mt-3 text-sm font-medium text-foreground/90">{p.tagline}</p>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.description}</p>
               <ul className="mt-8 space-y-3 flex-1">
@@ -123,11 +126,14 @@ function Pricing() {
                 className={`mt-8 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition ${p.featured ? "gradient-bg glow text-white" : "glass-strong hover:bg-secondary"}`}>
                 {p.cta}
               </button>
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                Fără plată în primele 7 zile. Anulezi oricând din dashboard.
+              </p>
             </div>
           ))}
         </div>
         <p className="mt-10 text-center text-xs text-muted-foreground max-w-xl mx-auto">
-          Plățile se procesează securizat. Poți anula sau schimba planul oricând din dashboard.
+          Plățile se procesează securizat după perioada de probă. Poți anula sau schimba abonamentul oricând din dashboard, fără penalități.
         </p>
       </section>
 
