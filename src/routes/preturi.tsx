@@ -166,6 +166,6 @@ const faqs = [
   { q: "AI-ul scrie cu adevărat în română?", a: "Da, cu diacritice și ton natural pentru România. Modelele folosite (Gemini 2.5) sunt antrenate pe corpusuri mari de text românesc." },
   { q: "Pot conecta mai multe pagini Instagram/Facebook?", a: "În planul Business poți conecta mai multe branduri și pagini. Basic și Pro permit un singur business." },
   { q: "Postările se publică automat?", a: "Da. După ce conectezi Instagram/Facebook prin Meta, programezi data și ora, iar sistemul publică în locul tău." },
-  { q: "Există perioadă de probă?", a: "Da. Planul Free îți oferă 3 postări lunar, ca să testezi platforma fără card." },
+  { q: "Există perioadă de probă?", a: "Da, fiecare abonament include 7 zile gratuite cu acces complet. În plus, planul Free îți oferă 3 postări lunar fără card, dacă vrei doar să încerci platforma." },
   { q: "Cum funcționează facturarea?", a: "Facturare lunară, cu factură fiscală emisă pe firma sau persoana ta. TVA inclus pentru clienți din UE." },
 ];
