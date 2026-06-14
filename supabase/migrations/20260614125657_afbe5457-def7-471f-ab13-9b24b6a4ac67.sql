@@ -1,0 +1,2 @@
+GRANT EXECUTE ON FUNCTION public.has_brand_role(uuid, uuid, public.brand_role[]) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.is_brand_member(uuid, uuid) TO authenticated, service_role;
