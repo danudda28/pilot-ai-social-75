@@ -46,16 +46,7 @@ export function Footer() {
               aria-label="ANPC — Soluționarea Alternativă a Litigiilor"
               className="block rounded-md bg-white p-1 hover:opacity-90 transition"
             >
-              <img src={anpcSal.url} alt="ANPC SAL" loading="lazy" className="h-12 w-auto object-contain" />
-            </a>
-            <a
-              href="https://ec.europa.eu/consumers/odr"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="ANPC — Soluționarea Online a Litigiilor"
-              className="block rounded-md bg-white p-1 hover:opacity-90 transition"
-            >
-              <img src={anpcSol.url} alt="ANPC SOL" loading="lazy" className="h-12 w-auto object-contain" />
+              <img src={anpcSol.url} alt="ANPC" loading="lazy" className="h-12 w-auto object-contain" />
             </a>
             <a
               href="https://eservicii.anpc.ro/?_gl=1*1w1z9e0*_ga*Mjk1NjI5ODA5LjE3ODE0NDAxNjk.*_ga_FDVTGP2007*czE3ODE0NDAxNjgkbzEkZzAkdDE3ODE0NDAxNzYkajUyJGwwJGgw"
