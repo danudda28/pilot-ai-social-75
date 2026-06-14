@@ -1,16 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
-      { title: "Prețuri — Social Spark" },
-      { name: "description", content: "Alege planul potrivit afacerii tale: Basic 99 lei, Pro 225 lei, Business 299 lei pe lună." },
-      { property: "og:title", content: "Prețuri — Social Spark" },
-      { property: "og:description", content: "3 abonamente clare pentru orice tip de afacere." },
+      { title: "Abonamente — Social Spark" },
+      { name: "description", content: "Alege abonamentul potrivit afacerii tale: Basic 99 lei, Pro 225 lei, Business 299 lei pe lună. 7 zile gratuit, anulezi oricând." },
+      { property: "og:title", content: "Abonamente — Social Spark" },
+      { property: "og:description", content: "3 abonamente clare, 7 zile gratis pe fiecare. Anulezi oricând în perioada de probă." },
     ],
   }),
   component: Pricing,
@@ -30,7 +30,7 @@ const plans = [
       "Calendar simplu cu ce ai de postat",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Alege Basic",
+    cta: "Începe gratis 7 zile",
   },
   {
     id: "pro", name: "Pro", price: "225 lei", featured: true,
@@ -47,7 +47,7 @@ const plans = [
       "Calendar complet cu toate postările",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Alege Pro",
+    cta: "Începe gratis 7 zile",
   },
   {
     id: "business", name: "Business", price: "299 lei", featured: false,
@@ -64,7 +64,7 @@ const plans = [
       "Suport prioritar (răspundem primii)",
       "Funcții avansate de programare și publicare",
     ],
-    cta: "Alege Business",
+    cta: "Începe gratis 7 zile",
   },
 ];
 
@@ -79,7 +79,7 @@ function Pricing() {
       return;
     }
     // Stripe placeholder — to be wired with enable_stripe_payments
-    toast.info(`Plan ${planId} selectat. Stripe checkout va fi disponibil în curând.`);
+    toast.info(`Plan ${planId} selectat — primești 7 zile gratuite, fără plată acum. Stripe checkout va fi disponibil în curând.`);
   }
 
   return (
@@ -87,10 +87,10 @@ function Pricing() {
       <section className="pt-20 pb-10 text-center">
         <div className="mx-auto max-w-3xl px-4">
           <h1 className="font-display text-4xl sm:text-6xl font-bold">
-            Prețuri simple, <span className="gradient-text">rezultate reale</span>
+            Abonamente simple, <span className="gradient-text">rezultate reale</span>
           </h1>
           <p className="mt-6 text-muted-foreground">
-            Alege planul care se potrivește ritmului afacerii tale. Anulezi oricând.
+            Toate abonamentele includ <strong className="text-foreground">7 zile gratuite</strong> de probă. Fără card cerut acum, anulezi oricând în cele 7 zile fără să plătești nimic.
           </p>
         </div>
       </section>
@@ -110,6 +110,9 @@ function Pricing() {
                 <span className="font-display text-5xl font-bold">{p.price}</span>
                 <span className="text-muted-foreground">/lună</span>
               </div>
+              <div className="mt-3 inline-flex items-center gap-2 self-start rounded-full bg-primary/15 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary">
+                <Gift className="h-3.5 w-3.5" /> 7 zile gratis · anulezi oricând
+              </div>
               <p className="mt-3 text-sm font-medium text-foreground/90">{p.tagline}</p>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.description}</p>
               <ul className="mt-8 space-y-3 flex-1">
@@ -123,11 +126,14 @@ function Pricing() {
                 className={`mt-8 w-full rounded-xl px-5 py-3.5 text-sm font-semibold transition ${p.featured ? "gradient-bg glow text-white" : "glass-strong hover:bg-secondary"}`}>
                 {p.cta}
               </button>
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                Fără plată în primele 7 zile. Anulezi oricând din dashboard.
+              </p>
             </div>
           ))}
         </div>
         <p className="mt-10 text-center text-xs text-muted-foreground max-w-xl mx-auto">
-          Plățile se procesează securizat. Poți anula sau schimba planul oricând din dashboard.
+          Plățile se procesează securizat după perioada de probă. Poți anula sau schimba abonamentul oricând din dashboard, fără penalități.
         </p>
       </section>
 
@@ -154,11 +160,12 @@ function Pricing() {
 }
 
 const faqs = [
-  { q: "Pot anula oricând?", a: "Da. Anulezi din dashboard în orice moment, fără penalități. Păstrezi accesul până la sfârșitul perioadei plătite." },
+  { q: "Pot anula oricând?", a: "Da. Anulezi din dashboard în orice moment, fără penalități. În cele 7 zile de probă nu se reține nimic de pe card. După perioada de probă, păstrezi accesul până la sfârșitul lunii plătite." },
+  { q: "Cum funcționează cele 7 zile gratuite?", a: "La fiecare abonament primești 7 zile complet gratuite cu acces total la toate funcțiile. Dacă anulezi în cele 7 zile, nu se reține nimic. Dacă păstrezi abonamentul, plata se face automat în ziua a 8-a." },
   { q: "Ce se întâmplă dacă depășesc numărul de postări?", a: "Te anunțăm înainte și îți propunem un upgrade la planul superior. Poți face upgrade oricând și plătești doar diferența pe luna în curs." },
   { q: "AI-ul scrie cu adevărat în română?", a: "Da, cu diacritice și ton natural pentru România. Modelele folosite (Gemini 2.5) sunt antrenate pe corpusuri mari de text românesc." },
   { q: "Pot conecta mai multe pagini Instagram/Facebook?", a: "În planul Business poți conecta mai multe branduri și pagini. Basic și Pro permit un singur business." },
   { q: "Postările se publică automat?", a: "Da. După ce conectezi Instagram/Facebook prin Meta, programezi data și ora, iar sistemul publică în locul tău." },
-  { q: "Există perioadă de probă?", a: "Da. Planul Free îți oferă 3 postări lunar, ca să testezi platforma fără card." },
+  { q: "Există perioadă de probă?", a: "Da, fiecare abonament include 7 zile gratuite cu acces complet. În plus, planul Free îți oferă 3 postări lunar fără card, dacă vrei doar să încerci platforma." },
   { q: "Cum funcționează facturarea?", a: "Facturare lunară, cu factură fiscală emisă pe firma sau persoana ta. TVA inclus pentru clienți din UE." },
 ];
