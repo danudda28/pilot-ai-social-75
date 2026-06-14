@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video } from "lucide-react";
+import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video, FileSpreadsheet } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandSwitcher } from "@/components/BrandSwitcher";
@@ -9,7 +9,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/generate", label: "Generează", icon: Wand2 },
-  { to: "/dashboard/bulk", label: "Bulk", icon: Layers },
+  { to: "/dashboard/bulk", label: "Bulk AI", icon: Layers },
+  { to: "/dashboard/import", label: "Import CSV", icon: FileSpreadsheet },
   { to: "/dashboard/video", label: "AI Video", icon: Video },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { to: "/dashboard/history", label: "Istoric", icon: History },
