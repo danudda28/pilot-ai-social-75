@@ -146,15 +146,15 @@ function Home() {
             <h2 className="font-display text-3xl sm:text-4xl font-bold">Antreprenori care folosesc deja Social Spark</h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {testimonials.map(t => (
-              <div key={t.name} className="glass rounded-2xl p-6 card-hover">
+            {testimonials.map((t, i) => (
+              <div key={`${t.author_name}-${i}`} className="glass rounded-2xl p-6 card-hover">
                 <div className="flex gap-1 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+                  {Array.from({ length: t.rating ?? 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
                 </div>
-                <p className="text-sm">"{t.quote}"</p>
+                <p className="text-sm">"{t.content}"</p>
                 <div className="mt-4 pt-4 border-t border-border/50">
-                  <div className="font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
+                  <div className="font-semibold text-sm">{t.author_name}</div>
+                  {t.author_role && <div className="text-xs text-muted-foreground">{t.author_role}</div>}
                 </div>
               </div>
             ))}
