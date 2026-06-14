@@ -82,7 +82,7 @@ function Auth() {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
-      if (error) { toast.error("Email sau parolă incorecte."); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
       navigate({ to: "/dashboard" });
     }
   }
