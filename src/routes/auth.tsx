@@ -42,7 +42,7 @@ function Auth() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(translateAuthError(error.message)); return; }
       toast.success("Ți-am trimis un email cu link de resetare.");
       setMode("login");
       return;
