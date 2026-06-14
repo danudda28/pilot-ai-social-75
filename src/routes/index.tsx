@@ -43,23 +43,8 @@ const faqs = [
   { q: "Conținutul este unic?", a: "Da. AI-ul generează texte originale, adaptate brandului și domeniului tău." },
 ];
 
-const fallbackTestimonials = [
-  { author_name: "Andreea M.", author_role: "Salon de înfrumusețare", content: "Am 3 postări pe săptămână fără să mai stau să mă gândesc ce să scriu. Clientele mă întreabă constant cine îmi face conținutul.", rating: 5, avatar_url: null },
-  { author_name: "Mihai V.", author_role: "Restaurant", content: "Reels-urile generate aici mi-au dublat rezervările pe weekend. Cea mai bună investiție în marketing.", rating: 5, avatar_url: null },
-  { author_name: "Cristian D.", author_role: "Service auto", content: "Nu credeam că AI-ul poate suna ca brandul meu. M-a surprins. Postările sunt directe și convertesc.", rating: 5, avatar_url: null },
-];
-
 function Home() {
-  const [testimonials, setTestimonials] = useState(fallbackTestimonials);
 
-  useEffect(() => {
-    supabase.from("testimonials")
-      .select("author_name,author_role,content,rating,avatar_url")
-      .eq("published", true)
-      .order("display_order")
-      .limit(6)
-      .then(({ data }) => { if (data && data.length > 0) setTestimonials(data as any); });
-  }, []);
 
   return (
     <PublicLayout>
