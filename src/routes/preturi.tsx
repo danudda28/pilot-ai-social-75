@@ -30,7 +30,7 @@ const plans = [
       "Calendar simplu cu ce ai de postat",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Începe gratis 7 zile",
+    cta: "Începe gratis 30 zile",
   },
   {
     id: "pro", name: "Pro", price: "225 lei", featured: true,
@@ -47,7 +47,7 @@ const plans = [
       "Calendar complet cu toate postările",
       "Newsletter cu noutăți și promoții",
     ],
-    cta: "Începe gratis 7 zile",
+    cta: "Începe gratis 30 zile",
   },
   {
     id: "business", name: "Business", price: "299 lei", featured: false,
@@ -64,7 +64,7 @@ const plans = [
       "Suport prioritar (răspundem primii)",
       "Funcții avansate de programare și publicare",
     ],
-    cta: "Începe gratis 7 zile",
+    cta: "Începe gratis 30 zile",
   },
 ];
 
