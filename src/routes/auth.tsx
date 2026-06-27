@@ -52,26 +52,38 @@ function Auth() {
       return;
     }
 
-    const parsed = schema.safeParse({ email, password });
+    const parsed = mode === "register"
+      ? registerSchema.safeParse({ email, password, fullName })
+      : schema.safeParse({ email, password });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     setLoading(true);
     if (mode === "register") {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email, password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: { full_name: fullName },
         },
       });
+      if (error) { setLoading(false); toast.error(translateAuthError(error.message)); return; }
+
+      // If email confirmation is required, there's no session yet — sign in directly
+      if (!signUpData.session) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          setLoading(false);
+          toast.error("Cont creat. Verifică emailul pentru confirmare, apoi intră în cont.");
+          setMode("login");
+          return;
+        }
+      }
       setLoading(false);
-      if (error) { toast.error(translateAuthError(error.message)); return; }
 
       // Apply referral code from URL ?ref=CODE
       const refCode = new URLSearchParams(window.location.search).get("ref");
       if (refCode) {
         try {
           const { applyReferralCode } = await import("@/lib/posts.functions");
-          // Wait a moment for session to land, then apply
           setTimeout(async () => {
             try {
               const res = await applyReferralCode({ data: { code: refCode } });
