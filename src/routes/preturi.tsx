@@ -79,7 +79,7 @@ function Pricing() {
       return;
     }
     // Stripe placeholder — to be wired with enable_stripe_payments
-    toast.info(`Plan ${planId} selectat — primești 7 zile gratuite, fără plată acum. Stripe checkout va fi disponibil în curând.`);
+    toast.info(`Plan ${planId} selectat — primești 30 zile gratuite, fără plată acum. Stripe checkout va fi disponibil în curând.`);
   }
 
   return (
@@ -90,7 +90,7 @@ function Pricing() {
             Abonamente simple, <span className="gradient-text">rezultate reale</span>
           </h1>
           <p className="mt-6 text-muted-foreground">
-            Toate abonamentele includ <strong className="text-foreground">7 zile gratuite</strong> de probă. Fără card cerut acum, anulezi oricând în cele 7 zile fără să plătești nimic.
+            Toate abonamentele includ <strong className="text-foreground">30 zile gratuite</strong> de probă. Fără card cerut acum, anulezi oricând în cele 30 zile fără să plătești nimic.
           </p>
         </div>
       </section>
@@ -111,7 +111,7 @@ function Pricing() {
                 <span className="text-muted-foreground">/lună</span>
               </div>
               <div className="mt-3 inline-flex items-center gap-2 self-start rounded-full bg-primary/15 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary">
-                <Gift className="h-3.5 w-3.5" /> 7 zile gratis · anulezi oricând
+                <Gift className="h-3.5 w-3.5" /> 30 zile gratis · anulezi oricând
               </div>
               <p className="mt-3 text-sm font-medium text-foreground/90">{p.tagline}</p>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.description}</p>
@@ -127,7 +127,7 @@ function Pricing() {
                 {p.cta}
               </button>
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                Fără plată în primele 7 zile. Anulezi oricând din dashboard.
+                Fără plată în primele 30 zile. Anulezi oricând din dashboard.
               </p>
             </div>
           ))}
