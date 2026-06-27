@@ -8,9 +8,9 @@ export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
       { title: "Abonamente — Social Spark" },
-      { name: "description", content: "Alege abonamentul potrivit afacerii tale: Basic 99 lei, Pro 225 lei, Business 299 lei pe lună. 7 zile gratuit, anulezi oricând." },
+      { name: "description", content: "Alege abonamentul potrivit afacerii tale: Basic 99 lei, Pro 225 lei, Business 299 lei pe lună. 30 zile gratuit, anulezi oricând." },
       { property: "og:title", content: "Abonamente — Social Spark" },
-      { property: "og:description", content: "3 abonamente clare, 7 zile gratis pe fiecare. Anulezi oricând în perioada de probă." },
+      { property: "og:description", content: "3 abonamente clare, 30 zile gratis pe fiecare. Anulezi oricând în perioada de probă." },
     ],
   }),
   component: Pricing,
