@@ -17,6 +17,10 @@ const schema = z.object({
   password: z.string().min(6, "Parola trebuie să aibă cel puțin 6 caractere").max(72),
 });
 
+const registerSchema = schema.extend({
+  fullName: z.string().trim().min(2, "Introdu numele complet (minim 2 caractere)").max(100),
+});
+
 function Auth() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
@@ -48,26 +52,38 @@ function Auth() {
       return;
     }
 
-    const parsed = schema.safeParse({ email, password });
+    const parsed = mode === "register"
+      ? registerSchema.safeParse({ email, password, fullName })
+      : schema.safeParse({ email, password });
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     setLoading(true);
     if (mode === "register") {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email, password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: { full_name: fullName },
         },
       });
+      if (error) { setLoading(false); toast.error(translateAuthError(error.message)); return; }
+
+      // If email confirmation is required, there's no session yet — sign in directly
+      if (!signUpData.session) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          setLoading(false);
+          toast.error("Cont creat. Verifică emailul pentru confirmare, apoi intră în cont.");
+          setMode("login");
+          return;
+        }
+      }
       setLoading(false);
-      if (error) { toast.error(translateAuthError(error.message)); return; }
 
       // Apply referral code from URL ?ref=CODE
       const refCode = new URLSearchParams(window.location.search).get("ref");
       if (refCode) {
         try {
           const { applyReferralCode } = await import("@/lib/posts.functions");
-          // Wait a moment for session to land, then apply
           setTimeout(async () => {
             try {
               const res = await applyReferralCode({ data: { code: refCode } });
@@ -106,7 +122,7 @@ function Auth() {
             {mode === "register" && (
               <div>
                 <label className="text-xs font-medium text-muted-foreground">Nume complet</label>
-                <input value={fullName} onChange={e => setFullName(e.target.value)}
+                <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
                   className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
               </div>
             )}
