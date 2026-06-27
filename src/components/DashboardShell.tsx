@@ -45,28 +45,48 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      <aside className="lg:w-64 glass-strong border-b lg:border-b-0 lg:border-r border-border/50 lg:min-h-screen flex flex-col">
-        <div className="p-5 space-y-3 flex items-center justify-between lg:block">
+      <aside className="lg:w-64 glass-strong border-b lg:border-b-0 lg:border-r border-border/50 lg:min-h-screen flex flex-col sticky top-0 z-40 lg:static">
+        {/* Mobile compact header */}
+        <div className="lg:hidden px-3 py-2.5 flex items-center gap-2 border-b border-border/40">
+          <Link to="/" className="flex items-center gap-2 font-display text-base font-bold min-w-0 shrink-0">
+            <img src={logoAsset.url} alt="Social Spark" className="h-7 w-7 object-contain shrink-0" />
+            <span className="truncate">Social <span className="gradient-text">Spark</span></span>
+          </Link>
+          <div className="ml-auto flex items-center gap-1.5 shrink-0">
+            <NotificationsBell />
+            <ThemeToggle />
+            <button onClick={signOut} aria-label="Ieși din cont"
+              className="rounded-lg glass px-2.5 py-2 text-sm hover:bg-secondary">
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        <div className="lg:hidden px-3 py-2">
+          <BrandSwitcher />
+        </div>
+
+        {/* Desktop header */}
+        <div className="hidden lg:block p-5 space-y-3">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
             <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
             Social <span className="gradient-text">Spark</span>
           </Link>
-          <div className="lg:hidden"><NotificationsBell /></div>
           <BrandSwitcher />
         </div>
-        <nav className="px-3 flex lg:flex-col gap-1 overflow-x-auto pb-3 lg:pb-0">
+
+        <nav className="px-3 flex lg:flex-col gap-1 overflow-x-auto pb-3 lg:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {nav.map(n => (
             <Link key={n.to} to={n.to} activeOptions={{ exact: "exact" in n ? n.exact : false }}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground whitespace-nowrap"
+              className="flex items-center gap-2 lg:gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground whitespace-nowrap shrink-0"
               activeProps={{ className: "bg-secondary text-foreground" }}>
-              <n.icon className="h-4 w-4" /> {n.label}
+              <n.icon className="h-4 w-4 shrink-0" /> {n.label}
             </Link>
           ))}
           {isAdmin && (
             <Link to="/admin"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-primary hover:bg-secondary whitespace-nowrap"
+              className="flex items-center gap-2 lg:gap-3 rounded-lg px-3 py-2 text-sm text-primary hover:bg-secondary whitespace-nowrap shrink-0"
               activeProps={{ className: "bg-secondary" }}>
-              <Shield className="h-4 w-4" /> Admin
+              <Shield className="h-4 w-4 shrink-0" /> Admin
             </Link>
           )}
         </nav>
@@ -79,7 +99,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </button>
         </div>
       </aside>
-      <main className="flex-1 p-4 sm:p-8">{children}</main>
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">{children}</main>
     </div>
   );
 }
