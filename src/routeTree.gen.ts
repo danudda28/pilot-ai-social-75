@@ -34,6 +34,7 @@ import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authe
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
+import { Route as AuthenticatedDashboardMediaRouteImport } from './routes/_authenticated/dashboard.media'
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
 import { Route as AuthenticatedDashboardImportRouteImport } from './routes/_authenticated/dashboard.import'
 import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
@@ -41,7 +42,9 @@ import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
 import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
+import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
+import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
@@ -179,6 +182,12 @@ const AuthenticatedDashboardReferralRoute =
     path: '/referral',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardMediaRoute =
+  AuthenticatedDashboardMediaRouteImport.update({
+    id: '/media',
+    path: '/media',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardIntegrariRoute =
   AuthenticatedDashboardIntegrariRouteImport.update({
     id: '/integrari',
@@ -221,10 +230,22 @@ const AuthenticatedDashboardBrandsRoute =
     path: '/brands',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardApprovalsRoute =
+  AuthenticatedDashboardApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardAnalyticsRoute =
   AuthenticatedDashboardAnalyticsRouteImport.update({
     id: '/analytics',
     path: '/analytics',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAiToolsRoute =
+  AuthenticatedDashboardAiToolsRouteImport.update({
+    id: '/ai-tools',
+    path: '/ai-tools',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const ApiPublicCronSyncMetaInsightsRoute =
@@ -284,7 +305,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -292,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -324,7 +348,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -332,6 +358,7 @@ export interface FileRoutesByTo {
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -366,7 +393,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -374,6 +403,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/_authenticated/dashboard/import': typeof AuthenticatedDashboardImportRoute
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/_authenticated/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -408,7 +438,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/dashboard/ai-tools'
     | '/dashboard/analytics'
+    | '/dashboard/approvals'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
@@ -416,6 +448,7 @@ export interface FileRouteTypes {
     | '/dashboard/history'
     | '/dashboard/import'
     | '/dashboard/integrari'
+    | '/dashboard/media'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
@@ -448,7 +481,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/dashboard/ai-tools'
     | '/dashboard/analytics'
+    | '/dashboard/approvals'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
@@ -456,6 +491,7 @@ export interface FileRouteTypes {
     | '/dashboard/history'
     | '/dashboard/import'
     | '/dashboard/integrari'
+    | '/dashboard/media'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
@@ -489,7 +525,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
+    | '/_authenticated/dashboard/approvals'
     | '/_authenticated/dashboard/brands'
     | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
@@ -497,6 +535,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/history'
     | '/_authenticated/dashboard/import'
     | '/_authenticated/dashboard/integrari'
+    | '/_authenticated/dashboard/media'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/team'
@@ -714,6 +753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardReferralRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/media': {
+      id: '/_authenticated/dashboard/media'
+      path: '/media'
+      fullPath: '/dashboard/media'
+      preLoaderRoute: typeof AuthenticatedDashboardMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/integrari': {
       id: '/_authenticated/dashboard/integrari'
       path: '/integrari'
@@ -763,11 +809,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/approvals': {
+      id: '/_authenticated/dashboard/approvals'
+      path: '/approvals'
+      fullPath: '/dashboard/approvals'
+      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/analytics': {
       id: '/_authenticated/dashboard/analytics'
       path: '/analytics'
       fullPath: '/dashboard/analytics'
       preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/ai-tools': {
+      id: '/_authenticated/dashboard/ai-tools'
+      path: '/ai-tools'
+      fullPath: '/dashboard/ai-tools'
+      preLoaderRoute: typeof AuthenticatedDashboardAiToolsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/api/public/cron/sync-meta-insights': {
@@ -816,7 +876,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAiToolsRoute: typeof AuthenticatedDashboardAiToolsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
+  AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
   AuthenticatedDashboardBulkRoute: typeof AuthenticatedDashboardBulkRoute
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
@@ -824,6 +886,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
   AuthenticatedDashboardImportRoute: typeof AuthenticatedDashboardImportRoute
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
+  AuthenticatedDashboardMediaRoute: typeof AuthenticatedDashboardMediaRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
@@ -832,7 +895,9 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardAiToolsRoute: AuthenticatedDashboardAiToolsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
+    AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
     AuthenticatedDashboardBulkRoute: AuthenticatedDashboardBulkRoute,
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
@@ -840,6 +905,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
     AuthenticatedDashboardImportRoute: AuthenticatedDashboardImportRoute,
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
+    AuthenticatedDashboardMediaRoute: AuthenticatedDashboardMediaRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
