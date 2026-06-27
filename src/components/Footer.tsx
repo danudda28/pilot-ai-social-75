@@ -61,6 +61,8 @@ export function Footer() {
             <div className="flex flex-wrap gap-4">
               <Link to="/politica-confidentialitate" className="hover:text-foreground">Politica de confidențialitate</Link>
               <Link to="/termeni-si-conditii" className="hover:text-foreground">Termeni și condiții</Link>
+              <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
+              <Link to="/status" className="hover:text-foreground">Status</Link>
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VsHootsuiteBufferRouteImport } from './routes/vs-hootsuite-buffer'
 import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PreturiRouteImport } from './routes/preturi'
@@ -18,6 +19,7 @@ import { Route as PostariAiSaloaneRouteImport } from './routes/postari-ai-saloan
 import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
 import { Route as InstagramAutomationRestauranteRouteImport } from './routes/instagram-automation-restaurante'
 import { Route as DespreRouteImport } from './routes/despre'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -26,6 +28,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
@@ -53,6 +57,11 @@ const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
 const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
   id: '/termeni-si-conditii',
   path: '/termeni-si-conditii',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -90,6 +99,11 @@ const InstagramAutomationRestauranteRoute =
 const DespreRoute = DespreRouteImport.update({
   id: '/despre',
   path: '/despre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -130,6 +144,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardVideoRoute =
   AuthenticatedDashboardVideoRouteImport.update({
@@ -245,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -252,8 +277,10 @@ export interface FileRoutesByFullPath {
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
@@ -269,6 +296,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -281,6 +309,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -288,8 +317,10 @@ export interface FileRoutesByTo {
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
@@ -305,6 +336,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -319,6 +351,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
@@ -326,8 +359,10 @@ export interface FileRoutesById {
   '/preturi': typeof PreturiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
@@ -343,6 +378,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -357,6 +393,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/cookies'
     | '/despre'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
@@ -364,8 +401,10 @@ export interface FileRouteTypes {
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/status'
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
+    | '/admin'
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
@@ -381,6 +420,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/team'
     | '/dashboard/video'
+    | '/api/public/health'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -393,6 +433,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/cookies'
     | '/despre'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
@@ -400,8 +441,10 @@ export interface FileRouteTypes {
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/status'
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
+    | '/admin'
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
@@ -417,6 +460,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/dashboard/team'
     | '/dashboard/video'
+    | '/api/public/health'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -430,6 +474,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/cookies'
     | '/despre'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
@@ -437,8 +482,10 @@ export interface FileRouteTypes {
     | '/preturi'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/status'
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
@@ -454,6 +501,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/team'
     | '/_authenticated/dashboard/video'
+    | '/api/public/health'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -468,6 +516,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
+  CookiesRoute: typeof CookiesRoute
   DespreRoute: typeof DespreRoute
   InstagramAutomationRestauranteRoute: typeof InstagramAutomationRestauranteRoute
   PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
@@ -475,9 +524,11 @@ export interface RootRouteChildren {
   PreturiRoute: typeof PreturiRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StatusRoute: typeof StatusRoute
   TermeniSiConditiiRoute: typeof TermeniSiConditiiRoute
   VsHootsuiteBufferRoute: typeof VsHootsuiteBufferRoute
   InvitatieTokenRoute: typeof InvitatieTokenRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicCronRefreshMetaTokensRoute: typeof ApiPublicCronRefreshMetaTokensRoute
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
@@ -500,6 +551,13 @@ declare module '@tanstack/react-router' {
       path: '/termeni-si-conditii'
       fullPath: '/termeni-si-conditii'
       preLoaderRoute: typeof TermeniSiConditiiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -549,6 +607,13 @@ declare module '@tanstack/react-router' {
       path: '/despre'
       fullPath: '/despre'
       preLoaderRoute: typeof DespreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -606,6 +671,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard/video': {
       id: '/_authenticated/dashboard/video'
@@ -773,10 +852,12 @@ const AuthenticatedDashboardRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
 }
 
@@ -799,6 +880,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
+  CookiesRoute: CookiesRoute,
   DespreRoute: DespreRoute,
   InstagramAutomationRestauranteRoute: InstagramAutomationRestauranteRoute,
   PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
@@ -806,9 +888,11 @@ const rootRouteChildren: RootRouteChildren = {
   PreturiRoute: PreturiRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StatusRoute: StatusRoute,
   TermeniSiConditiiRoute: TermeniSiConditiiRoute,
   VsHootsuiteBufferRoute: VsHootsuiteBufferRoute,
   InvitatieTokenRoute: InvitatieTokenRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicCronRefreshMetaTokensRoute: ApiPublicCronRefreshMetaTokensRoute,
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
