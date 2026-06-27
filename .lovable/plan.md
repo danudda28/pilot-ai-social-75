@@ -1,52 +1,68 @@
-# Plan: AdPilot Social
+# Plan finalizare AdPilot Social (fără Stripe)
 
-Aplicație SaaS completă pentru automatizarea postărilor Instagram/Facebook cu AI. Stil dark premium, mov/albastru electric, glassmorphism.
+Voi livra în 5 etape secvențiale. La final, aplicația publică postări real pe Meta, are scheduler funcțional, este conformă GDPR și are flow-uri complete de colaborare + notificări.
 
-## 1. Backend (Lovable Cloud)
-Activez Lovable Cloud și creez:
-- **Tabele**: `users_profiles`, `generated_posts`, `connected_accounts`, `newsletter_subscribers`, `contact_messages`
-- **RLS**: fiecare user vede doar datele lui; `newsletter_subscribers` și `contact_messages` permit insert public
-- **Trigger** auto-creare profil la signup
-- **Auth**: email/parolă (Google adăugat ulterior dacă vrei)
+---
 
-## 2. AI (Lovable AI Gateway)
-Server function `generatePost` care folosește `google/gemini-2.5-flash` pentru a genera: titlu, copy lung, copy scurt, hashtaguri, idee vizuală, CTA, sugestie imagine/video, dată recomandată — pe baza domeniului, tonului, obiectivului, platformei.
+## Etapa 1 — Publicare reală Meta (Instagram + Facebook)
 
-## 3. Stripe (placeholder)
-Structură checkout pregătită cu butoane pe plan. Integrare reală Stripe o pornim când îmi confirmi (recomand `enable_stripe_payments` — fără cont propriu).
+- Server function `publishPost` care folosește `META_APP_ID`/`META_APP_SECRET` (deja setate) + token-ul din `meta_connections` pentru a publica pe Facebook Page și Instagram Business prin Graph API v21.
+- Endpoint public `/api/public/meta/oauth-callback` pentru fluxul OAuth Meta (long-lived token + page tokens).
+- UI în Dashboard → Setări → "Conectează Facebook/Instagram" cu butonul real (nu mai e stub).
+- Tratare erori: token expirat, lipsă permisiuni, lipsă cont Instagram Business asociat.
 
-## 4. Social Publishing (placeholder Ayrshare/Publer/Buffer)
-Server functions stub: `connectSocialAccount`, `schedulePost`, `publishPost`, `getPostAnalytics`, `getConnectedAccounts`. Citesc `SOCIAL_PUBLISHING_API_KEY` și `SOCIAL_PUBLISHING_API_URL` din secrete (le adăugăm când ai contul).
+## Etapa 2 — Scheduler + reset cuote (cron)
 
-## 5. Pagini publice
-- `/` Homepage — hero puternic, beneficii, „Cum funcționează" 4 pași, testimoniale, FAQ, CTA final, newsletter
-- `/despre` — text rescris premium + 3 carduri
-- `/preturi` — 3 planuri (Basic 29€, Pro 79€, Business 199€)
-- `/contact` — formular + date contact (0784227844 / bogdansergiu.arghir@gmail.com)
-- `/auth` — login/register
+- Endpoint `/api/public/cron/publish-scheduled` care rulează la fiecare 5 minute: ia postările cu `scheduled_at <= now()` și `status = 'scheduled'`, le publică prin funcția din etapa 1, marchează `status = 'published'` sau `'failed'` cu mesaj.
+- Endpoint `/api/public/cron/reset-quotas` care rulează zilnic la 02:00 și apelează `reset_monthly_quotas()`.
+- Configurare `pg_cron` cu `apikey` header (anon).
+- UI nou: în Dashboard → "Calendar editorial" cu vizualizare lună/săptămână (drag&drop pentru reprogramare).
 
-## 6. Pagini protejate (`_authenticated/`)
-- `/dashboard` — status abonament, postări rămase, calendar, listă postări (draft/aprobată/programată/publicată), quick actions
-- `/dashboard/generate` — formular generare AI cu toate câmpurile cerute
-- `/dashboard/integrari` — conectare/deconectare Instagram & Facebook
-- `/dashboard/calendar` — calendar editorial
+## Etapa 3 — Generare imagini AI + bibliotecă media + hashtag suggestions
 
-## 7. Design system
-- Tokens oklch: background `#0a0a14`, accent violet `#8b5cf6`, accent electric blue `#3b82f6`, glass surfaces
-- Font: Space Grotesk (display) + Inter (body)
-- Glassmorphism cards, gradient borders, soft glow shadows
-- Animații subtile fade-in / scale la scroll
-- Navbar sticky cu blur, footer complet
+- Buton "Generează imagine" în pagina de generare postare → Lovable AI Gateway (`google/gemini-2.5-flash-image`).
+- Upload manual în bucket-ul `post-images` (există deja) + galerie reutilizabilă per brand.
+- Sugestii hashtag-uri și "best time to post" generate de AI pe baza domeniului + obiectivului.
 
-## 8. Detalii tehnice
-- TanStack Start + Tailwind v4 + shadcn
-- `mem://` setat cu paleta și regulile de design
-- SEO: head() per pagină, sitemap.xml, robots.txt
-- Responsive mobile-first
+## Etapa 4 — Colaborare, notificări, emailuri
 
-## Ce las pentru iterații ulterioare (confirmă dacă vrei acum)
-- Activare Stripe reală (necesită confirmare ta — Pro plan)
-- Conectare reală Ayrshare/Publer (am nevoie de cont + API key)
-- Trimitere efectivă email pentru contact/newsletter (Resend)
+- Flow complet invitații brand: trimitere email cu token → pagina `/invitatie/$token` deja există, o conectez la `brand_invitations` + accept/refuse.
+- Roluri (owner / editor / viewer) aplicate real în UI (ascunde butoane, blochează acțiuni).
+- Approval workflow: status `draft → pending_approval → approved → scheduled/published`.
+- Emailuri tranzacționale prin infrastructura Lovable Emails (nu Resend extern): welcome, publicare reușită, publicare eșuată, invitație, reset cuotă, factură (placeholder până la Stripe).
+- Notificări in-app (dropdown clopoțel) folosind `notification_preferences`.
 
-Confirmi să pornesc cu tot pachetul de mai sus (Cloud + AI + UI complet + stubs pentru Stripe & publishing)?
+## Etapa 5 — GDPR + Trust + Admin + Onboarding
+
+- Pagini publice noi: `/termeni`, `/confidentialitate`, `/cookies`.
+- Banner consent cookies (accept/reject/setări) cu salvare în localStorage.
+- Drept GDPR: în Setări cont → "Exportă datele mele" (JSON download) + "Șterge cont definitiv".
+- Pagina `/status` cu uptime simplu și status componente (DB, AI, Meta).
+- Panou admin (`/admin`) protejat cu rol `admin` (tabel `user_roles` separat — nu pe profile): mesaje contact, useri, postări, statistici globale.
+- Onboarding wizard post-signup: 3 pași (denumire brand, ton, conectare Meta).
+
+---
+
+## Detalii tehnice cheie
+
+- **Roluri admin**: tabel nou `user_roles` + enum `app_role` + funcție `has_role()` SECURITY DEFINER (nu se stochează rolul pe `users_profiles` — risc de privilege escalation).
+- **Cron auth**: header `apikey` cu anon key — nu inventez `CRON_SECRET`.
+- **Meta tokens**: long-lived page tokens stocate criptat în `meta_connections` (există deja), refresh automat la 50 zile.
+- **Emailuri**: voi verifica `email_domain--check_email_domain_status` la începutul etapei 4 și, dacă nu există domeniu, voi cere să-l configurezi prin dialogul oficial.
+- **Migrări DB necesare**:
+  - `user_roles` + enum + `has_role()`
+  - coloane noi pe `generated_posts`: `approval_status`, `failure_reason`
+  - tabel `notifications` (in-app)
+  - tabel `cookie_consents` (opțional, pentru audit GDPR)
+  - tabel `media_library` cu legătură la `post-images`
+- **Pagini noi în `src/routes/`**: `termeni.tsx`, `confidentialitate.tsx`, `cookies.tsx`, `status.tsx`, `_authenticated/calendar.tsx`, `_authenticated/admin/*.tsx`, `_authenticated/setari/cont.tsx`, `_authenticated/onboarding.tsx`.
+
+---
+
+## Ordinea de execuție și acordul tău
+
+Recomand să le fac în ordinea de mai sus (Etapa 1 → 5). Fiecare etapă o livrez într-un turn separat, ca să poți testa între ele. Spune-mi:
+
+1. **Aprobi planul așa cum e?** Dacă da, încep direct cu **Etapa 1 (publicare reală Meta)**.
+2. **Vrei o ordine diferită?** (ex: să încep cu GDPR pentru că ai nevoie de el înainte de lansare).
+3. **Sari ceva?** (ex: nu vrei admin panel acum).
