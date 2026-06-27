@@ -17,6 +17,10 @@ const schema = z.object({
   password: z.string().min(6, "Parola trebuie să aibă cel puțin 6 caractere").max(72),
 });
 
+const registerSchema = schema.extend({
+  fullName: z.string().trim().min(2, "Introdu numele complet (minim 2 caractere)").max(100),
+});
+
 function Auth() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
