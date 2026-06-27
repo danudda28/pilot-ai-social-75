@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video, FileSpreadsheet, Shield } from "lucide-react";
+import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video, FileSpreadsheet, Shield, Image as ImageIcon, ClipboardCheck, Sparkles } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandSwitcher } from "@/components/BrandSwitcher";
@@ -18,6 +18,9 @@ const nav = [
   { to: "/dashboard/video", label: "AI Video", icon: Video },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { to: "/dashboard/history", label: "Istoric", icon: History },
+  { to: "/dashboard/approvals", label: "Aprobări", icon: ClipboardCheck },
+  { to: "/dashboard/media", label: "Galerie", icon: ImageIcon },
+  { to: "/dashboard/ai-tools", label: "Asistent AI", icon: Sparkles },
   { to: "/dashboard/analytics", label: "Analitice", icon: BarChart3 },
   { to: "/dashboard/integrari", label: "Integrări", icon: Plug },
   { to: "/dashboard/brands", label: "Brand-uri", icon: Building2 },
