@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video, FileSpreadsheet } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { LayoutDashboard, Wand2, Plug, Calendar, LogOut, Layers, History, Users, BarChart3, Gift, Settings, Building2, Video, FileSpreadsheet, Shield } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandSwitcher } from "@/components/BrandSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
+import { checkAmAdmin } from "@/lib/admin.functions";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -24,18 +28,27 @@ const nav = [
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
+  const amAdmin = useServerFn(checkAmAdmin);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    amAdmin().then(r => setIsAdmin(!!(r as any).isAdmin)).catch(() => {});
+  }, []);
+
   async function signOut() {
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       <aside className="lg:w-64 glass-strong border-b lg:border-b-0 lg:border-r border-border/50 lg:min-h-screen flex flex-col">
-        <div className="p-5 space-y-3">
+        <div className="p-5 space-y-3 flex items-center justify-between lg:block">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
             <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
             Social <span className="gradient-text">Spark</span>
           </Link>
+          <div className="lg:hidden"><NotificationsBell /></div>
           <BrandSwitcher />
         </div>
         <nav className="px-3 flex lg:flex-col gap-1 overflow-x-auto pb-3 lg:pb-0">
@@ -46,8 +59,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <n.icon className="h-4 w-4" /> {n.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link to="/admin"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-primary hover:bg-secondary whitespace-nowrap"
+              activeProps={{ className: "bg-secondary" }}>
+              <Shield className="h-4 w-4" /> Admin
+            </Link>
+          )}
         </nav>
         <div className="hidden lg:flex mt-auto p-3 gap-2 items-center">
+          <NotificationsBell />
           <ThemeToggle />
           <button onClick={signOut}
             className="flex-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground">
