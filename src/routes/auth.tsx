@@ -122,7 +122,7 @@ function Auth() {
             {mode === "register" && (
               <div>
                 <label className="text-xs font-medium text-muted-foreground">Nume complet</label>
-                <input value={fullName} onChange={e => setFullName(e.target.value)}
+                <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
                   className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
               </div>
             )}
