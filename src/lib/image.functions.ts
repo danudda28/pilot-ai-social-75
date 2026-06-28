@@ -35,25 +35,41 @@ export const generatePostImage = createServerFn({ method: "POST" })
     const promoRegex = /(reducer\w*|ofert\w*|discount|promo\w*|sold\w*|black\s*friday|cadou|gratis|\d{1,2}\s?%|\-\s?\d{1,2}\s?%)/i;
     const hasPromo = promoRegex.test(combined);
 
-    const promoBlock = hasPromo && data.offerText
-      ? `\n\nINCLUDE ÎN IMAGINE un BADGE / STICKER vizibil, modern, cu textul promoțional EXACT, scris CORECT în limba română cu diacritice: "${data.offerText}". Badge-ul trebuie să fie lizibil, plasat într-un colț sau peste un element neutru, cu contrast bun (ex: cerc roșu/galben, bandă diagonală, etichetă elegantă). Textul TREBUIE să fie ortografiat perfect, fără litere lipsă sau inversate.`
-      : hasPromo
-        ? `\n\nINCLUDE ÎN IMAGINE un BADGE promoțional vizibil cu reducerea/oferta menționată în descriere, scris corect în limba română cu diacritice.`
-        : "";
+    // Extract a short promo headline (max ~40 chars) from offerText for the badge.
+    // Long sentences kill text legibility — we keep just the key info: percent + period.
+    function extractPromoHeadline(text: string): { headline: string; period: string } {
+      const pctMatch = text.match(/(\d{1,2})\s?%/);
+      const periodMatch = text.match(/(\d{1,2}\s*(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie|ian|feb|mar|apr|iun|iul|aug|sep|oct|nov|dec)[^,.]*?(?:\d{1,2}\s*(?:ianuarie|februarie|martie|aprilie|mai|iunie|iulie|august|septembrie|octombrie|noiembrie|decembrie|ian|feb|mar|apr|iun|iul|aug|sep|oct|nov|dec)[^,.]*)?)/i);
+      const headline = pctMatch ? `-${pctMatch[1]}%` : "OFERTĂ";
+      const period = periodMatch ? periodMatch[0].trim() : "";
+      return { headline, period };
+    }
 
-    const visualPrompt = `Fotografie profesională pentru social media (Instagram/Facebook), stil editorial, lumină naturală, compoziție atractivă. ${data.prompt}${promoBlock}`;
+    let promoBlock = "";
+    if (hasPromo) {
+      const { headline, period } = extractPromoHeadline(data.offerText ?? data.prompt);
+      promoBlock = `\n\nIMPORTANT — TEXT OVERLAY ON THE IMAGE (this is mandatory, the image MUST contain readable text):
+Add a large, bold, perfectly legible promotional badge / sticker overlay on the image with the following text rendered in clean sans-serif typography (Romanian language, with diacritics if present, spelled EXACTLY as written):
+- BIG HEADLINE: "${headline}"
+- SUBLINE (smaller, below): "${period || "Ofertă limitată"}"
+The badge should be a bright contrasting circle, rounded rectangle, or diagonal ribbon (red, yellow, or accent color) placed in a top corner of the photo so it doesn't cover the main subject. The typography must be sharp, well-kerned, and 100% spelled correctly — no missing letters, no gibberish, no fake characters. This text overlay is the most important part of the image.`;
+    }
 
-    // Use chat/completions with image modality (Gemini Nano Banana pattern)
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const visualPrompt = `Professional editorial social media photo (Instagram/Facebook), natural lighting, attractive composition, high quality. Subject: ${data.prompt}${promoBlock}`;
+
+    // Use openai/gpt-image-2 — best in class for legible text in generated images.
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [{ role: "user", content: visualPrompt }],
-        modalities: ["image", "text"],
+        model: "openai/gpt-image-2",
+        prompt: visualPrompt,
+        quality: "low",
+        size: "1024x1024",
+        n: 1,
       }),
     });
 
@@ -64,16 +80,11 @@ export const generatePostImage = createServerFn({ method: "POST" })
       throw new Error(`Generare imagine eșuată: ${res.status} ${errText}`);
     }
 
-    const json = (await res.json()) as {
-      choices?: Array<{
-        message?: {
-          images?: Array<{ image_url?: { url?: string } }>;
-        };
-      }>;
-    };
-    const dataUrl = json.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    if (!dataUrl) throw new Error("AI nu a returnat imagine. Reîncearcă.");
-    const b64 = dataUrl.replace(/^data:image\/[^;]+;base64,/, "");
+    const json = (await res.json()) as { data?: Array<{ b64_json?: string }> };
+    const b64 = json.data?.[0]?.b64_json;
+    if (!b64) throw new Error("AI nu a returnat imagine. Reîncearcă.");
+
+
 
 
     // Decode base64 to bytes
