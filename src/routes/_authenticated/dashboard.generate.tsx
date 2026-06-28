@@ -110,7 +110,9 @@ function Generate() {
   async function generateImageFor(postId: string, prompt: string) {
     setImgLoading(true);
     try {
-      const { signedUrl } = await generateImage({ data: { postId, prompt } });
+      const { signedUrl } = await generateImage({
+        data: { postId, prompt, offerText: form.extraContext || undefined },
+      });
       setImgUrl(signedUrl);
     } catch (e: any) {
       toast.error(e?.message || "Eroare la generarea imaginii.");
@@ -118,6 +120,7 @@ function Generate() {
       setImgLoading(false);
     }
   }
+
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
