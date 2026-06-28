@@ -5,6 +5,7 @@ import { z } from "zod";
 const Input = z.object({
   postId: z.string().uuid(),
   prompt: z.string().min(5).max(1500),
+  offerText: z.string().max(300).optional(),
 });
 
 /**
@@ -29,9 +30,21 @@ export const generatePostImage = createServerFn({ method: "POST" })
     if (postErr) throw new Error(postErr.message);
     if (!post) throw new Error("Postare inexistentă.");
 
-    const visualPrompt = `Fotografie profesională pentru social media (Instagram/Facebook), stil editorial, lumină naturală, compoziție atractivă, fără text suprapus. ${data.prompt}`;
+    // Detect promo / discount intent in either the visual prompt or extra context
+    const combined = `${data.prompt} ${data.offerText ?? ""}`;
+    const promoRegex = /(reducer\w*|ofert\w*|discount|promo\w*|sold\w*|black\s*friday|cadou|gratis|\d{1,2}\s?%|\-\s?\d{1,2}\s?%)/i;
+    const hasPromo = promoRegex.test(combined);
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+    const promoBlock = hasPromo && data.offerText
+      ? `\n\nINCLUDE ÎN IMAGINE un BADGE / STICKER vizibil, modern, cu textul promoțional EXACT, scris CORECT în limba română cu diacritice: "${data.offerText}". Badge-ul trebuie să fie lizibil, plasat într-un colț sau peste un element neutru, cu contrast bun (ex: cerc roșu/galben, bandă diagonală, etichetă elegantă). Textul TREBUIE să fie ortografiat perfect, fără litere lipsă sau inversate.`
+      : hasPromo
+        ? `\n\nINCLUDE ÎN IMAGINE un BADGE promoțional vizibil cu reducerea/oferta menționată în descriere, scris corect în limba română cu diacritice.`
+        : "";
+
+    const visualPrompt = `Fotografie profesională pentru social media (Instagram/Facebook), stil editorial, lumină naturală, compoziție atractivă. ${data.prompt}${promoBlock}`;
+
+    // Use chat/completions with image modality (Gemini Nano Banana pattern)
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -51,9 +64,17 @@ export const generatePostImage = createServerFn({ method: "POST" })
       throw new Error(`Generare imagine eșuată: ${res.status} ${errText}`);
     }
 
-    const json = (await res.json()) as { data?: Array<{ b64_json?: string }> };
-    const b64 = json.data?.[0]?.b64_json;
-    if (!b64) throw new Error("AI nu a returnat imagine.");
+    const json = (await res.json()) as {
+      choices?: Array<{
+        message?: {
+          images?: Array<{ image_url?: { url?: string } }>;
+        };
+      }>;
+    };
+    const dataUrl = json.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (!dataUrl) throw new Error("AI nu a returnat imagine. Reîncearcă.");
+    const b64 = dataUrl.replace(/^data:image\/[^;]+;base64,/, "");
+
 
     // Decode base64 to bytes
     const binary = atob(b64);
