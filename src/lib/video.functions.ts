@@ -203,7 +203,13 @@ export const generateSceneClip = createServerFn({ method: "POST" })
     });
     if (!createRes.ok) {
       const t = await createRes.text().catch(() => "");
-      throw new Error(`Replicate create ${createRes.status}: ${t.slice(0, 300)}`);
+      if (createRes.status === 402 || /insufficient credit/i.test(t)) {
+        throw new Error("Contul Replicate nu are credit. Intră pe replicate.com/account/billing, adaugă card și încarcă credit (min. $10), apoi reîncearcă în 2-3 min.");
+      }
+      if (createRes.status === 401 || createRes.status === 403) {
+        throw new Error("Token Replicate invalid sau expirat. Reconectează Replicate din Workspace → Connectors.");
+      }
+      throw new Error(`Replicate ${createRes.status}: ${t.slice(0, 250)}`);
     }
     const created = (await createRes.json()) as { id: string };
     const predId = created.id;
