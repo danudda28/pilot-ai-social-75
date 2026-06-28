@@ -68,7 +68,6 @@ export const generateVideoStoryboard = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
 
-    // Quota check (consumes 1 from posts_remaining — counts as a generation)
     const { data: profile } = await context.supabase
       .from("users_profiles")
       .select("posts_remaining,subscription_plan")
@@ -78,7 +77,6 @@ export const generateVideoStoryboard = createServerFn({ method: "POST" })
       throw new Error(`Limita planului ${profile.subscription_plan?.toUpperCase() ?? "FREE"} a fost atinsă. Fă upgrade pentru a genera video.`);
     }
 
-    // 1) Generate storyboard JSON via Gemini
     const sys = `Ești un strateg de conținut video pentru Instagram Reels și Facebook în limba română. Răspunzi DOAR cu JSON valid, fără markdown, fără explicații.`;
     const user = `Creează un storyboard pentru un Reel scurt (~${data.scenes * 4} secunde) despre subiectul:
 "${data.topic}"
@@ -112,14 +110,12 @@ Trebuie să fie EXACT ${data.scenes} scene. Fiecare durationSec între 3 și 5. 
     try {
       storyboard = JSON.parse(raw);
     } catch {
-      // Try to extract JSON block
       const m = raw.match(/\{[\s\S]*\}/);
       if (!m) throw new Error("AI a returnat un răspuns invalid. Reîncearcă.");
       storyboard = JSON.parse(m[0]);
     }
     if (!storyboard?.scenes?.length) throw new Error("Storyboard invalid.");
 
-    // 2) Generate images in parallel (cap to user's scene count)
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const videoId = crypto.randomUUID();
     const folder = `${context.userId}/video-${videoId}`;
@@ -148,7 +144,6 @@ Trebuie să fie EXACT ${data.scenes} scene. Fiecare durationSec între 3 și 5. 
 
     const failedCount = imageResults.filter(r => r.status === "rejected").length;
 
-    // 3) Decrement quota
     if (profile) {
       await context.supabase
         .from("users_profiles")
@@ -156,9 +151,141 @@ Trebuie să fie EXACT ${data.scenes} scene. Fiecare durationSec între 3 și 5. 
         .eq("user_id", context.userId);
     }
 
-    return {
-      videoId,
-      storyboard,
-      failedCount,
+    return { videoId, folder, storyboard, failedCount };
+  });
+
+// ============================================================
+// REPLICATE: image-to-video per scene
+// ============================================================
+
+const SceneClipInput = z.object({
+  folder: z.string().min(1),
+  sceneIndex: z.number().int().min(0).max(10),
+  imagePath: z.string().min(1),
+  motionPrompt: z.string().min(2).max(500),
+});
+
+export const generateSceneClip = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => SceneClipInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const lovKey = process.env.LOVABLE_API_KEY;
+    const repKey = process.env.REPLICATE_API_KEY;
+    if (!lovKey || !repKey) throw new Error("Replicate nu e conectat. Conectează-l din Workspace.");
+    if (!data.folder.startsWith(`${context.userId}/`)) throw new Error("Acces interzis.");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Get a public/signed URL for the source image so Replicate can fetch it
+    const { data: srcSigned } = await supabaseAdmin.storage
+      .from("post-images")
+      .createSignedUrl(data.imagePath, 60 * 60);
+    const imageUrl = srcSigned?.signedUrl;
+    if (!imageUrl) throw new Error("Nu pot accesa imaginea sursă.");
+
+    const gateway = "https://connector-gateway.lovable.dev/replicate/v1";
+    const headers = {
+      Authorization: `Bearer ${lovKey}`,
+      "X-Connection-Api-Key": repKey,
+      "Content-Type": "application/json",
     };
+
+    // Create prediction
+    const createRes = await fetch(`${gateway}/models/wan-video/wan-2.2-i2v-fast/predictions`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        input: {
+          image: imageUrl,
+          prompt: `Subtle cinematic motion, slow camera push-in, natural movement. ${data.motionPrompt}`,
+        },
+      }),
+    });
+    if (!createRes.ok) {
+      const t = await createRes.text().catch(() => "");
+      throw new Error(`Replicate create ${createRes.status}: ${t.slice(0, 300)}`);
+    }
+    const created = (await createRes.json()) as { id: string };
+    const predId = created.id;
+    if (!predId) throw new Error("Replicate nu a returnat un id de prediction.");
+
+    // Poll
+    let outputUrl: string | null = null;
+    const maxTries = 90; // ~3 minutes at 2s
+    for (let i = 0; i < maxTries; i++) {
+      await new Promise(r => setTimeout(r, i < 3 ? 2000 : 3000));
+      const r = await fetch(`${gateway}/predictions/${predId}`, { headers });
+      if (!r.ok) continue;
+      const j = (await r.json()) as { status: string; output?: string | string[]; error?: string };
+      if (j.status === "succeeded") {
+        outputUrl = Array.isArray(j.output) ? j.output[0] : (j.output ?? null);
+        break;
+      }
+      if (j.status === "failed" || j.status === "canceled") {
+        throw new Error(`Replicate ${j.status}: ${j.error ?? "necunoscut"}`);
+      }
+    }
+    if (!outputUrl) throw new Error("Generarea clipului a depășit timpul alocat. Reîncearcă.");
+
+    // Download + upload to storage
+    const vidRes = await fetch(outputUrl);
+    if (!vidRes.ok) throw new Error("Nu pot descărca clipul generat.");
+    const bytes = new Uint8Array(await vidRes.arrayBuffer());
+    const path = `${data.folder}/scene-${data.sceneIndex + 1}.mp4`;
+    const { error: upErr } = await supabaseAdmin.storage
+      .from("post-images")
+      .upload(path, bytes, { contentType: "video/mp4", upsert: true });
+    if (upErr) throw new Error(upErr.message);
+    const { data: signed } = await supabaseAdmin.storage
+      .from("post-images")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    return { path, signedUrl: signed?.signedUrl ?? null };
+  });
+
+// ============================================================
+// LOVABLE TTS: Romanian voice-over for the whole reel
+// ============================================================
+
+const TtsInput = z.object({
+  folder: z.string().min(1),
+  text: z.string().min(2).max(2000),
+  voice: z.string().default("alloy"),
+});
+
+export const generateVoiceover = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => TtsInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
+    if (!data.folder.startsWith(`${context.userId}/`)) throw new Error("Acces interzis.");
+
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai/gpt-4o-mini-tts",
+        input: data.text,
+        voice: data.voice,
+        response_format: "mp3",
+        instructions: "Vorbește în limba română, ton natural, energic și prietenos, ca o voce de reel viral.",
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      if (res.status === 402) throw new Error("Creditele AI s-au epuizat.");
+      throw new Error(`TTS ${res.status}: ${t.slice(0, 200)}`);
+    }
+    const bytes = new Uint8Array(await res.arrayBuffer());
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const path = `${data.folder}/voiceover.mp3`;
+    const { error: upErr } = await supabaseAdmin.storage
+      .from("post-images")
+      .upload(path, bytes, { contentType: "audio/mpeg", upsert: true });
+    if (upErr) throw new Error(upErr.message);
+    const { data: signed } = await supabaseAdmin.storage
+      .from("post-images")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    return { path, signedUrl: signed?.signedUrl ?? null };
   });
