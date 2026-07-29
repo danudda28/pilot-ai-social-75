@@ -128,9 +128,11 @@ function AdminHome() {
         </div>
       </div>
 
-      <div className="text-xs text-muted-foreground">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
         <Link to="/dashboard" className="text-primary hover:underline">← Înapoi la Dashboard</Link>
+        <Link to="/admin/api-runner" className="text-primary hover:underline">⚡ Rulare apeluri API →</Link>
       </div>
+
     </div>
   );
 }
