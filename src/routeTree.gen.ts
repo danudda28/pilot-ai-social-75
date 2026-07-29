@@ -45,6 +45,7 @@ import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_auth
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
 import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
+import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
@@ -248,6 +249,12 @@ const AuthenticatedDashboardAiToolsRoute =
     path: '/ai-tools',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedAdminApiRunnerRoute =
+  AuthenticatedAdminApiRunnerRouteImport.update({
+    id: '/api-runner',
+    path: '/api-runner',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiPublicCronSyncMetaInsightsRoute =
   ApiPublicCronSyncMetaInsightsRouteImport.update({
     id: '/api/public/cron/sync-meta-insights',
@@ -301,10 +308,11 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -344,10 +352,11 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
-  '/admin': typeof AuthenticatedAdminRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -389,10 +398,11 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/_authenticated/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -438,6 +448,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/admin/api-runner'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
@@ -481,6 +492,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/admin/api-runner'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
@@ -525,6 +537,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/_authenticated/admin/api-runner'
     | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
@@ -830,6 +843,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAiToolsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/admin/api-runner': {
+      id: '/_authenticated/admin/api-runner'
+      path: '/api-runner'
+      fullPath: '/admin/api-runner'
+      preLoaderRoute: typeof AuthenticatedAdminApiRunnerRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/public/cron/sync-meta-insights': {
       id: '/api/public/cron/sync-meta-insights'
       path: '/api/public/cron/sync-meta-insights'
@@ -875,6 +895,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminApiRunnerRoute: typeof AuthenticatedAdminApiRunnerRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminApiRunnerRoute: AuthenticatedAdminApiRunnerRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAiToolsRoute: typeof AuthenticatedDashboardAiToolsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
@@ -918,12 +949,12 @@ const AuthenticatedDashboardRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
 }
 
@@ -969,13 +1000,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
