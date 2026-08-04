@@ -128,8 +128,9 @@ function Integrations() {
               Sincronizează Instagram
             </button>
           </div>
-
+          <div className="glass rounded-2xl divide-y divide-border/40">
             {conns.map(c => {
+
               const expired = c.token_expires_at && new Date(c.token_expires_at) < new Date();
               return (
                 <div key={c.id} className="p-4 flex items-center justify-between gap-4">
