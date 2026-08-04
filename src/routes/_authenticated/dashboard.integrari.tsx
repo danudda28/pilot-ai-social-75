@@ -5,9 +5,11 @@ import {
   getMetaAuthUrl,
   getMetaConnections,
   disconnectMetaConnection,
+  syncInstagramAccounts,
 } from "@/lib/meta.functions";
 import { toast } from "sonner";
-import { Instagram, Facebook, Plug, Trash2, Loader2, ShieldCheck } from "lucide-react";
+import { Instagram, Facebook, Plug, Trash2, Loader2, ShieldCheck, RefreshCw } from "lucide-react";
+
 import { z } from "zod";
 
 const search = z.object({
