@@ -5,9 +5,11 @@ import {
   getMetaAuthUrl,
   getMetaConnections,
   disconnectMetaConnection,
+  syncInstagramAccounts,
 } from "@/lib/meta.functions";
 import { toast } from "sonner";
-import { Instagram, Facebook, Plug, Trash2, Loader2, ShieldCheck } from "lucide-react";
+import { Instagram, Facebook, Plug, Trash2, Loader2, ShieldCheck, RefreshCw } from "lucide-react";
+
 import { z } from "zod";
 
 const search = z.object({
@@ -37,8 +39,22 @@ function Integrations() {
   const list = useServerFn(getMetaConnections);
   const authUrl = useServerFn(getMetaAuthUrl);
   const disconnect = useServerFn(disconnectMetaConnection);
+  const syncIg = useServerFn(syncInstagramAccounts);
   const [conns, setConns] = useState<Connection[]>([]);
   const [connecting, setConnecting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+
+  async function onSyncIg() {
+    setSyncing(true);
+    try {
+      const r = (await syncIg()) as { linked: number; total: number };
+      if (r.linked > 0) toast.success(`${r.linked} cont(uri) Instagram detectate.`);
+      else toast.error("Niciun cont Instagram Business găsit. Verifică în Facebook că pagina are un cont IG Business/Creator asociat.");
+      refresh();
+    } catch (e: any) { toast.error(e?.message ?? "Eroare"); }
+    finally { setSyncing(false); }
+  }
+
 
   async function refresh() {
     try { setConns((await list()) as Connection[]); } catch {}
@@ -101,9 +117,20 @@ function Integrations() {
 
       {conns.length > 0 && (
         <div>
-          <h2 className="font-display text-xl font-bold mb-4">Conturi conectate</h2>
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <h2 className="font-display text-xl font-bold">Conturi conectate</h2>
+            <button
+              onClick={onSyncIg}
+              disabled={syncing}
+              className="inline-flex items-center gap-2 rounded-lg glass-strong px-3 py-2 text-xs font-semibold disabled:opacity-50"
+            >
+              {syncing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              Sincronizează Instagram
+            </button>
+          </div>
           <div className="glass rounded-2xl divide-y divide-border/40">
             {conns.map(c => {
+
               const expired = c.token_expires_at && new Date(c.token_expires_at) < new Date();
               return (
                 <div key={c.id} className="p-4 flex items-center justify-between gap-4">

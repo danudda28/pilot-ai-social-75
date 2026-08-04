@@ -90,20 +90,57 @@ export type FbPage = {
   instagram_business_account?: { id: string; username?: string };
 };
 
+/** Looks up the IG Business/Creator account linked to a page, using the PAGE token. */
+export async function getPageInstagram(pageId: string, pageAccessToken: string): Promise<{ id: string; username?: string } | null> {
+  try {
+    const res = await fetch(
+      `${GRAPH}/${pageId}?fields=instagram_business_account{id,username},connected_instagram_account{id,username}&access_token=${pageAccessToken}`,
+    );
+    const json = await res.json() as any;
+    if (!res.ok || json.error) return null;
+    const ig = json.instagram_business_account ?? json.connected_instagram_account;
+    if (!ig?.id) return null;
+    let username = ig.username as string | undefined;
+    if (!username) {
+      const uRes = await fetch(`${GRAPH}/${ig.id}?fields=username&access_token=${pageAccessToken}`);
+      const uJson = await uRes.json() as any;
+      username = uJson?.username;
+    }
+    return { id: ig.id, username };
+  } catch {
+    return null;
+  }
+}
+
 export async function getMeAndPages(userToken: string): Promise<{ user: { id: string; name: string }; pages: FbPage[] }> {
   const meRes = await fetch(`${GRAPH}/me?fields=id,name&access_token=${userToken}`);
   const me = await meRes.json() as any;
   if (!meRes.ok || me.error) throw new Error(`Me: ${me.error?.message ?? meRes.status}`);
 
-  const pagesRes = await fetch(`${GRAPH}/me/accounts?fields=id,name,access_token,instagram_business_account{id,username}&access_token=${userToken}`);
+  const pagesRes = await fetch(`${GRAPH}/me/accounts?fields=id,name,access_token,instagram_business_account{id,username},connected_instagram_account{id,username}&access_token=${userToken}`);
   const pagesJson = await pagesRes.json() as any;
   if (!pagesRes.ok || pagesJson.error) throw new Error(`Pages: ${pagesJson.error?.message ?? pagesRes.status}`);
 
+  const pages = (pagesJson.data ?? []) as (FbPage & { connected_instagram_account?: { id: string; username?: string } })[];
+
+  // Fallback: /me/accounts sometimes omits the IG link; re-query with the page token.
+  await Promise.all(
+    pages.map(async (p) => {
+      if (!p.instagram_business_account?.id) {
+        const ig = p.connected_instagram_account?.id
+          ? p.connected_instagram_account
+          : await getPageInstagram(p.id, p.access_token);
+        if (ig?.id) p.instagram_business_account = ig;
+      }
+    }),
+  );
+
   return {
     user: { id: me.id, name: me.name },
-    pages: (pagesJson.data ?? []) as FbPage[],
+    pages: pages as FbPage[],
   };
 }
+
 
 // ---------- Publishing ----------
 
