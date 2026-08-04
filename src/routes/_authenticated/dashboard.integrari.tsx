@@ -117,8 +117,18 @@ function Integrations() {
 
       {conns.length > 0 && (
         <div>
-          <h2 className="font-display text-xl font-bold mb-4">Conturi conectate</h2>
-          <div className="glass rounded-2xl divide-y divide-border/40">
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <h2 className="font-display text-xl font-bold">Conturi conectate</h2>
+            <button
+              onClick={onSyncIg}
+              disabled={syncing}
+              className="inline-flex items-center gap-2 rounded-lg glass-strong px-3 py-2 text-xs font-semibold disabled:opacity-50"
+            >
+              {syncing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              Sincronizează Instagram
+            </button>
+          </div>
+
             {conns.map(c => {
               const expired = c.token_expires_at && new Date(c.token_expires_at) < new Date();
               return (
