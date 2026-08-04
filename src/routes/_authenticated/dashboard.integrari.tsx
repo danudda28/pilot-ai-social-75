@@ -39,8 +39,22 @@ function Integrations() {
   const list = useServerFn(getMetaConnections);
   const authUrl = useServerFn(getMetaAuthUrl);
   const disconnect = useServerFn(disconnectMetaConnection);
+  const syncIg = useServerFn(syncInstagramAccounts);
   const [conns, setConns] = useState<Connection[]>([]);
   const [connecting, setConnecting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+
+  async function onSyncIg() {
+    setSyncing(true);
+    try {
+      const r = (await syncIg()) as { linked: number; total: number };
+      if (r.linked > 0) toast.success(`${r.linked} cont(uri) Instagram detectate.`);
+      else toast.error("Niciun cont Instagram Business găsit. Verifică în Facebook că pagina are un cont IG Business/Creator asociat.");
+      refresh();
+    } catch (e: any) { toast.error(e?.message ?? "Eroare"); }
+    finally { setSyncing(false); }
+  }
+
 
   async function refresh() {
     try { setConns((await list()) as Connection[]); } catch {}
