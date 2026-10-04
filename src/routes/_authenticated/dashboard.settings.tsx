@@ -123,6 +123,30 @@ function SettingsPage() {
         </button>
       </div>
 
+
+      <div className="rounded-2xl border border-red-500/40 bg-red-500/5 p-6 space-y-4">
+        <h2 className="font-display text-lg font-bold flex items-center gap-2 text-red-400">
+          <ShieldAlert className="h-4 w-4" /> Zonă periculoasă
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Ștergerea contului este permanentă și ireversibilă. Vom șterge profilul tău, toate brand-urile pe care le deții, postările, conexiunile Meta și istoricul. Această acțiune nu poate fi anulată.
+        </p>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">Tastează <strong>ȘTERGE</strong> pentru a confirma:</label>
+          <input value={confirmDelete} onChange={e => setConfirmDelete(e.target.value)}
+            className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-red-500" />
+        </div>
+        <button onClick={handleDelete} disabled={deleting || confirmDelete !== "ȘTERGE"}
+          className="inline-flex items-center gap-2 rounded-lg bg-red-500/90 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2.5 text-sm font-semibold text-white">
+          {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+          Șterge contul permanent
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 function CrmWebhookCard() {
   const getFn = useServerFn(getBrandWebhook);
   const saveFn = useServerFn(saveBrandWebhook);
@@ -197,28 +221,6 @@ function CrmWebhookCard() {
               className="rounded-lg border border-red-500/40 text-red-500 px-4 py-2.5 text-sm font-semibold hover:bg-red-500/10">Șterge</button>
           </>
         )}
-      </div>
-    </div>
-  );
-}
-
-      <div className="rounded-2xl border border-red-500/40 bg-red-500/5 p-6 space-y-4">
-        <h2 className="font-display text-lg font-bold flex items-center gap-2 text-red-400">
-          <ShieldAlert className="h-4 w-4" /> Zonă periculoasă
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Ștergerea contului este permanentă și ireversibilă. Vom șterge profilul tău, toate brand-urile pe care le deții, postările, conexiunile Meta și istoricul. Această acțiune nu poate fi anulată.
-        </p>
-        <div>
-          <label className="text-xs font-medium text-muted-foreground">Tastează <strong>ȘTERGE</strong> pentru a confirma:</label>
-          <input value={confirmDelete} onChange={e => setConfirmDelete(e.target.value)}
-            className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-red-500" />
-        </div>
-        <button onClick={handleDelete} disabled={deleting || confirmDelete !== "ȘTERGE"}
-          className="inline-flex items-center gap-2 rounded-lg bg-red-500/90 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2.5 text-sm font-semibold text-white">
-          {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-          Șterge contul permanent
-        </button>
       </div>
     </div>
   );
