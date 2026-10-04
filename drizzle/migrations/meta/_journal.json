@@ -15,6 +15,13 @@
       "when": 1791112120298,
       "tag": "0001_phase2_content_publishing",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791112630983,
+      "tag": "0002_phase3_inbox_agent",
+      "breakpoints": true
     }
   ]
 }

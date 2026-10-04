@@ -119,7 +119,7 @@ function DashboardHome() {
             <div className="flex justify-between"><span>Drafturi</span><b>{drafts}</b></div>
             <div className="flex justify-between"><span>Facebook / Instagram</span>
               <b className={metaConnected ? "text-success" : "text-muted-foreground"}>{metaConnected ? "Conectat" : "Neconectat"}</b></div>
-            <div className="flex justify-between"><span>Inbox AI</span><b className="text-muted-foreground">În curând</b></div>
+            <div className="flex justify-between"><span>Inbox AI</span><Link to="/dashboard/inbox" className="font-bold text-primary">Deschide</Link></div>
           </div>
         </Panel>
         <Panel>

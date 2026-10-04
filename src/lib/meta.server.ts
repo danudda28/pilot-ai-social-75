@@ -14,6 +14,13 @@ export const META_SCOPES = [
   "instagram_content_publish",
   "business_management",
   "public_profile",
+  // Phase 3: inbox + comments (require App Review for non-test users)
+  "pages_messaging",
+  "pages_manage_metadata",
+  "pages_read_user_content",
+  "pages_manage_engagement",
+  "instagram_manage_messages",
+  "instagram_manage_comments",
 ];
 
 function appCreds() {
@@ -246,4 +253,53 @@ export async function inspectConnection(args: { pageAccessToken: string; userAcc
     missing: REQUIRED_SCOPES.filter(s => !scopes.includes(s)),
     error: d.error?.message ?? j?.error?.message ?? null,
   };
+}
+
+
+// ---------- Inbox (Phase 3) ----------
+
+async function graphPost(path: string, params: Record<string, string>) {
+  const res = await fetch(`${GRAPH}/${path}`, { method: "POST", body: new URLSearchParams(params) });
+  const j = await res.json() as any;
+  if (!res.ok || j.error) throw new Error(j.error?.message ?? `Meta ${res.status}`);
+  return j;
+}
+
+export async function subscribePageToWebhooks(pageId: string, pageAccessToken: string) {
+  return graphPost(`${pageId}/subscribed_apps`, {
+    subscribed_fields: "messages,messaging_postbacks,feed",
+    access_token: pageAccessToken,
+  });
+}
+
+/** Messenger + Instagram DM send (Send API via the page). Standard 24h window applies. */
+export async function sendDirectMessage(args: { pageId: string; pageAccessToken: string; recipientId: string; text: string }) {
+  const j = await graphPost(`${args.pageId}/messages`, {
+    recipient: JSON.stringify({ id: args.recipientId }),
+    message: JSON.stringify({ text: args.text }),
+    messaging_type: "RESPONSE",
+    access_token: args.pageAccessToken,
+  });
+  return { id: (j.message_id ?? j.id) as string };
+}
+
+export async function replyToComment(args: { commentId: string; pageAccessToken: string; text: string; kind: "fb" | "ig" }) {
+  const j = args.kind === "fb"
+    ? await graphPost(`${args.commentId}/comments`, { message: args.text, access_token: args.pageAccessToken })
+    : await graphPost(`${args.commentId}/replies`, { message: args.text, access_token: args.pageAccessToken });
+  return { id: j.id as string };
+}
+
+export async function hideComment(args: { commentId: string; pageAccessToken: string; kind: "fb" | "ig" }) {
+  return args.kind === "fb"
+    ? graphPost(args.commentId, { is_hidden: "true", access_token: args.pageAccessToken })
+    : graphPost(args.commentId, { hide: "true", access_token: args.pageAccessToken });
+}
+
+export function verifyWebhookSignature(rawBody: string, header: string | null): boolean {
+  if (!header?.startsWith("sha256=")) return false;
+  const { secret } = appCreds();
+  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
+  const a = Buffer.from(header.slice(7)); const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
 }

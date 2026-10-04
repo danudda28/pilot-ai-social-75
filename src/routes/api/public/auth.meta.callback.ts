@@ -52,6 +52,10 @@ export const Route = createFileRoute("/api/public/auth/meta/callback")({
             .upsert(rows, { onConflict: "user_id,page_id" });
           if (upErr) throw new Error(upErr.message);
 
+          // Subscribe each page to messaging/comment webhooks (best effort; needs pages_manage_metadata).
+          const { subscribePageToWebhooks } = await import("@/lib/meta.server");
+          await Promise.all(pages.map(p => subscribePageToWebhooks(p.id, p.access_token).catch(e => console.warn("[meta subscribe]", p.id, e?.message))));
+
           return htmlRedirect(`${origin}/dashboard/integrari?meta_connected=${pages.length}`);
         } catch (e: any) {
           console.error("[meta callback]", e);

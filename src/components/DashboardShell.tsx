@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Home, Calendar, PenSquare, Megaphone, MessagesSquare, Brain, Image as ImageIcon, BarChart3,
   UserRound, Plug, Users, Settings, LogOut, Shield, Layers, FileSpreadsheet, Video, History,
-  ClipboardCheck, Sparkles, Target, Building2, Gift, MoreHorizontal, X,
+  ClipboardCheck, Sparkles, Target, Bot, Building2, Gift, MoreHorizontal, X,
 } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,8 @@ const mainNav: NavItem[] = [
   { to: "/dashboard/generate", label: "Creează", icon: PenSquare },
   { to: "/dashboard/strategie", label: "Strategie", icon: Target },
   { to: "/dashboard/campanii", label: "Campanii", icon: Megaphone },
-  { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare, soon: true },
+  { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare },
+  { to: "/dashboard/agent", label: "Agent AI", icon: Bot },
   { to: "/dashboard/brand-brain", label: "Brand Brain", icon: Brain },
   { to: "/dashboard/media", label: "Bibliotecă media", icon: ImageIcon },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },

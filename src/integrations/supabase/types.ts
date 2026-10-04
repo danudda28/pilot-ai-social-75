@@ -14,6 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_settings: {
+        Row: {
+          brand_id: string
+          created_at: string
+          enabled: boolean
+          forbidden_topics: string[]
+          handoff_keywords: string[]
+          handoff_message: string
+          id: string
+          mode: string
+          organization_id: string
+          updated_at: string
+          working_hours: Json
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          enabled?: boolean
+          forbidden_topics?: string[]
+          handoff_keywords?: string[]
+          handoff_message?: string
+          id?: string
+          mode?: string
+          organization_id: string
+          updated_at?: string
+          working_hours?: Json
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          enabled?: boolean
+          forbidden_topics?: string[]
+          handoff_keywords?: string[]
+          handoff_message?: string
+          id?: string
+          mode?: string
+          organization_id?: string
+          updated_at?: string
+          working_hours?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_settings_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: true
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_reply_drafts: {
+        Row: {
+          body: string
+          brand_id: string
+          confidence: number | null
+          conversation_id: string
+          created_at: string
+          decided_by: string | null
+          edited_text: string | null
+          handoff_suggested: boolean
+          id: string
+          message_id: string | null
+          organization_id: string
+          reason: string | null
+          sources: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          brand_id: string
+          confidence?: number | null
+          conversation_id: string
+          created_at?: string
+          decided_by?: string | null
+          edited_text?: string | null
+          handoff_suggested?: boolean
+          id?: string
+          message_id?: string | null
+          organization_id: string
+          reason?: string | null
+          sources?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          brand_id?: string
+          confidence?: number | null
+          conversation_id?: string
+          created_at?: string
+          decided_by?: string | null
+          edited_text?: string | null
+          handoff_suggested?: boolean
+          id?: string
+          message_id?: string | null
+          organization_id?: string
+          reason?: string | null
+          sources?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_reply_drafts_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_reply_drafts_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_reply_drafts_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -657,6 +783,78 @@ export type Database = {
           },
         ]
       }
+      conversations: {
+        Row: {
+          ai_paused: boolean
+          brand_id: string
+          channel: string
+          connection_id: string | null
+          created_at: string
+          customer_id: string | null
+          customer_name: string | null
+          external_id: string
+          id: string
+          last_inbound_at: string | null
+          last_message_at: string
+          organization_id: string
+          post_external_id: string | null
+          status: string
+          unread: number
+          updated_at: string
+        }
+        Insert: {
+          ai_paused?: boolean
+          brand_id: string
+          channel: string
+          connection_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          external_id: string
+          id?: string
+          last_inbound_at?: string | null
+          last_message_at?: string
+          organization_id: string
+          post_external_id?: string | null
+          status?: string
+          unread?: number
+          updated_at?: string
+        }
+        Update: {
+          ai_paused?: boolean
+          brand_id?: string
+          channel?: string
+          connection_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          external_id?: string
+          id?: string
+          last_inbound_at?: string | null
+          last_message_at?: string
+          organization_id?: string
+          post_external_id?: string | null
+          status?: string
+          unread?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "meta_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_log: {
         Row: {
           created_at: string
@@ -863,6 +1061,69 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: false
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          author_name: string | null
+          body: string
+          brand_id: string
+          conversation_id: string
+          created_at: string
+          direction: string
+          external_id: string | null
+          hidden: boolean
+          id: string
+          organization_id: string
+          sent_at: string
+          sent_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string | null
+          body?: string
+          brand_id: string
+          conversation_id: string
+          created_at?: string
+          direction: string
+          external_id?: string | null
+          hidden?: boolean
+          id?: string
+          organization_id: string
+          sent_at?: string
+          sent_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string | null
+          body?: string
+          brand_id?: string
+          conversation_id?: string
+          created_at?: string
+          direction?: string
+          external_id?: string | null
+          hidden?: boolean
+          id?: string
+          organization_id?: string
+          sent_at?: string
+          sent_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -1428,6 +1689,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      webhook_events: {
+        Row: {
+          created_at: string
+          dedupe_key: string
+          error: string | null
+          id: string
+          object: string | null
+          payload: Json
+          processed: boolean
+          signature_valid: boolean
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          dedupe_key: string
+          error?: string | null
+          id?: string
+          object?: string | null
+          payload: Json
+          processed?: boolean
+          signature_valid?: boolean
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          dedupe_key?: string
+          error?: string | null
+          id?: string
+          object?: string | null
+          payload?: Json
+          processed?: boolean
+          signature_valid?: boolean
+          source?: string
+        }
+        Relationships: []
       }
     }
     Views: {
