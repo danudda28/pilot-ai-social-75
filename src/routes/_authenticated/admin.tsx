@@ -133,6 +133,7 @@ function AdminHome() {
         <div className="flex gap-4">
           <Link to="/admin/monitor" className="text-primary hover:underline">📊 Monitorizare</Link>
           <Link to="/admin/api-runner" className="text-primary hover:underline">⚡ Rulare apeluri API →</Link>
+          <Link to="/admin/meta-runner" className="text-primary hover:underline">🎯 Teste Marketing API →</Link>
         </div>
       </div>
 

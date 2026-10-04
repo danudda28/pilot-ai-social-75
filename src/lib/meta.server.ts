@@ -7,6 +7,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const GRAPH = "https://graph.facebook.com/v21.0";
 
 export const META_SCOPES = [
+  "ads_read",
   "pages_show_list",
   "pages_manage_posts",
   "pages_read_engagement",
