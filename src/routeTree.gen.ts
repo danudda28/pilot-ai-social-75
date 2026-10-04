@@ -35,6 +35,7 @@ import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authe
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
+import { Route as AuthenticatedDashboardOnboardingRouteImport } from './routes/_authenticated/dashboard.onboarding'
 import { Route as AuthenticatedDashboardMediaRouteImport } from './routes/_authenticated/dashboard.media'
 import { Route as AuthenticatedDashboardLeaduriRouteImport } from './routes/_authenticated/dashboard.leaduri'
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
@@ -191,6 +192,12 @@ const AuthenticatedDashboardReferralRoute =
   AuthenticatedDashboardReferralRouteImport.update({
     id: '/referral',
     path: '/referral',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardOnboardingRoute =
+  AuthenticatedDashboardOnboardingRouteImport.update({
+    id: '/onboarding',
+    path: '/onboarding',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardMediaRoute =
@@ -355,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -402,6 +410,7 @@ export interface FileRoutesByTo {
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -452,6 +461,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
   '/_authenticated/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/_authenticated/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/_authenticated/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/dashboard/integrari'
     | '/dashboard/leaduri'
     | '/dashboard/media'
+    | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/dashboard/integrari'
     | '/dashboard/leaduri'
     | '/dashboard/media'
+    | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
@@ -598,6 +610,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/integrari'
     | '/_authenticated/dashboard/leaduri'
     | '/_authenticated/dashboard/media'
+    | '/_authenticated/dashboard/onboarding'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/team'
@@ -823,6 +836,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardReferralRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/onboarding': {
+      id: '/_authenticated/dashboard/onboarding'
+      path: '/onboarding'
+      fullPath: '/dashboard/onboarding'
+      preLoaderRoute: typeof AuthenticatedDashboardOnboardingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/media': {
       id: '/_authenticated/dashboard/media'
       path: '/media'
@@ -999,6 +1019,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
   AuthenticatedDashboardLeaduriRoute: typeof AuthenticatedDashboardLeaduriRoute
   AuthenticatedDashboardMediaRoute: typeof AuthenticatedDashboardMediaRoute
+  AuthenticatedDashboardOnboardingRoute: typeof AuthenticatedDashboardOnboardingRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
@@ -1022,6 +1043,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
     AuthenticatedDashboardLeaduriRoute: AuthenticatedDashboardLeaduriRoute,
     AuthenticatedDashboardMediaRoute: AuthenticatedDashboardMediaRoute,
+    AuthenticatedDashboardOnboardingRoute:
+      AuthenticatedDashboardOnboardingRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
