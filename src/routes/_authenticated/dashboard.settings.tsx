@@ -109,6 +109,8 @@ function SettingsPage() {
         </button>
       </div>
 
+      <CrmWebhookCard />
+
       <div className="glass-strong rounded-2xl p-6 space-y-4">
         <h2 className="font-display text-lg font-bold flex items-center gap-2"><Download className="h-4 w-4" /> Datele tale (GDPR)</h2>
         <p className="text-sm text-muted-foreground">
@@ -120,6 +122,85 @@ function SettingsPage() {
           Exportă datele mele
         </button>
       </div>
+
+function CrmWebhookCard() {
+  const getFn = useServerFn(getBrandWebhook);
+  const saveFn = useServerFn(saveBrandWebhook);
+  const delFn = useServerFn(deleteBrandWebhook);
+  const testFn = useServerFn(testBrandWebhook);
+  const [url, setUrl] = useState("");
+  const [secret, setSecret] = useState("");
+  const [events, setEvents] = useState<string[]>(["lead.created"]);
+  const [active, setActive] = useState(true);
+  const [configured, setConfigured] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => { (async () => {
+    const r = await getFn();
+    if ((r as any).webhook) {
+      const w = (r as any).webhook;
+      setUrl(w.url); setSecret(w.secret); setEvents(w.events); setActive(w.active); setConfigured(true);
+    }
+    setLoaded(true);
+  })(); }, []);
+
+  const toggleEvent = (e: string) => setEvents(ev => ev.includes(e) ? ev.filter(x => x !== e) : [...ev, e]);
+
+  async function save() {
+    setBusy(true);
+    try {
+      const r = await saveFn({ data: { url, events: events as any, active } });
+      setSecret((r as any).secret); setConfigured(true);
+      toast.success("Webhook CRM salvat.");
+    } catch (e: any) { toast.error(e?.message ?? "Eroare la salvare"); } finally { setBusy(false); }
+  }
+
+  if (!loaded) return null;
+  return (
+    <div className="glass-strong rounded-2xl p-6 space-y-4">
+      <h2 className="font-display text-lg font-bold flex items-center gap-2"><Webhook className="h-4 w-4" /> Integrare CRM (webhook)</h2>
+      <p className="text-sm text-muted-foreground">
+        Primești automat în CRM-ul tău un eveniment semnat (HMAC) când apare un lead nou sau când AI-ul trimite un răspuns automat.
+      </p>
+      <div>
+        <label className="text-xs font-medium text-muted-foreground">Adresa webhook (HTTPS)</label>
+        <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://crm-ul-tau.ro/webhook"
+          className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+      </div>
+      <div className="flex flex-wrap gap-4">
+        {([["lead.created", "Lead nou"], ["reply.auto_sent", "Răspuns automat trimis"]] as const).map(([e, label]) => (
+          <label key={e} className="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="checkbox" checked={events.includes(e)} onChange={() => toggleEvent(e)} className="h-4 w-4 accent-primary" /> {label}
+          </label>
+        ))}
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" checked={active} onChange={e => setActive(e.target.checked)} className="h-4 w-4 accent-primary" /> Activ
+        </label>
+      </div>
+      {secret && (
+        <div className="rounded-lg bg-secondary/40 p-3 text-xs">
+          <span className="text-muted-foreground">Cheia secretă de verificare a semnăturii: </span>
+          <code className="font-mono break-all">{secret}</code>
+        </div>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <button onClick={save} disabled={busy || !url || events.length === 0}
+          className="inline-flex items-center gap-2 gradient-bg rounded-lg px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40">
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Salvează webhook
+        </button>
+        {configured && (
+          <>
+            <button onClick={async () => { setBusy(true); try { await testFn(); toast.success("Eveniment de test trimis."); } catch (e: any) { toast.error(e?.message ?? "Eroare"); } finally { setBusy(false); } }}
+              className="rounded-lg border border-border px-4 py-2.5 text-sm font-semibold hover:bg-secondary">Trimite test</button>
+            <button onClick={async () => { setBusy(true); try { await delFn(); setUrl(""); setSecret(""); setConfigured(false); toast.success("Webhook șters."); } finally { setBusy(false); } }}
+              className="rounded-lg border border-red-500/40 text-red-500 px-4 py-2.5 text-sm font-semibold hover:bg-red-500/10">Șterge</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
       <div className="rounded-2xl border border-red-500/40 bg-red-500/5 p-6 space-y-4">
         <h2 className="font-display text-lg font-bold flex items-center gap-2 text-red-400">
