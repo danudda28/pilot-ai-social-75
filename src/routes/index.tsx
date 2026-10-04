@@ -53,7 +53,7 @@ function Home() {
         <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs text-muted-foreground mb-6 animate-fade-in">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Powered by Lovable AI
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> Social media manager AI pentru afaceri din România
           </div>
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] animate-fade-in">
             Postările afacerii tale, <br className="hidden sm:block" />
