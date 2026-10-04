@@ -32,7 +32,7 @@ export const updateLead = createServerFn({ method: "POST" })
     notes: z.string().max(2000).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    const patch: { updated_at: string; status?: "new" | "contacted" | "won" | "lost"; notes?: string } = { updated_at: new Date().toISOString() };
     if (data.status) patch.status = data.status;
     if (data.notes !== undefined) patch.notes = data.notes;
     const { error } = await context.supabase.from("leads").update(patch).eq("id", data.id);

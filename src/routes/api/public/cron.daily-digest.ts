@@ -19,6 +19,7 @@ export const Route = createFileRoute("/api/public/cron/daily-digest")({
         const { data: brands } = await supabaseAdmin.from("brands").select("id,name,organization_id").is("deleted_at", null);
         let sent = 0;
         for (const b of brands ?? []) {
+          if (!b.organization_id) continue;
           try {
             const [posts, msgs, leads, autos] = await Promise.all([
               supabaseAdmin.from("generated_posts").select("id", { count: "exact", head: true }).eq("brand_id", b.id).eq("status", "published").gte("updated_at", from).lte("updated_at", to),
