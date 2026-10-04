@@ -35,10 +35,13 @@ import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authen
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
 import { Route as AuthenticatedDashboardMediaRouteImport } from './routes/_authenticated/dashboard.media'
+import { Route as AuthenticatedDashboardLeaduriRouteImport } from './routes/_authenticated/dashboard.leaduri'
 import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
+import { Route as AuthenticatedDashboardInboxRouteImport } from './routes/_authenticated/dashboard.inbox'
 import { Route as AuthenticatedDashboardImportRouteImport } from './routes/_authenticated/dashboard.import'
 import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
 import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
+import { Route as AuthenticatedDashboardCampaniiRouteImport } from './routes/_authenticated/dashboard.campanii'
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
 import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
@@ -189,10 +192,22 @@ const AuthenticatedDashboardMediaRoute =
     path: '/media',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardLeaduriRoute =
+  AuthenticatedDashboardLeaduriRouteImport.update({
+    id: '/leaduri',
+    path: '/leaduri',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardIntegrariRoute =
   AuthenticatedDashboardIntegrariRouteImport.update({
     id: '/integrari',
     path: '/integrari',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardInboxRoute =
+  AuthenticatedDashboardInboxRouteImport.update({
+    id: '/inbox',
+    path: '/inbox',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardImportRoute =
@@ -211,6 +226,12 @@ const AuthenticatedDashboardGenerateRoute =
   AuthenticatedDashboardGenerateRouteImport.update({
     id: '/generate',
     path: '/generate',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCampaniiRoute =
+  AuthenticatedDashboardCampaniiRouteImport.update({
+    id: '/campanii',
+    path: '/campanii',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardCalendarRoute =
@@ -319,10 +340,13 @@ export interface FileRoutesByFullPath {
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -363,10 +387,13 @@ export interface FileRoutesByTo {
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -409,10 +436,13 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/_authenticated/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/_authenticated/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/_authenticated/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/_authenticated/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/_authenticated/dashboard/media': typeof AuthenticatedDashboardMediaRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
@@ -455,10 +485,13 @@ export interface FileRouteTypes {
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
+    | '/dashboard/campanii'
     | '/dashboard/generate'
     | '/dashboard/history'
     | '/dashboard/import'
+    | '/dashboard/inbox'
     | '/dashboard/integrari'
+    | '/dashboard/leaduri'
     | '/dashboard/media'
     | '/dashboard/referral'
     | '/dashboard/settings'
@@ -499,10 +532,13 @@ export interface FileRouteTypes {
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
+    | '/dashboard/campanii'
     | '/dashboard/generate'
     | '/dashboard/history'
     | '/dashboard/import'
+    | '/dashboard/inbox'
     | '/dashboard/integrari'
+    | '/dashboard/leaduri'
     | '/dashboard/media'
     | '/dashboard/referral'
     | '/dashboard/settings'
@@ -544,10 +580,13 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/brands'
     | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
+    | '/_authenticated/dashboard/campanii'
     | '/_authenticated/dashboard/generate'
     | '/_authenticated/dashboard/history'
     | '/_authenticated/dashboard/import'
+    | '/_authenticated/dashboard/inbox'
     | '/_authenticated/dashboard/integrari'
+    | '/_authenticated/dashboard/leaduri'
     | '/_authenticated/dashboard/media'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
@@ -773,11 +812,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardMediaRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/leaduri': {
+      id: '/_authenticated/dashboard/leaduri'
+      path: '/leaduri'
+      fullPath: '/dashboard/leaduri'
+      preLoaderRoute: typeof AuthenticatedDashboardLeaduriRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/integrari': {
       id: '/_authenticated/dashboard/integrari'
       path: '/integrari'
       fullPath: '/dashboard/integrari'
       preLoaderRoute: typeof AuthenticatedDashboardIntegrariRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/inbox': {
+      id: '/_authenticated/dashboard/inbox'
+      path: '/inbox'
+      fullPath: '/dashboard/inbox'
+      preLoaderRoute: typeof AuthenticatedDashboardInboxRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/import': {
@@ -799,6 +852,13 @@ declare module '@tanstack/react-router' {
       path: '/generate'
       fullPath: '/dashboard/generate'
       preLoaderRoute: typeof AuthenticatedDashboardGenerateRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/campanii': {
+      id: '/_authenticated/dashboard/campanii'
+      path: '/campanii'
+      fullPath: '/dashboard/campanii'
+      preLoaderRoute: typeof AuthenticatedDashboardCampaniiRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/calendar': {
@@ -913,10 +973,13 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
   AuthenticatedDashboardBulkRoute: typeof AuthenticatedDashboardBulkRoute
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
+  AuthenticatedDashboardCampaniiRoute: typeof AuthenticatedDashboardCampaniiRoute
   AuthenticatedDashboardGenerateRoute: typeof AuthenticatedDashboardGenerateRoute
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
   AuthenticatedDashboardImportRoute: typeof AuthenticatedDashboardImportRoute
+  AuthenticatedDashboardInboxRoute: typeof AuthenticatedDashboardInboxRoute
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
+  AuthenticatedDashboardLeaduriRoute: typeof AuthenticatedDashboardLeaduriRoute
   AuthenticatedDashboardMediaRoute: typeof AuthenticatedDashboardMediaRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
@@ -932,10 +995,13 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
     AuthenticatedDashboardBulkRoute: AuthenticatedDashboardBulkRoute,
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
+    AuthenticatedDashboardCampaniiRoute: AuthenticatedDashboardCampaniiRoute,
     AuthenticatedDashboardGenerateRoute: AuthenticatedDashboardGenerateRoute,
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
     AuthenticatedDashboardImportRoute: AuthenticatedDashboardImportRoute,
+    AuthenticatedDashboardInboxRoute: AuthenticatedDashboardInboxRoute,
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
+    AuthenticatedDashboardLeaduriRoute: AuthenticatedDashboardLeaduriRoute,
     AuthenticatedDashboardMediaRoute: AuthenticatedDashboardMediaRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
