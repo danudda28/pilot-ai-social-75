@@ -53,9 +53,7 @@ function DashboardHome() {
     return (
       <div className="space-y-4">
         <SkeletonBlock className="h-9 w-64" />
-        <MetaHealthAlert />
-
-      <div className="grid gap-4 md:grid-cols-3"><SkeletonBlock className="h-40" /><SkeletonBlock className="h-40" /><SkeletonBlock className="h-40" /></div>
+        <div className="grid gap-4 md:grid-cols-3"><SkeletonBlock className="h-40" /><SkeletonBlock className="h-40" /><SkeletonBlock className="h-40" /></div>
         <SkeletonBlock className="h-64" />
       </div>
     );
@@ -110,6 +108,8 @@ function DashboardHome() {
           </ul>
         </Panel>
       )}
+
+      <MetaHealthAlert />
 
       <div className="grid gap-4 md:grid-cols-3">
         <Panel>
