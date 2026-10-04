@@ -53,6 +53,11 @@ async function recordHealth(admin: any, connId: string, userId: string, ok: bool
 /** Processes due jobs. Optionally limited to a single post (immediate publish). */
 export async function processJobs(admin: any, opts: { postId?: string; limit?: number } = {}) {
   const { publishToFacebookPage, publishToInstagram } = await import("./meta.server");
+  const { logError } = await import("./observability.server");
+  // Recuperează joburile blocate în "processing" de >10 minute (worker căzut) înapoi în "pending".
+  const stuckBefore = new Date(Date.now() - 10 * 60000).toISOString();
+  await admin.from("publishing_jobs").update({ status: "pending" })
+    .eq("status", "processing").lt("updated_at", stuckBefore);
   let q = admin.from("publishing_jobs").select("*").eq("status", "pending").lte("next_attempt_at", new Date().toISOString()).order("next_attempt_at").limit(opts.limit ?? 25);
   if (opts.postId) q = q.eq("post_id", opts.postId);
   const { data: jobs, error } = await q;
@@ -95,12 +100,24 @@ export async function processJobs(admin: any, opts: { postId?: string; limit?: n
       const next = new Date(Date.now() + (BACKOFF_MIN[attempts - 1] ?? 15) * 60000).toISOString();
       await admin.from("publishing_jobs").update({ status: final ? "failed" : "pending", last_error: friendly, next_attempt_at: next }).eq("id", job.id);
       if (job.connection_id && raw !== "conexiune lipsă") await recordHealth(admin, job.connection_id, job.user_id, false, friendly);
+      if (final) await logError(admin, "publishing", friendly, { job_id: job.id, target: job.target, attempts }, job.brand_id);
       results.push({ target: job.target, post_id: job.post_id, ok: false, error: final ? friendly : `${friendly} (reîncercăm automat)` });
     }
   }
 
   for (const postId of touched) await syncPostStatus(admin, postId);
   return results;
+}
+
+/** Repune în coadă toate joburile eșuate ale unei postări (retry manual din UI/admin). */
+export async function retryFailedJobs(admin: any, postId: string) {
+  const now = new Date().toISOString();
+  const { data, error } = await admin.from("publishing_jobs")
+    .update({ status: "pending", attempts: 0, next_attempt_at: now, last_error: null })
+    .eq("post_id", postId).eq("status", "failed").select("id");
+  if (error) throw new Error(error.message);
+  if (data?.length) await syncPostStatus(admin, postId);
+  return { retried: data?.length ?? 0 };
 }
 
 /** Derives generated_posts.status from its jobs. */
