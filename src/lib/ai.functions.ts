@@ -91,7 +91,8 @@ Răspunde STRICT cu JSON valid, fără markdown, fără text înainte sau după.
       model: gateway("google/gemini-2.5-flash"),
       prompt,
     });
-    await logAiUsage(context.supabase, { brandId, userId: context.userId, feature: "generate_post", model: "google/gemini-2.5-flash", usage: usage as any });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await logAiUsage(supabaseAdmin, { brandId, userId: context.userId, feature: "generate_post", model: "google/gemini-2.5-flash", usage: usage as any });
 
     let parsed: Record<string, string>;
     try {

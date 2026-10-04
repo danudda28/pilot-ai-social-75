@@ -52,6 +52,12 @@ export async function maybeCreateLead(admin: any, conv: any, customerMessage: st
     await notifyOrg(admin, conv.organization_id, "lead",
       `Lead nou: ${conv.customer_name ?? "un client"}`,
       `Intenție: ${intent}. „${customerMessage.slice(0, 120)}”`, "/dashboard/leaduri");
+    // Notifică CRM-ul extern (webhook de ieșire), dacă e configurat.
+    const { fireBrandWebhooks } = await import("./observability.server");
+    await fireBrandWebhooks(admin, conv.brand_id, "lead.created", {
+      lead_id: data.id, customer_name: conv.customer_name, channel: conv.channel,
+      intent, summary: customerMessage.slice(0, 300),
+    });
   }
   return data?.id ?? null;
 }
@@ -118,7 +124,7 @@ export async function runAgent(sb: any, brandId: string, customerMessage: string
   const { data: voice } = await sb.from("brand_voice_rules").select("tone,address_form,emoji_level,text_length,banned_words").eq("brand_id", brandId).maybeSingle();
 
   const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
-  const { text } = await generateText({
+  const { text, usage } = await generateText({
     model: createLovableAiGatewayProvider(apiKey)("google/gemini-2.5-flash"),
     system: `Ești asistentul de mesagerie al afacerii. Răspunzi în română, scurt și politicos.
 REGULI STRICTE:
