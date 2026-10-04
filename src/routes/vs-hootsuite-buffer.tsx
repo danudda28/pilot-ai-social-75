@@ -92,7 +92,7 @@ function Comparison() {
           <Link to="/auth" className="inline-block rounded-xl gradient-bg glow px-8 py-4 text-sm font-semibold text-white">
             Încearcă gratuit Social Spark
           </Link>
-          <p className="mt-3 text-xs text-muted-foreground">3 postări gratuite, fără card</p>
+          <p className="mt-3 text-xs text-muted-foreground">30 de zile gratuit, fără card</p>
         </div>
       </section>
     </PublicLayout>

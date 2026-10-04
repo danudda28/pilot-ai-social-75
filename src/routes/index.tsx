@@ -158,7 +158,7 @@ function Home() {
             Lasă <span className="gradient-text">AI-ul</span> să lucreze<br />
             pentru social media-ul afacerii tale.
           </h2>
-          <p className="mt-6 text-muted-foreground">Începe cu 3 postări gratuite. Fără card, fără bătaie de cap.</p>
+          <p className="mt-6 text-muted-foreground">Începe cu 30 de zile gratuit. Fără card, fără bătaie de cap.</p>
           <Link to="/auth" className="mt-8 inline-flex items-center gap-2 rounded-xl gradient-bg glow px-8 py-4 text-base font-semibold text-white card-hover">
             Începe acum <ArrowRight className="h-4 w-4" />
           </Link>
