@@ -21,9 +21,12 @@ export const createBrand = createServerFn({ method: "POST" })
     domain: z.string().max(100).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
+    const { data: org } = await context.supabase.from("organization_members")
+      .select("organization_id").eq("user_id", context.userId).in("role", ["owner", "admin"])
+      .order("created_at").limit(1).maybeSingle();
     const { data: brand, error } = await context.supabase
       .from("brands")
-      .insert({ ...data, owner_id: context.userId })
+      .insert({ ...data, owner_id: context.userId, organization_id: org?.organization_id ?? null })
       .select().single();
     if (error) throw new Error(error.message);
     await context.supabase.from("brand_members").insert({ brand_id: brand.id, user_id: context.userId, role: "owner" });

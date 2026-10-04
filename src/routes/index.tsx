@@ -53,7 +53,7 @@ function Home() {
         <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs text-muted-foreground mb-6 animate-fade-in">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Powered by Lovable AI
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> Social media manager AI pentru afaceri din România
           </div>
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] animate-fade-in">
             Postările afacerii tale, <br className="hidden sm:block" />
@@ -158,7 +158,7 @@ function Home() {
             Lasă <span className="gradient-text">AI-ul</span> să lucreze<br />
             pentru social media-ul afacerii tale.
           </h2>
-          <p className="mt-6 text-muted-foreground">Începe cu 3 postări gratuite. Fără card, fără bătaie de cap.</p>
+          <p className="mt-6 text-muted-foreground">Începe cu 30 de zile gratuit. Fără card, fără bătaie de cap.</p>
           <Link to="/auth" className="mt-8 inline-flex items-center gap-2 rounded-xl gradient-bg glow px-8 py-4 text-base font-semibold text-white card-hover">
             Începe acum <ArrowRight className="h-4 w-4" />
           </Link>

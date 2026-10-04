@@ -9,115 +9,63 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VsHootsuiteBufferRouteImport } from './routes/vs-hootsuite-buffer'
-import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
-import { Route as StatusRouteImport } from './routes/status'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PreturiRouteImport } from './routes/preturi'
-import { Route as PostariAiSaloaneRouteImport } from './routes/postari-ai-saloane'
-import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
-import { Route as InstagramAutomationRestauranteRouteImport } from './routes/instagram-automation-restaurante'
-import { Route as DespreRouteImport } from './routes/despre'
-import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as DespreRouteImport } from './routes/despre'
+import { Route as InstagramAutomationRestauranteRouteImport } from './routes/instagram-automation-restaurante'
+import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
+import { Route as PostariAiSaloaneRouteImport } from './routes/postari-ai-saloane'
+import { Route as PreturiRouteImport } from './routes/preturi'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
+import { Route as VsHootsuiteBufferRouteImport } from './routes/vs-hootsuite-buffer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
-import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
-import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
-import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
-import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
-import { Route as AuthenticatedDashboardMediaRouteImport } from './routes/_authenticated/dashboard.media'
-import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
-import { Route as AuthenticatedDashboardImportRouteImport } from './routes/_authenticated/dashboard.import'
-import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
-import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
-import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
-import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
-import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
-import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
-import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
-import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
 import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
-import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
-import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
-import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
+import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
+import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
+import { Route as AuthenticatedDashboardBrandBrainRouteImport } from './routes/_authenticated/dashboard.brand-brain'
+import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
+import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
+import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
+import { Route as AuthenticatedDashboardCampaniiRouteImport } from './routes/_authenticated/dashboard.campanii'
+import { Route as AuthenticatedDashboardGenerateRouteImport } from './routes/_authenticated/dashboard.generate'
+import { Route as AuthenticatedDashboardHistoryRouteImport } from './routes/_authenticated/dashboard.history'
+import { Route as AuthenticatedDashboardImportRouteImport } from './routes/_authenticated/dashboard.import'
+import { Route as AuthenticatedDashboardInboxRouteImport } from './routes/_authenticated/dashboard.inbox'
+import { Route as AuthenticatedDashboardIntegrariRouteImport } from './routes/_authenticated/dashboard.integrari'
+import { Route as AuthenticatedDashboardLeaduriRouteImport } from './routes/_authenticated/dashboard.leaduri'
+import { Route as AuthenticatedDashboardMediaRouteImport } from './routes/_authenticated/dashboard.media'
+import { Route as AuthenticatedDashboardOnboardingRouteImport } from './routes/_authenticated/dashboard.onboarding'
+import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
+import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
+import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
+import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
-import { Route as ApiPublicWebhooksMetaDeauthorizeRouteImport } from './routes/api/public/webhooks/meta.deauthorize'
+import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
+import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
+import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
+import { Route as ApiPublicWebhooksMetaDeauthorizeRouteImport } from './routes/api/public/webhooks/meta.deauthorize'
 
-const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
-  id: '/vs-hootsuite-buffer',
-  path: '/vs-hootsuite-buffer',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
-  id: '/termeni-si-conditii',
-  path: '/termeni-si-conditii',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StatusRoute = StatusRouteImport.update({
-  id: '/status',
-  path: '/status',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreturiRoute = PreturiRouteImport.update({
-  id: '/preturi',
-  path: '/preturi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PostariAiSaloaneRoute = PostariAiSaloaneRouteImport.update({
-  id: '/postari-ai-saloane',
-  path: '/postari-ai-saloane',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PoliticaConfidentialitateRoute =
-  PoliticaConfidentialitateRouteImport.update({
-    id: '/politica-confidentialitate',
-    path: '/politica-confidentialitate',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const InstagramAutomationRestauranteRoute =
-  InstagramAutomationRestauranteRouteImport.update({
-    id: '/instagram-automation-restaurante',
-    path: '/instagram-automation-restaurante',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DespreRoute = DespreRouteImport.update({
-  id: '/despre',
-  path: '/despre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CookiesRoute = CookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -125,122 +73,103 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InvitatieTokenRoute = InvitatieTokenRouteImport.update({
-  id: '/invitatie/$token',
-  path: '/invitatie/$token',
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
+const DespreRoute = DespreRouteImport.update({
+  id: '/despre',
+  path: '/despre',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const InstagramAutomationRestauranteRoute =
+  InstagramAutomationRestauranteRouteImport.update({
+    id: '/instagram-automation-restaurante',
+    path: '/instagram-automation-restaurante',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PoliticaConfidentialitateRoute =
+  PoliticaConfidentialitateRouteImport.update({
+    id: '/politica-confidentialitate',
+    path: '/politica-confidentialitate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PostariAiSaloaneRoute = PostariAiSaloaneRouteImport.update({
+  id: '/postari-ai-saloane',
+  path: '/postari-ai-saloane',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreturiRoute = PreturiRouteImport.update({
+  id: '/preturi',
+  path: '/preturi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermeniSiConditiiRoute = TermeniSiConditiiRouteImport.update({
+  id: '/termeni-si-conditii',
+  path: '/termeni-si-conditii',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
+  id: '/vs-hootsuite-buffer',
+  path: '/vs-hootsuite-buffer',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
-  id: '/api/public/health',
-  path: '/api/public/health',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
+const InvitatieTokenRoute = InvitatieTokenRouteImport.update({
+  id: '/invitatie/$token',
+  path: '/invitatie/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedDashboardVideoRoute =
-  AuthenticatedDashboardVideoRouteImport.update({
-    id: '/video',
-    path: '/video',
-    getParentRoute: () => AuthenticatedDashboardRoute,
+const AuthenticatedAdminApiRunnerRoute =
+  AuthenticatedAdminApiRunnerRouteImport.update({
+    id: '/api-runner',
+    path: '/api-runner',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedDashboardTeamRoute =
-  AuthenticatedDashboardTeamRouteImport.update({
-    id: '/team',
-    path: '/team',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardSettingsRoute =
-  AuthenticatedDashboardSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardReferralRoute =
-  AuthenticatedDashboardReferralRouteImport.update({
-    id: '/referral',
-    path: '/referral',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardMediaRoute =
-  AuthenticatedDashboardMediaRouteImport.update({
-    id: '/media',
-    path: '/media',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardIntegrariRoute =
-  AuthenticatedDashboardIntegrariRouteImport.update({
-    id: '/integrari',
-    path: '/integrari',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardImportRoute =
-  AuthenticatedDashboardImportRouteImport.update({
-    id: '/import',
-    path: '/import',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardHistoryRoute =
-  AuthenticatedDashboardHistoryRouteImport.update({
-    id: '/history',
-    path: '/history',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardGenerateRoute =
-  AuthenticatedDashboardGenerateRouteImport.update({
-    id: '/generate',
-    path: '/generate',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardCalendarRoute =
-  AuthenticatedDashboardCalendarRouteImport.update({
-    id: '/calendar',
-    path: '/calendar',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardBulkRoute =
-  AuthenticatedDashboardBulkRouteImport.update({
-    id: '/bulk',
-    path: '/bulk',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardBrandsRoute =
-  AuthenticatedDashboardBrandsRouteImport.update({
-    id: '/brands',
-    path: '/brands',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardApprovalsRoute =
-  AuthenticatedDashboardApprovalsRouteImport.update({
-    id: '/approvals',
-    path: '/approvals',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardAnalyticsRoute =
-  AuthenticatedDashboardAnalyticsRouteImport.update({
-    id: '/analytics',
-    path: '/analytics',
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardAiToolsRoute =
@@ -249,22 +178,129 @@ const AuthenticatedDashboardAiToolsRoute =
     path: '/ai-tools',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedAdminApiRunnerRoute =
-  AuthenticatedAdminApiRunnerRouteImport.update({
-    id: '/api-runner',
-    path: '/api-runner',
-    getParentRoute: () => AuthenticatedAdminRoute,
+const AuthenticatedDashboardAnalyticsRoute =
+  AuthenticatedDashboardAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const ApiPublicCronSyncMetaInsightsRoute =
-  ApiPublicCronSyncMetaInsightsRouteImport.update({
-    id: '/api/public/cron/sync-meta-insights',
-    path: '/api/public/cron/sync-meta-insights',
-    getParentRoute: () => rootRouteImport,
+const AuthenticatedDashboardApprovalsRoute =
+  AuthenticatedDashboardApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const ApiPublicCronResetQuotasRoute =
-  ApiPublicCronResetQuotasRouteImport.update({
-    id: '/api/public/cron/reset-quotas',
-    path: '/api/public/cron/reset-quotas',
+const AuthenticatedDashboardBrandBrainRoute =
+  AuthenticatedDashboardBrandBrainRouteImport.update({
+    id: '/brand-brain',
+    path: '/brand-brain',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBrandsRoute =
+  AuthenticatedDashboardBrandsRouteImport.update({
+    id: '/brands',
+    path: '/brands',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBulkRoute =
+  AuthenticatedDashboardBulkRouteImport.update({
+    id: '/bulk',
+    path: '/bulk',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCalendarRoute =
+  AuthenticatedDashboardCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCampaniiRoute =
+  AuthenticatedDashboardCampaniiRouteImport.update({
+    id: '/campanii',
+    path: '/campanii',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardGenerateRoute =
+  AuthenticatedDashboardGenerateRouteImport.update({
+    id: '/generate',
+    path: '/generate',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardHistoryRoute =
+  AuthenticatedDashboardHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardImportRoute =
+  AuthenticatedDashboardImportRouteImport.update({
+    id: '/import',
+    path: '/import',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardInboxRoute =
+  AuthenticatedDashboardInboxRouteImport.update({
+    id: '/inbox',
+    path: '/inbox',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardIntegrariRoute =
+  AuthenticatedDashboardIntegrariRouteImport.update({
+    id: '/integrari',
+    path: '/integrari',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardLeaduriRoute =
+  AuthenticatedDashboardLeaduriRouteImport.update({
+    id: '/leaduri',
+    path: '/leaduri',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMediaRoute =
+  AuthenticatedDashboardMediaRouteImport.update({
+    id: '/media',
+    path: '/media',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardOnboardingRoute =
+  AuthenticatedDashboardOnboardingRouteImport.update({
+    id: '/onboarding',
+    path: '/onboarding',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardReferralRoute =
+  AuthenticatedDashboardReferralRouteImport.update({
+    id: '/referral',
+    path: '/referral',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSettingsRoute =
+  AuthenticatedDashboardSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardTeamRoute =
+  AuthenticatedDashboardTeamRouteImport.update({
+    id: '/team',
+    path: '/team',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardVideoRoute =
+  AuthenticatedDashboardVideoRouteImport.update({
+    id: '/video',
+    path: '/video',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronPublishScheduledRoute =
+  ApiPublicCronPublishScheduledRouteImport.update({
+    id: '/api/public/cron/publish-scheduled',
+    path: '/api/public/cron/publish-scheduled',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronRefreshMetaTokensRoute =
@@ -273,22 +309,28 @@ const ApiPublicCronRefreshMetaTokensRoute =
     path: '/api/public/cron/refresh-meta-tokens',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicCronPublishScheduledRoute =
-  ApiPublicCronPublishScheduledRouteImport.update({
-    id: '/api/public/cron/publish-scheduled',
-    path: '/api/public/cron/publish-scheduled',
+const ApiPublicCronResetQuotasRoute =
+  ApiPublicCronResetQuotasRouteImport.update({
+    id: '/api/public/cron/reset-quotas',
+    path: '/api/public/cron/reset-quotas',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicWebhooksMetaDeauthorizeRoute =
-  ApiPublicWebhooksMetaDeauthorizeRouteImport.update({
-    id: '/api/public/webhooks/meta/deauthorize',
-    path: '/api/public/webhooks/meta/deauthorize',
+const ApiPublicCronSyncMetaInsightsRoute =
+  ApiPublicCronSyncMetaInsightsRouteImport.update({
+    id: '/api/public/cron/sync-meta-insights',
+    path: '/api/public/cron/sync-meta-insights',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicAuthMetaCallbackRoute =
   ApiPublicAuthMetaCallbackRouteImport.update({
     id: '/api/public/auth/meta/callback',
     path: '/api/public/auth/meta/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksMetaDeauthorizeRoute =
+  ApiPublicWebhooksMetaDeauthorizeRouteImport.update({
+    id: '/api/public/webhooks/meta/deauthorize',
+    path: '/api/public/webhooks/meta/deauthorize',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -316,19 +358,25 @@ export interface FileRoutesByFullPath {
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -353,26 +401,31 @@ export interface FileRoutesByTo {
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -406,19 +459,25 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/_authenticated/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
+  '/_authenticated/dashboard/campanii': typeof AuthenticatedDashboardCampaniiRoute
   '/_authenticated/dashboard/generate': typeof AuthenticatedDashboardGenerateRoute
   '/_authenticated/dashboard/history': typeof AuthenticatedDashboardHistoryRoute
   '/_authenticated/dashboard/import': typeof AuthenticatedDashboardImportRoute
+  '/_authenticated/dashboard/inbox': typeof AuthenticatedDashboardInboxRoute
   '/_authenticated/dashboard/integrari': typeof AuthenticatedDashboardIntegrariRoute
+  '/_authenticated/dashboard/leaduri': typeof AuthenticatedDashboardLeaduriRoute
   '/_authenticated/dashboard/media': typeof AuthenticatedDashboardMediaRoute
+  '/_authenticated/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -452,19 +511,25 @@ export interface FileRouteTypes {
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
+    | '/dashboard/brand-brain'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
+    | '/dashboard/campanii'
     | '/dashboard/generate'
     | '/dashboard/history'
     | '/dashboard/import'
+    | '/dashboard/inbox'
     | '/dashboard/integrari'
+    | '/dashboard/leaduri'
     | '/dashboard/media'
+    | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
+    | '/dashboard/'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -489,26 +554,31 @@ export interface FileRouteTypes {
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
     | '/admin'
-    | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
+    | '/dashboard/brand-brain'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
+    | '/dashboard/campanii'
     | '/dashboard/generate'
     | '/dashboard/history'
     | '/dashboard/import'
+    | '/dashboard/inbox'
     | '/dashboard/integrari'
+    | '/dashboard/leaduri'
     | '/dashboard/media'
+    | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
+    | '/dashboard'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -541,19 +611,25 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
+    | '/_authenticated/dashboard/brand-brain'
     | '/_authenticated/dashboard/brands'
     | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
+    | '/_authenticated/dashboard/campanii'
     | '/_authenticated/dashboard/generate'
     | '/_authenticated/dashboard/history'
     | '/_authenticated/dashboard/import'
+    | '/_authenticated/dashboard/inbox'
     | '/_authenticated/dashboard/integrari'
+    | '/_authenticated/dashboard/leaduri'
     | '/_authenticated/dashboard/media'
+    | '/_authenticated/dashboard/onboarding'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/team'
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
+    | '/_authenticated/dashboard/'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -591,102 +667,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vs-hootsuite-buffer': {
-      id: '/vs-hootsuite-buffer'
-      path: '/vs-hootsuite-buffer'
-      fullPath: '/vs-hootsuite-buffer'
-      preLoaderRoute: typeof VsHootsuiteBufferRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/termeni-si-conditii': {
-      id: '/termeni-si-conditii'
-      path: '/termeni-si-conditii'
-      fullPath: '/termeni-si-conditii'
-      preLoaderRoute: typeof TermeniSiConditiiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/status': {
-      id: '/status'
-      path: '/status'
-      fullPath: '/status'
-      preLoaderRoute: typeof StatusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preturi': {
-      id: '/preturi'
-      path: '/preturi'
-      fullPath: '/preturi'
-      preLoaderRoute: typeof PreturiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/postari-ai-saloane': {
-      id: '/postari-ai-saloane'
-      path: '/postari-ai-saloane'
-      fullPath: '/postari-ai-saloane'
-      preLoaderRoute: typeof PostariAiSaloaneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/politica-confidentialitate': {
-      id: '/politica-confidentialitate'
-      path: '/politica-confidentialitate'
-      fullPath: '/politica-confidentialitate'
-      preLoaderRoute: typeof PoliticaConfidentialitateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/instagram-automation-restaurante': {
-      id: '/instagram-automation-restaurante'
-      path: '/instagram-automation-restaurante'
-      fullPath: '/instagram-automation-restaurante'
-      preLoaderRoute: typeof InstagramAutomationRestauranteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/despre': {
-      id: '/despre'
-      path: '/despre'
-      fullPath: '/despre'
-      preLoaderRoute: typeof DespreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cookies': {
-      id: '/cookies'
-      path: '/cookies'
-      fullPath: '/cookies'
-      preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -696,33 +681,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/invitatie/$token': {
-      id: '/invitatie/$token'
-      path: '/invitatie/$token'
-      fullPath: '/invitatie/$token'
-      preLoaderRoute: typeof InvitatieTokenRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/despre': {
+      id: '/despre'
+      path: '/despre'
+      fullPath: '/despre'
+      preLoaderRoute: typeof DespreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instagram-automation-restaurante': {
+      id: '/instagram-automation-restaurante'
+      path: '/instagram-automation-restaurante'
+      fullPath: '/instagram-automation-restaurante'
+      preLoaderRoute: typeof InstagramAutomationRestauranteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-confidentialitate': {
+      id: '/politica-confidentialitate'
+      path: '/politica-confidentialitate'
+      fullPath: '/politica-confidentialitate'
+      preLoaderRoute: typeof PoliticaConfidentialitateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/postari-ai-saloane': {
+      id: '/postari-ai-saloane'
+      path: '/postari-ai-saloane'
+      fullPath: '/postari-ai-saloane'
+      preLoaderRoute: typeof PostariAiSaloaneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preturi': {
+      id: '/preturi'
+      path: '/preturi'
+      fullPath: '/preturi'
+      preLoaderRoute: typeof PreturiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termeni-si-conditii': {
+      id: '/termeni-si-conditii'
+      path: '/termeni-si-conditii'
+      fullPath: '/termeni-si-conditii'
+      preLoaderRoute: typeof TermeniSiConditiiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vs-hootsuite-buffer': {
+      id: '/vs-hootsuite-buffer'
+      path: '/vs-hootsuite-buffer'
+      fullPath: '/vs-hootsuite-buffer'
+      preLoaderRoute: typeof VsHootsuiteBufferRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -731,109 +786,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/health': {
-      id: '/api/public/health'
-      path: '/api/public/health'
-      fullPath: '/api/public/health'
-      preLoaderRoute: typeof ApiPublicHealthRouteImport
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/invitatie/$token': {
+      id: '/invitatie/$token'
+      path: '/invitatie/$token'
+      fullPath: '/invitatie/$token'
+      preLoaderRoute: typeof InvitatieTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dashboard/video': {
-      id: '/_authenticated/dashboard/video'
-      path: '/video'
-      fullPath: '/dashboard/video'
-      preLoaderRoute: typeof AuthenticatedDashboardVideoRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
+    '/_authenticated/admin/api-runner': {
+      id: '/_authenticated/admin/api-runner'
+      path: '/api-runner'
+      fullPath: '/admin/api-runner'
+      preLoaderRoute: typeof AuthenticatedAdminApiRunnerRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/dashboard/team': {
-      id: '/_authenticated/dashboard/team'
-      path: '/team'
-      fullPath: '/dashboard/team'
-      preLoaderRoute: typeof AuthenticatedDashboardTeamRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/settings': {
-      id: '/_authenticated/dashboard/settings'
-      path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/referral': {
-      id: '/_authenticated/dashboard/referral'
-      path: '/referral'
-      fullPath: '/dashboard/referral'
-      preLoaderRoute: typeof AuthenticatedDashboardReferralRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/media': {
-      id: '/_authenticated/dashboard/media'
-      path: '/media'
-      fullPath: '/dashboard/media'
-      preLoaderRoute: typeof AuthenticatedDashboardMediaRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/integrari': {
-      id: '/_authenticated/dashboard/integrari'
-      path: '/integrari'
-      fullPath: '/dashboard/integrari'
-      preLoaderRoute: typeof AuthenticatedDashboardIntegrariRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/import': {
-      id: '/_authenticated/dashboard/import'
-      path: '/import'
-      fullPath: '/dashboard/import'
-      preLoaderRoute: typeof AuthenticatedDashboardImportRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/history': {
-      id: '/_authenticated/dashboard/history'
-      path: '/history'
-      fullPath: '/dashboard/history'
-      preLoaderRoute: typeof AuthenticatedDashboardHistoryRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/generate': {
-      id: '/_authenticated/dashboard/generate'
-      path: '/generate'
-      fullPath: '/dashboard/generate'
-      preLoaderRoute: typeof AuthenticatedDashboardGenerateRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/calendar': {
-      id: '/_authenticated/dashboard/calendar'
-      path: '/calendar'
-      fullPath: '/dashboard/calendar'
-      preLoaderRoute: typeof AuthenticatedDashboardCalendarRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/bulk': {
-      id: '/_authenticated/dashboard/bulk'
-      path: '/bulk'
-      fullPath: '/dashboard/bulk'
-      preLoaderRoute: typeof AuthenticatedDashboardBulkRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/brands': {
-      id: '/_authenticated/dashboard/brands'
-      path: '/brands'
-      fullPath: '/dashboard/brands'
-      preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/approvals': {
-      id: '/_authenticated/dashboard/approvals'
-      path: '/approvals'
-      fullPath: '/dashboard/approvals'
-      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/analytics': {
-      id: '/_authenticated/dashboard/analytics'
-      path: '/analytics'
-      fullPath: '/dashboard/analytics'
-      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/ai-tools': {
@@ -843,32 +828,144 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAiToolsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/admin/api-runner': {
-      id: '/_authenticated/admin/api-runner'
-      path: '/api-runner'
-      fullPath: '/admin/api-runner'
-      preLoaderRoute: typeof AuthenticatedAdminApiRunnerRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+    '/_authenticated/dashboard/analytics': {
+      id: '/_authenticated/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/api/public/cron/sync-meta-insights': {
-      id: '/api/public/cron/sync-meta-insights'
-      path: '/api/public/cron/sync-meta-insights'
-      fullPath: '/api/public/cron/sync-meta-insights'
-      preLoaderRoute: typeof ApiPublicCronSyncMetaInsightsRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/dashboard/approvals': {
+      id: '/_authenticated/dashboard/approvals'
+      path: '/approvals'
+      fullPath: '/dashboard/approvals'
+      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/api/public/cron/reset-quotas': {
-      id: '/api/public/cron/reset-quotas'
-      path: '/api/public/cron/reset-quotas'
-      fullPath: '/api/public/cron/reset-quotas'
-      preLoaderRoute: typeof ApiPublicCronResetQuotasRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/dashboard/brand-brain': {
+      id: '/_authenticated/dashboard/brand-brain'
+      path: '/brand-brain'
+      fullPath: '/dashboard/brand-brain'
+      preLoaderRoute: typeof AuthenticatedDashboardBrandBrainRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/api/public/cron/refresh-meta-tokens': {
-      id: '/api/public/cron/refresh-meta-tokens'
-      path: '/api/public/cron/refresh-meta-tokens'
-      fullPath: '/api/public/cron/refresh-meta-tokens'
-      preLoaderRoute: typeof ApiPublicCronRefreshMetaTokensRouteImport
+    '/_authenticated/dashboard/brands': {
+      id: '/_authenticated/dashboard/brands'
+      path: '/brands'
+      fullPath: '/dashboard/brands'
+      preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bulk': {
+      id: '/_authenticated/dashboard/bulk'
+      path: '/bulk'
+      fullPath: '/dashboard/bulk'
+      preLoaderRoute: typeof AuthenticatedDashboardBulkRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/calendar': {
+      id: '/_authenticated/dashboard/calendar'
+      path: '/calendar'
+      fullPath: '/dashboard/calendar'
+      preLoaderRoute: typeof AuthenticatedDashboardCalendarRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/campanii': {
+      id: '/_authenticated/dashboard/campanii'
+      path: '/campanii'
+      fullPath: '/dashboard/campanii'
+      preLoaderRoute: typeof AuthenticatedDashboardCampaniiRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/generate': {
+      id: '/_authenticated/dashboard/generate'
+      path: '/generate'
+      fullPath: '/dashboard/generate'
+      preLoaderRoute: typeof AuthenticatedDashboardGenerateRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/history': {
+      id: '/_authenticated/dashboard/history'
+      path: '/history'
+      fullPath: '/dashboard/history'
+      preLoaderRoute: typeof AuthenticatedDashboardHistoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/import': {
+      id: '/_authenticated/dashboard/import'
+      path: '/import'
+      fullPath: '/dashboard/import'
+      preLoaderRoute: typeof AuthenticatedDashboardImportRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/inbox': {
+      id: '/_authenticated/dashboard/inbox'
+      path: '/inbox'
+      fullPath: '/dashboard/inbox'
+      preLoaderRoute: typeof AuthenticatedDashboardInboxRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/integrari': {
+      id: '/_authenticated/dashboard/integrari'
+      path: '/integrari'
+      fullPath: '/dashboard/integrari'
+      preLoaderRoute: typeof AuthenticatedDashboardIntegrariRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/leaduri': {
+      id: '/_authenticated/dashboard/leaduri'
+      path: '/leaduri'
+      fullPath: '/dashboard/leaduri'
+      preLoaderRoute: typeof AuthenticatedDashboardLeaduriRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/media': {
+      id: '/_authenticated/dashboard/media'
+      path: '/media'
+      fullPath: '/dashboard/media'
+      preLoaderRoute: typeof AuthenticatedDashboardMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/onboarding': {
+      id: '/_authenticated/dashboard/onboarding'
+      path: '/onboarding'
+      fullPath: '/dashboard/onboarding'
+      preLoaderRoute: typeof AuthenticatedDashboardOnboardingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/referral': {
+      id: '/_authenticated/dashboard/referral'
+      path: '/referral'
+      fullPath: '/dashboard/referral'
+      preLoaderRoute: typeof AuthenticatedDashboardReferralRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings': {
+      id: '/_authenticated/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/team': {
+      id: '/_authenticated/dashboard/team'
+      path: '/team'
+      fullPath: '/dashboard/team'
+      preLoaderRoute: typeof AuthenticatedDashboardTeamRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/video': {
+      id: '/_authenticated/dashboard/video'
+      path: '/video'
+      fullPath: '/dashboard/video'
+      preLoaderRoute: typeof AuthenticatedDashboardVideoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/publish-scheduled': {
@@ -878,11 +975,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronPublishScheduledRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/webhooks/meta/deauthorize': {
-      id: '/api/public/webhooks/meta/deauthorize'
-      path: '/api/public/webhooks/meta/deauthorize'
-      fullPath: '/api/public/webhooks/meta/deauthorize'
-      preLoaderRoute: typeof ApiPublicWebhooksMetaDeauthorizeRouteImport
+    '/api/public/cron/refresh-meta-tokens': {
+      id: '/api/public/cron/refresh-meta-tokens'
+      path: '/api/public/cron/refresh-meta-tokens'
+      fullPath: '/api/public/cron/refresh-meta-tokens'
+      preLoaderRoute: typeof ApiPublicCronRefreshMetaTokensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/reset-quotas': {
+      id: '/api/public/cron/reset-quotas'
+      path: '/api/public/cron/reset-quotas'
+      fullPath: '/api/public/cron/reset-quotas'
+      preLoaderRoute: typeof ApiPublicCronResetQuotasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/sync-meta-insights': {
+      id: '/api/public/cron/sync-meta-insights'
+      path: '/api/public/cron/sync-meta-insights'
+      fullPath: '/api/public/cron/sync-meta-insights'
+      preLoaderRoute: typeof ApiPublicCronSyncMetaInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/auth/meta/callback': {
@@ -890,6 +1001,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/auth/meta/callback'
       fullPath: '/api/public/auth/meta/callback'
       preLoaderRoute: typeof ApiPublicAuthMetaCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/meta/deauthorize': {
+      id: '/api/public/webhooks/meta/deauthorize'
+      path: '/api/public/webhooks/meta/deauthorize'
+      fullPath: '/api/public/webhooks/meta/deauthorize'
+      preLoaderRoute: typeof ApiPublicWebhooksMetaDeauthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -910,18 +1028,24 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAiToolsRoute: typeof AuthenticatedDashboardAiToolsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
+  AuthenticatedDashboardBrandBrainRoute: typeof AuthenticatedDashboardBrandBrainRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
   AuthenticatedDashboardBulkRoute: typeof AuthenticatedDashboardBulkRoute
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
+  AuthenticatedDashboardCampaniiRoute: typeof AuthenticatedDashboardCampaniiRoute
   AuthenticatedDashboardGenerateRoute: typeof AuthenticatedDashboardGenerateRoute
   AuthenticatedDashboardHistoryRoute: typeof AuthenticatedDashboardHistoryRoute
   AuthenticatedDashboardImportRoute: typeof AuthenticatedDashboardImportRoute
+  AuthenticatedDashboardInboxRoute: typeof AuthenticatedDashboardInboxRoute
   AuthenticatedDashboardIntegrariRoute: typeof AuthenticatedDashboardIntegrariRoute
+  AuthenticatedDashboardLeaduriRoute: typeof AuthenticatedDashboardLeaduriRoute
   AuthenticatedDashboardMediaRoute: typeof AuthenticatedDashboardMediaRoute
+  AuthenticatedDashboardOnboardingRoute: typeof AuthenticatedDashboardOnboardingRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
   AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -929,18 +1053,26 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardAiToolsRoute: AuthenticatedDashboardAiToolsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
+    AuthenticatedDashboardBrandBrainRoute:
+      AuthenticatedDashboardBrandBrainRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
     AuthenticatedDashboardBulkRoute: AuthenticatedDashboardBulkRoute,
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
+    AuthenticatedDashboardCampaniiRoute: AuthenticatedDashboardCampaniiRoute,
     AuthenticatedDashboardGenerateRoute: AuthenticatedDashboardGenerateRoute,
     AuthenticatedDashboardHistoryRoute: AuthenticatedDashboardHistoryRoute,
     AuthenticatedDashboardImportRoute: AuthenticatedDashboardImportRoute,
+    AuthenticatedDashboardInboxRoute: AuthenticatedDashboardInboxRoute,
     AuthenticatedDashboardIntegrariRoute: AuthenticatedDashboardIntegrariRoute,
+    AuthenticatedDashboardLeaduriRoute: AuthenticatedDashboardLeaduriRoute,
     AuthenticatedDashboardMediaRoute: AuthenticatedDashboardMediaRoute,
+    AuthenticatedDashboardOnboardingRoute:
+      AuthenticatedDashboardOnboardingRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
     AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
