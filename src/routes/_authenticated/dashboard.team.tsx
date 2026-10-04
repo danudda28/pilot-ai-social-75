@@ -5,6 +5,7 @@ import { listMyBrands, inviteMember, listMembers, removeMember } from "@/lib/bra
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Mail, Trash2, Copy, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { OrgMembersCard } from "@/components/OrgMembersCard";
 
 export const Route = createFileRoute("/_authenticated/dashboard/team")({
   head: () => ({ meta: [{ title: "Echipă — Social Spark" }] }),
@@ -53,6 +54,7 @@ function TeamPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <OrgMembersCard />
       <div className="flex items-center gap-3">
         <Users className="h-7 w-7 text-primary" />
         <div>
