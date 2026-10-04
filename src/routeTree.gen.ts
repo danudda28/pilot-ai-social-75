@@ -47,6 +47,7 @@ import { Route as AuthenticatedDashboardCampaniiRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardCalendarRouteImport } from './routes/_authenticated/dashboard.calendar'
 import { Route as AuthenticatedDashboardBulkRouteImport } from './routes/_authenticated/dashboard.bulk'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard.brands'
+import { Route as AuthenticatedDashboardBrandBrainRouteImport } from './routes/_authenticated/dashboard.brand-brain'
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
 import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
@@ -266,6 +267,12 @@ const AuthenticatedDashboardBrandsRoute =
     path: '/brands',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardBrandBrainRoute =
+  AuthenticatedDashboardBrandBrainRouteImport.update({
+    id: '/brand-brain',
+    path: '/brand-brain',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardApprovalsRoute =
   AuthenticatedDashboardApprovalsRouteImport.update({
     id: '/approvals',
@@ -351,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -399,6 +407,7 @@ export interface FileRoutesByTo {
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -450,6 +459,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/_authenticated/dashboard/brand-brain': typeof AuthenticatedDashboardBrandBrainRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/_authenticated/dashboard/bulk': typeof AuthenticatedDashboardBulkRoute
   '/_authenticated/dashboard/calendar': typeof AuthenticatedDashboardCalendarRoute
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
+    | '/dashboard/brand-brain'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
@@ -549,6 +560,7 @@ export interface FileRouteTypes {
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
+    | '/dashboard/brand-brain'
     | '/dashboard/brands'
     | '/dashboard/bulk'
     | '/dashboard/calendar'
@@ -599,6 +611,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
+    | '/_authenticated/dashboard/brand-brain'
     | '/_authenticated/dashboard/brands'
     | '/_authenticated/dashboard/bulk'
     | '/_authenticated/dashboard/calendar'
@@ -920,6 +933,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/brand-brain': {
+      id: '/_authenticated/dashboard/brand-brain'
+      path: '/brand-brain'
+      fullPath: '/dashboard/brand-brain'
+      preLoaderRoute: typeof AuthenticatedDashboardBrandBrainRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/approvals': {
       id: '/_authenticated/dashboard/approvals'
       path: '/approvals'
@@ -1008,6 +1028,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAiToolsRoute: typeof AuthenticatedDashboardAiToolsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
+  AuthenticatedDashboardBrandBrainRoute: typeof AuthenticatedDashboardBrandBrainRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
   AuthenticatedDashboardBulkRoute: typeof AuthenticatedDashboardBulkRoute
   AuthenticatedDashboardCalendarRoute: typeof AuthenticatedDashboardCalendarRoute
@@ -1032,6 +1053,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardAiToolsRoute: AuthenticatedDashboardAiToolsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
+    AuthenticatedDashboardBrandBrainRoute:
+      AuthenticatedDashboardBrandBrainRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
     AuthenticatedDashboardBulkRoute: AuthenticatedDashboardBulkRoute,
     AuthenticatedDashboardCalendarRoute: AuthenticatedDashboardCalendarRoute,
