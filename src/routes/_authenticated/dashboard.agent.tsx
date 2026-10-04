@@ -118,7 +118,7 @@ function AgentPage() {
         <Panel>
           <div className="flex items-center gap-2 font-semibold"><Webhook className="h-5 w-5 text-primary" /> Configurare Meta Webhooks (doar admin)</div>
           <p className="text-sm text-muted-foreground mt-1">În Meta Developer → Webhooks, abonează obiectele <b>Page</b> (câmpurile messages, feed) și <b>Instagram</b> (messages, comments) cu datele de mai jos.</p>
-          <CopyRow label="Callback URL" value={`${typeof window !== "undefined" ? window.location.origin.replace(/id-preview--[^.]+\.lovable\.app/, "socialspark.ro") : ""}${hook.path}`} />
+          <CopyRow label="Callback URL" value={`https://socialspark.ro${hook.path}`} />
           <CopyRow label="Verify token" value={hook.verifyToken ?? "—"} />
         </Panel>
       )}

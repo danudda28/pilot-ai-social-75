@@ -4,3 +4,4 @@
 - Design tokens are light-first with html.dark for dark mode; legacy glass utilities map to clean cards. Why: one coherent design system across old and new screens.
 - Publishing goes only through publishing_jobs (one idempotent job per post+target, processed by src/lib/publishing-queue.server.ts with retry/backoff); generated_posts.status is derived from jobs. Why: no double publishing, real per-target state.
 - AI content generation builds facts only from confirmed Brand Brain data via src/lib/brand-context.server.ts. Why: one shared, non-hallucinating context for all generators.
+- Inbox: Meta events enter only via /api/public/webhooks/meta (HMAC-verified, deduped in webhook_events) and become conversations/messages; AI only creates ai_reply_drafts (src/lib/inbox-agent.server.ts) and sending always requires a human action. Why: no unreviewed messages to customers until auto-send is explicitly built.
