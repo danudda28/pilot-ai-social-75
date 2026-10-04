@@ -15,7 +15,64 @@ export async function loadAgentSettings(sb: any, brandId: string) {
     forbidden_topics: ["prețuri neconfirmate", "reclamații", "sfaturi medicale", "sfaturi juridice"],
     handoff_keywords: ["rambursare", "avocat", "reclamație", "ANPC", "nemulțumit"],
     handoff_message: "Mulțumim pentru mesaj! Un coleg îți răspunde personal cât de curând.",
+    auto_send: false, auto_send_min_confidence: 0.85, auto_send_daily_limit: 20,
+    auto_send_intents: ["program", "locație", "contact", "servicii"],
   };
+}
+
+/** Detectează intenția mesajului clientului (pentru leaduri și auto-send sigur). */
+export function detectIntent(message: string): string {
+  const m = norm(message);
+  const has = (...words: string[]) => words.some(w => m.includes(w));
+  if (has("programare", "rezervare", "rezerva", "programa", "booking", "disponibil")) return "programare";
+  if (has("pret", "preț", "costa", "costă", "tarif", "oferta", "ofertă", "reducere", "discount")) return "preț/ofertă";
+  if (has("comanda", "comandă", "cumpara", "cumpăr", "achizi")) return "comandă";
+  if (has("program", "deschis", "inchis", "închis", "orar")) return "program";
+  if (has("unde", "adresa", "adresă", "locatie", "locație", "ajung")) return "locație";
+  if (has("telefon", "contact", "email", "mail")) return "contact";
+  return "interes general";
+}
+
+const LEAD_INTENTS = new Set(["programare", "preț/ofertă", "comandă"]);
+
+/** Creează un lead dacă mesajul arată intenție de cumpărare și nu există deja unul activ pe conversație. */
+export async function maybeCreateLead(admin: any, conv: any, customerMessage: string) {
+  const intent = detectIntent(customerMessage);
+  if (!LEAD_INTENTS.has(intent)) return null;
+  const { data: existing } = await admin.from("leads").select("id")
+    .eq("conversation_id", conv.id).in("status", ["new", "contacted"]).limit(1);
+  if (existing?.length) return null;
+  const { data } = await admin.from("leads").insert({
+    brand_id: conv.brand_id, organization_id: conv.organization_id, conversation_id: conv.id,
+    customer_name: conv.customer_name, customer_id: conv.customer_id, channel: conv.channel,
+    intent, summary: customerMessage.slice(0, 300),
+  }).select("id").single();
+  if (data?.id) {
+    const { notifyOrg } = await import("./notify.server");
+    await notifyOrg(admin, conv.organization_id, "lead",
+      `Lead nou: ${conv.customer_name ?? "un client"}`,
+      `Intenție: ${intent}. „${customerMessage.slice(0, 120)}”`, "/dashboard/leaduri");
+  }
+  return data?.id ?? null;
+}
+
+/** Verifică dacă auto-send e permis acum: setare pornită, în program, sub limita zilnică. */
+async function canAutoSend(admin: any, settings: any, brandId: string, intent: string, result: AgentResult): Promise<{ ok: boolean; why: string }> {
+  if (!settings.auto_send) return { ok: false, why: "auto-send oprit" };
+  if (result.handoff || !result.reply.trim()) return { ok: false, why: "predare la om" };
+  if (result.confidence < (settings.auto_send_min_confidence ?? 0.85)) return { ok: false, why: "încredere prea mică" };
+  const allowed = (settings.auto_send_intents as string[]).map(x => norm(x));
+  if (!allowed.includes(norm(intent))) return { ok: false, why: `intenția „${intent}” nu e pe lista sigură` };
+  const wh = settings.working_hours ?? { start: "00:00", end: "23:59", days: [0, 1, 2, 3, 4, 5, 6] };
+  const now = new Date();
+  const day = now.getDay();
+  const hm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  if (!(wh.days ?? []).includes(day) || hm < wh.start || hm > wh.end) return { ok: false, why: "în afara programului" };
+  const dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
+  const { count } = await admin.from("auto_send_log").select("id", { count: "exact", head: true })
+    .eq("brand_id", brandId).gte("created_at", dayStart.toISOString());
+  if ((count ?? 0) >= (settings.auto_send_daily_limit ?? 20)) return { ok: false, why: "limita zilnică atinsă" };
+  return { ok: true, why: "" };
 }
 
 /** Keyword retrieval over confirmed brand facts; top 6 snippets. */
