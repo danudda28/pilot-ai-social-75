@@ -166,6 +166,10 @@ const settingsSchema = z.object({
   forbidden_topics: z.array(z.string().trim().min(1).max(80)).max(30),
   handoff_keywords: z.array(z.string().trim().min(1).max(60)).max(50),
   handoff_message: z.string().trim().min(5).max(500),
+  auto_send: z.boolean().default(false),
+  auto_send_min_confidence: z.number().min(0.5).max(1).default(0.85),
+  auto_send_daily_limit: z.number().int().min(1).max(200).default(20),
+  auto_send_intents: z.array(z.string().trim().min(1).max(40)).max(10).default(["program", "locație", "contact", "servicii"]),
 });
 
 export const getAgentSettings = createServerFn({ method: "GET" })

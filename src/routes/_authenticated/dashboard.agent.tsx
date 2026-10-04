@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Bot, Copy, FlaskConical, Loader2, Webhook } from "lucide-react";
+import { Bot, Copy, FlaskConical, Loader2, Webhook, Zap } from "lucide-react";
 import { PageHeader, Panel, SkeletonBlock } from "@/components/ui-kit";
 import { getAgentSettings, saveAgentSettings, testAgent, getWebhookSetup } from "@/lib/inbox.functions";
 
@@ -24,6 +24,7 @@ function AgentPage() {
   const [s, setS] = useState<any>(null);
   const [topics, setTopics] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [intents, setIntents] = useState("");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
   const [testing, setTesting] = useState(false);
@@ -31,7 +32,7 @@ function AgentPage() {
   const [hook, setHook] = useState<{ path: string; verifyToken: string | null } | null>(null);
 
   useEffect(() => {
-    getFn().then((r: any) => { setBrandId(r.brandId); setS(r.settings); setTopics(r.settings.forbidden_topics.join(", ")); setKeywords(r.settings.handoff_keywords.join(", ")); })
+    getFn().then((r: any) => { setBrandId(r.brandId); setS(r.settings); setTopics(r.settings.forbidden_topics.join(", ")); setKeywords(r.settings.handoff_keywords.join(", ")); setIntents((r.settings.auto_send_intents ?? []).join(", ")); })
       .catch((e: any) => toast.error(e?.message));
     hookFn().then(setHook).catch(() => {});
   }, []);
@@ -40,7 +41,7 @@ function AgentPage() {
     if (!brandId || !s) return;
     setSaving(true);
     try {
-      await saveFn({ data: { brandId, enabled: s.enabled, working_hours: s.working_hours, forbidden_topics: split(topics), handoff_keywords: split(keywords), handoff_message: s.handoff_message } });
+      await saveFn({ data: { brandId, enabled: s.enabled, working_hours: s.working_hours, forbidden_topics: split(topics), handoff_keywords: split(keywords), handoff_message: s.handoff_message, auto_send: !!s.auto_send, auto_send_min_confidence: Number(s.auto_send_min_confidence ?? 0.85), auto_send_daily_limit: Number(s.auto_send_daily_limit ?? 20), auto_send_intents: split(intents) } });
       toast.success("Setările agentului au fost salvate.");
     } catch (e: any) { toast.error(e?.message); }
     finally { setSaving(false); }
@@ -59,12 +60,12 @@ function AgentPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <PageHeader title="Agent AI" description="Cum răspunde AI-ul la mesaje și comentarii. Deocamdată doar propune răspunsuri și nu trimite nimic fără acordul tău." />
+      <PageHeader title="Agent AI" description="Cum răspunde AI-ul la mesaje și comentarii. Tu controlezi dacă doar propune răspunsuri sau trimite singur la întrebările sigure." />
 
       <Panel>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3"><Bot className="h-6 w-6 text-primary" />
-            <div><div className="font-semibold">Propuneri AI în Inbox</div><div className="text-sm text-muted-foreground">Mod: doar drafturi. Trimiterea automată vine într-o etapă următoare.</div></div></div>
+            <div><div className="font-semibold">Propuneri AI în Inbox</div><div className="text-sm text-muted-foreground">Agentul pregătește răspunsuri din datele confirmate din Brand Brain.</div></div></div>
           <button role="switch" aria-checked={s.enabled} aria-label="Pornește sau oprește agentul" onClick={() => setS({ ...s, enabled: !s.enabled })}
             className={`relative h-7 w-12 shrink-0 rounded-full transition ${s.enabled ? "bg-primary" : "bg-muted"}`}>
             <span className={`absolute top-1 h-5 w-5 rounded-full bg-background transition ${s.enabled ? "left-6" : "left-1"}`} /></button>
@@ -90,6 +91,32 @@ function AgentPage() {
         </div>
         <button onClick={save} disabled={saving} className="mt-4 inline-flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-60">
           {saving && <Loader2 className="h-4 w-4 animate-spin" />} Salvează setările</button>
+      </Panel>
+
+      <Panel>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3"><Zap className="h-6 w-6 text-primary" />
+            <div><div className="font-semibold">Trimitere automată (auto-send)</div>
+              <div className="text-sm text-muted-foreground">AI-ul trimite singur răspunsul doar la întrebările sigure de mai jos, cu încredere mare, în programul echipei. Orice altceva ajunge la tine în Inbox.</div></div></div>
+          <button role="switch" aria-checked={!!s.auto_send} aria-label="Pornește sau oprește trimiterea automată" onClick={() => setS({ ...s, auto_send: !s.auto_send })}
+            className={`relative h-7 w-12 shrink-0 rounded-full transition ${s.auto_send ? "bg-primary" : "bg-muted"}`}>
+            <span className={`absolute top-1 h-5 w-5 rounded-full bg-background transition ${s.auto_send ? "left-6" : "left-1"}`} /></button>
+        </div>
+        {s.auto_send && (
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-medium">Încredere minimă pentru trimitere: {Math.round((s.auto_send_min_confidence ?? 0.85) * 100)}%
+              <input type="range" min={0.5} max={1} step={0.05} value={s.auto_send_min_confidence ?? 0.85}
+                onChange={e => setS({ ...s, auto_send_min_confidence: Number(e.target.value) })} className="mt-2 w-full accent-primary" />
+              <span className="text-xs font-normal text-muted-foreground">Sub acest prag, răspunsul rămâne draft pentru tine.</span></label>
+            <label className="block text-sm font-medium">Limită de răspunsuri automate pe zi
+              <input type="number" min={1} max={200} className={inputCls + " mt-1"} value={s.auto_send_daily_limit ?? 20}
+                onChange={e => setS({ ...s, auto_send_daily_limit: Number(e.target.value) })} /></label>
+            <label className="block text-sm font-medium sm:col-span-2">Intenții sigure la care AI-ul poate răspunde singur (separate prin virgulă)
+              <input className={inputCls + " mt-1"} value={intents} onChange={e => setIntents(e.target.value)} placeholder="program, locație, contact, servicii" />
+              <span className="text-xs font-normal text-muted-foreground">Valori posibile: program, locație, contact, servicii, preț/ofertă, programare, comandă. Recomandăm să lași prețurile și programările pe aprobare manuală.</span></label>
+          </div>
+        )}
+        <p className="mt-4 text-xs text-muted-foreground">Fiecare răspuns automat se vede în Inbox, marcat ca trimis de AI, și primești notificare. Clientul poate cere oricând un om, iar AI-ul predă imediat conversația.</p>
       </Panel>
 
       <Panel>
