@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Download, Loader2, Trash2, Users } from "lucide-react";
-import { PageHeader, Panel, SkeletonBlock, EmptyState } from "@/components/ui-kit";
+import { PageHeader, Panel, SkeletonBlock } from "@/components/ui-kit";
 import { listLeads, updateLead, deleteLead, exportLeadsCsv } from "@/lib/leads.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/leaduri")({
@@ -86,8 +86,11 @@ function LeadsPage() {
 
       {leads === null ? <SkeletonBlock className="h-72" /> : leads.length === 0 ? (
         <Panel>
-          <EmptyState icon={<Users className="h-8 w-8" />} title="Niciun lead încă"
-            description="Leadurile apar automat când un client cere preț, programare sau comandă în mesaje. Până atunci, verifică Inboxul." />
+          <div className="flex flex-col items-center gap-2 py-10 text-center">
+            <Users className="h-8 w-8 text-muted-foreground" />
+            <div className="font-semibold">Niciun lead încă</div>
+            <p className="max-w-md text-sm text-muted-foreground">Leadurile apar automat când un client cere preț, programare sau comandă în mesaje. Până atunci, verifică Inboxul.</p>
+          </div>
         </Panel>
       ) : (
         <div className="space-y-3">
