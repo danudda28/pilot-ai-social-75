@@ -130,7 +130,10 @@ function AdminHome() {
 
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <Link to="/dashboard" className="text-primary hover:underline">← Înapoi la Dashboard</Link>
-        <Link to="/admin/api-runner" className="text-primary hover:underline">⚡ Rulare apeluri API →</Link>
+        <div className="flex gap-4">
+          <Link to="/admin/monitor" className="text-primary hover:underline">📊 Monitorizare</Link>
+          <Link to="/admin/api-runner" className="text-primary hover:underline">⚡ Rulare apeluri API →</Link>
+        </div>
       </div>
 
     </div>
