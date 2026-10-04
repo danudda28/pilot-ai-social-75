@@ -190,30 +190,60 @@ export async function publishToInstagram(args: {
 
 // ---------- Insights ----------
 
+/** Real per-post metrics using the Meta object id returned at publish. Returns null when unavailable. */
 export async function fetchPostInsights(args: {
-  pageId: string;
   pageAccessToken: string;
-  postId: string;
+  externalId: string;
   kind: "fb" | "ig";
-}): Promise<{ likes: number; comments: number; shares: number; reach: number }> {
-  // Best-effort: returns zeros if endpoint shape mismatches (post id can vary)
-  // because we store our internal post id, not the Meta post id. When the user
-  // links the published media id later, this becomes real data.
-  const { pageId, pageAccessToken, kind } = args;
+}): Promise<{ likes: number; comments: number; shares: number; reach: number } | null> {
+  const { pageAccessToken, externalId, kind } = args;
   try {
     if (kind === "fb") {
-      const url = `${GRAPH}/${pageId}/insights?metric=page_post_engagements,page_impressions_unique&access_token=${pageAccessToken}`;
-      const res = await fetch(url);
-      const json = await res.json() as any;
-      if (!res.ok || json.error) return zero();
-      const eng = json.data?.find((d: any) => d.name === "page_post_engagements")?.values?.[0]?.value ?? 0;
-      const reach = json.data?.find((d: any) => d.name === "page_impressions_unique")?.values?.[0]?.value ?? 0;
-      return { likes: Math.floor(eng * 0.7), comments: Math.floor(eng * 0.2), shares: Math.floor(eng * 0.1), reach };
+      const res = await fetch(`${GRAPH}/${externalId}?fields=likes.summary(true).limit(0),comments.summary(true).limit(0),shares&access_token=${pageAccessToken}`);
+      const j = await res.json() as any;
+      if (!res.ok || j.error) return null;
+      let reach = 0;
+      const ir = await fetch(`${GRAPH}/${externalId}/insights?metric=post_impressions_unique&access_token=${pageAccessToken}`);
+      const ij = await ir.json() as any;
+      if (ir.ok && !ij.error) reach = ij.data?.[0]?.values?.[0]?.value ?? 0;
+      return { likes: j.likes?.summary?.total_count ?? 0, comments: j.comments?.summary?.total_count ?? 0, shares: j.shares?.count ?? 0, reach };
     }
-    return zero();
+    const res = await fetch(`${GRAPH}/${externalId}?fields=like_count,comments_count&access_token=${pageAccessToken}`);
+    const j = await res.json() as any;
+    if (!res.ok || j.error) return null;
+    let reach = 0;
+    const ir = await fetch(`${GRAPH}/${externalId}/insights?metric=reach&access_token=${pageAccessToken}`);
+    const ij = await ir.json() as any;
+    if (ir.ok && !ij.error) reach = ij.data?.[0]?.values?.[0]?.value ?? 0;
+    return { likes: j.like_count ?? 0, comments: j.comments_count ?? 0, shares: 0, reach };
   } catch {
-    return zero();
+    return null;
   }
 }
 
-function zero() { return { likes: 0, comments: 0, shares: 0, reach: 0 }; }
+// ---------- Connection health ----------
+
+const REQUIRED_SCOPES = ["pages_show_list", "pages_manage_posts", "pages_read_engagement", "instagram_basic", "instagram_content_publish"];
+
+export async function inspectConnection(args: { pageAccessToken: string; userAccessToken?: string | null }) {
+  const { id, secret } = appCreds();
+  const res = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(args.pageAccessToken)}&access_token=${id}|${secret}`);
+  const j = await res.json() as any;
+  const d = j?.data ?? {};
+  let scopes: string[] = d.scopes ?? [];
+  if (args.userAccessToken) {
+    try {
+      const pr = await fetch(`${GRAPH}/me/permissions?access_token=${args.userAccessToken}`);
+      const pj = await pr.json() as any;
+      if (pr.ok && !pj.error) scopes = (pj.data ?? []).filter((p: any) => p.status === "granted").map((p: any) => p.permission);
+    } catch { /* keep debug_token scopes */ }
+  }
+  const expires = d.expires_at && d.expires_at > 0 ? new Date(d.expires_at * 1000).toISOString() : null;
+  return {
+    valid: !!d.is_valid,
+    expiresAt: expires,
+    scopes,
+    missing: REQUIRED_SCOPES.filter(s => !scopes.includes(s)),
+    error: d.error?.message ?? j?.error?.message ?? null,
+  };
+}
