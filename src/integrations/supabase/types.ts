@@ -16,6 +16,10 @@ export type Database = {
     Tables: {
       agent_settings: {
         Row: {
+          auto_send: boolean
+          auto_send_daily_limit: number
+          auto_send_intents: string[]
+          auto_send_min_confidence: number
           brand_id: string
           created_at: string
           enabled: boolean
@@ -29,6 +33,10 @@ export type Database = {
           working_hours: Json
         }
         Insert: {
+          auto_send?: boolean
+          auto_send_daily_limit?: number
+          auto_send_intents?: string[]
+          auto_send_min_confidence?: number
           brand_id: string
           created_at?: string
           enabled?: boolean
@@ -42,6 +50,10 @@ export type Database = {
           working_hours?: Json
         }
         Update: {
+          auto_send?: boolean
+          auto_send_daily_limit?: number
+          auto_send_intents?: string[]
+          auto_send_min_confidence?: number
           brand_id?: string
           created_at?: string
           enabled?: boolean
@@ -66,6 +78,7 @@ export type Database = {
       }
       ai_reply_drafts: {
         Row: {
+          auto_sent: boolean
           body: string
           brand_id: string
           confidence: number | null
@@ -83,6 +96,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          auto_sent?: boolean
           body: string
           brand_id: string
           confidence?: number | null
@@ -100,6 +114,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          auto_sent?: boolean
           body?: string
           brand_id?: string
           confidence?: number | null
@@ -180,6 +195,61 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auto_send_log: {
+        Row: {
+          body: string
+          brand_id: string
+          confidence: number | null
+          conversation_id: string | null
+          created_at: string
+          draft_id: string | null
+          id: string
+          organization_id: string
+        }
+        Insert: {
+          body: string
+          brand_id: string
+          confidence?: number | null
+          conversation_id?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          organization_id: string
+        }
+        Update: {
+          body?: string
+          brand_id?: string
+          confidence?: number | null
+          conversation_id?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_send_log_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auto_send_log_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auto_send_log_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "ai_reply_drafts"
             referencedColumns: ["id"]
           },
         ]
@@ -1061,6 +1131,69 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: false
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          brand_id: string
+          channel: string | null
+          conversation_id: string | null
+          created_at: string
+          customer_id: string | null
+          customer_name: string | null
+          id: string
+          intent: string
+          notes: string | null
+          organization_id: string
+          status: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          brand_id: string
+          channel?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          id?: string
+          intent?: string
+          notes?: string | null
+          organization_id: string
+          status?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brand_id?: string
+          channel?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string | null
+          id?: string
+          intent?: string
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]
