@@ -27,7 +27,7 @@ const mainNav: NavItem[] = [
   { to: "/dashboard/brand-brain", label: "Brand Brain", icon: Brain },
   { to: "/dashboard/media", label: "Bibliotecă media", icon: ImageIcon },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/dashboard/leaduri", label: "Leaduri", icon: UserRound, soon: true },
+  { to: "/dashboard/leaduri", label: "Leaduri", icon: UserRound },
   { to: "/dashboard/integrari", label: "Integrări", icon: Plug },
   { to: "/dashboard/team", label: "Echipă", icon: Users },
   { to: "/dashboard/settings", label: "Setări", icon: Settings },
