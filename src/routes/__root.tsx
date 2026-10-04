@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/__l5e/assets-v1/c6cb4347-52bb-4ee9-bdf7-cb146996df05/social-spark-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" },
       { rel: "manifest", href: "/manifest.json" },
     ],
   }),
@@ -96,8 +96,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="ro">
-      <head><HeadContent /></head>
+    <html lang="ro" suppressHydrationWarning>
+      <head><HeadContent /><script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('ss-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}" }} /></head>
       <body>
         {children}
         <Scripts />
@@ -124,7 +124,7 @@ function RootComponent() {
       <Outlet />
       <CookieBanner />
       <InstallPwaPrompt />
-      <Toaster theme="dark" />
+      <Toaster richColors />
     </QueryClientProvider>
   );
 }
