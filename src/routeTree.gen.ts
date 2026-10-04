@@ -33,6 +33,7 @@ import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authe
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
+import { Route as AuthenticatedDashboardStrategieRouteImport } from './routes/_authenticated/dashboard.strategie'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
 import { Route as AuthenticatedDashboardOnboardingRouteImport } from './routes/_authenticated/dashboard.onboarding'
@@ -181,6 +182,12 @@ const AuthenticatedDashboardTeamRoute =
   AuthenticatedDashboardTeamRouteImport.update({
     id: '/team',
     path: '/team',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardStrategieRoute =
+  AuthenticatedDashboardStrategieRouteImport.update({
+    id: '/strategie',
+    path: '/strategie',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardSettingsRoute =
@@ -373,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -422,6 +430,7 @@ export interface FileRoutesByTo {
   '/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -474,6 +483,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/onboarding': typeof AuthenticatedDashboardOnboardingRoute
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/_authenticated/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -526,6 +536,7 @@ export interface FileRouteTypes {
     | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
+    | '/dashboard/strategie'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
@@ -575,6 +586,7 @@ export interface FileRouteTypes {
     | '/dashboard/onboarding'
     | '/dashboard/referral'
     | '/dashboard/settings'
+    | '/dashboard/strategie'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
@@ -626,6 +638,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/onboarding'
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
+    | '/_authenticated/dashboard/strategie'
     | '/_authenticated/dashboard/team'
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
@@ -833,6 +846,13 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/dashboard/team'
       preLoaderRoute: typeof AuthenticatedDashboardTeamRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/strategie': {
+      id: '/_authenticated/dashboard/strategie'
+      path: '/strategie'
+      fullPath: '/dashboard/strategie'
+      preLoaderRoute: typeof AuthenticatedDashboardStrategieRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/settings': {
@@ -1043,6 +1063,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardOnboardingRoute: typeof AuthenticatedDashboardOnboardingRoute
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
+  AuthenticatedDashboardStrategieRoute: typeof AuthenticatedDashboardStrategieRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
   AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
@@ -1070,6 +1091,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardOnboardingRoute,
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
+    AuthenticatedDashboardStrategieRoute: AuthenticatedDashboardStrategieRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
     AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,

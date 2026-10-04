@@ -40,6 +40,11 @@ export const reschedulePost = createServerFn({ method: "POST" })
       .eq("id", data.postId)
       .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
+    // Move any pending publishing jobs to the new time.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("publishing_jobs")
+      .update({ run_at: data.scheduledDate, next_attempt_at: data.scheduledDate })
+      .eq("post_id", data.postId).eq("user_id", context.userId).eq("status", "pending");
     return { ok: true };
   });
 

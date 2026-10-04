@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Instagram, Facebook, Plug, Trash2, Loader2, ShieldCheck, RefreshCw } from "lucide-react";
 
 import { z } from "zod";
+import { MetaHealthPanel } from "@/components/MetaHealthPanel";
 
 const search = z.object({
   meta_connected: z.coerce.number().optional(),
@@ -159,6 +160,8 @@ function Integrations() {
           </div>
         </div>
       )}
+
+      <MetaHealthPanel />
 
       <div className="glass rounded-2xl p-6 text-sm text-muted-foreground space-y-2">
         <div className="font-semibold text-foreground flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Cum funcționează</div>

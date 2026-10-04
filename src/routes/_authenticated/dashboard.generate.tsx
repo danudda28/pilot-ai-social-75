@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generatePost } from "@/lib/ai.functions";
+import { getBrandBrain } from "@/lib/brand-brain.functions";
 import { generatePostImage, uploadPostImage } from "@/lib/image.functions";
 import { updatePost } from "@/lib/posts.functions";
 import { toast } from "sonner";
@@ -47,6 +48,8 @@ function Generate() {
   const uploadImage = useServerFn(uploadPostImage);
   const savePost = useServerFn(updatePost);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const brainFn = useServerFn(getBrandBrain);
+  const [brainName, setBrainName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const [imgUrl, setImgUrl] = useState<string | null>(null);
@@ -86,6 +89,14 @@ function Generate() {
       setSaving(false);
     }
   }
+
+  useEffect(() => {
+    brainFn({ data: {} }).then((b: any) => {
+      if (!b?.brand) return;
+      setBrainName(b.brand.name);
+      setForm(f => ({ ...f, domain: f.domain || b.brand.category || "", businessType: f.businessType || b.brand.name || "" }));
+    }).catch(() => {});
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -201,6 +212,12 @@ function Generate() {
 
       {result && (
         <div className="glass-strong rounded-2xl p-6 sm:p-8 space-y-5 animate-fade-in">
+          {result.warnings?.bannedWords?.length > 0 && (
+            <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm">
+              Atenție: textul conține cuvinte pe care le-ai interzis în Brand Brain: <b>{result.warnings.bannedWords.join(", ")}</b>. Editează postarea înainte de publicare.
+            </div>
+          )}
+          {result.warnings?.usedBrandBrain && <p className="text-xs text-muted-foreground">Scris pe baza informațiilor confirmate din Brand Brain{brainName ? ` (${brainName})` : ""}.</p>}
           <div className="flex items-start justify-between gap-4">
             {editing ? (
               <input value={edit.title} onChange={e => setEdit({ ...edit, title: e.target.value })}

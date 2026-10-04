@@ -2,3 +2,5 @@
 - Brand Brain is the single source of truth for AI; only confirmed data is used and website scan results stay draft until the user confirms. Why: AI must never invent business facts.
 - Dashboard layout renders <Outlet />; home lives in dashboard.index.tsx. Why: avoid pathname-gated layouts.
 - Design tokens are light-first with html.dark for dark mode; legacy glass utilities map to clean cards. Why: one coherent design system across old and new screens.
+- Publishing goes only through publishing_jobs (one idempotent job per post+target, processed by src/lib/publishing-queue.server.ts with retry/backoff); generated_posts.status is derived from jobs. Why: no double publishing, real per-target state.
+- AI content generation builds facts only from confirmed Brand Brain data via src/lib/brand-context.server.ts. Why: one shared, non-hallucinating context for all generators.

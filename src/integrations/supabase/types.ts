@@ -518,6 +518,62 @@ export type Database = {
           },
         ]
       }
+      campaigns: {
+        Row: {
+          brand_id: string
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          goal: string | null
+          id: string
+          kind: string
+          name: string
+          offer: string | null
+          organization_id: string
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          goal?: string | null
+          id?: string
+          kind?: string
+          name: string
+          offer?: string | null
+          organization_id: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          goal?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          offer?: string | null
+          organization_id?: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -544,6 +600,62 @@ export type Database = {
           phone?: string | null
         }
         Relationships: []
+      }
+      content_strategies: {
+        Row: {
+          brand_id: string
+          created_at: string
+          created_by: string | null
+          end_date: string
+          goal: string | null
+          id: string
+          organization_id: string
+          plan: Json
+          posts_per_week: number
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          created_by?: string | null
+          end_date: string
+          goal?: string | null
+          id?: string
+          organization_id: string
+          plan?: Json
+          posts_per_week?: number
+          start_date: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string
+          goal?: string | null
+          id?: string
+          organization_id?: string
+          plan?: Json
+          posts_per_week?: number
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_strategies_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_log: {
         Row: {
@@ -588,6 +700,7 @@ export type Database = {
           approved_by: string | null
           brand_id: string | null
           call_to_action: string | null
+          campaign_id: string | null
           content_type: string
           copy: string | null
           created_at: string
@@ -606,6 +719,7 @@ export type Database = {
           scheduled_date: string | null
           short_copy: string | null
           status: string
+          strategy_id: string | null
           target_profile_ids: string[]
           title: string | null
           user_id: string
@@ -619,6 +733,7 @@ export type Database = {
           approved_by?: string | null
           brand_id?: string | null
           call_to_action?: string | null
+          campaign_id?: string | null
           content_type: string
           copy?: string | null
           created_at?: string
@@ -637,6 +752,7 @@ export type Database = {
           scheduled_date?: string | null
           short_copy?: string | null
           status?: string
+          strategy_id?: string | null
           target_profile_ids?: string[]
           title?: string | null
           user_id: string
@@ -650,6 +766,7 @@ export type Database = {
           approved_by?: string | null
           brand_id?: string | null
           call_to_action?: string | null
+          campaign_id?: string | null
           content_type?: string
           copy?: string | null
           created_at?: string
@@ -668,6 +785,7 @@ export type Database = {
           scheduled_date?: string | null
           short_copy?: string | null
           status?: string
+          strategy_id?: string | null
           target_profile_ids?: string[]
           title?: string | null
           user_id?: string
@@ -681,6 +799,20 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: false
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_posts_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_posts_strategy_id_fkey"
+            columns: ["strategy_id"]
+            isOneToOne: false
+            referencedRelation: "content_strategies"
             referencedColumns: ["id"]
           },
         ]
@@ -1014,6 +1146,84 @@ export type Database = {
           },
         ]
       }
+      publishing_jobs: {
+        Row: {
+          attempts: number
+          brand_id: string | null
+          connection_id: string | null
+          created_at: string
+          external_id: string | null
+          id: string
+          kind: string
+          last_error: string | null
+          max_attempts: number
+          next_attempt_at: string
+          organization_id: string | null
+          post_id: string
+          published_at: string | null
+          run_at: string
+          status: string
+          target: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          brand_id?: string | null
+          connection_id?: string | null
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          kind: string
+          last_error?: string | null
+          max_attempts?: number
+          next_attempt_at?: string
+          organization_id?: string | null
+          post_id: string
+          published_at?: string | null
+          run_at?: string
+          status?: string
+          target: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          brand_id?: string | null
+          connection_id?: string | null
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          kind?: string
+          last_error?: string | null
+          max_attempts?: number
+          next_attempt_at?: string
+          organization_id?: string | null
+          post_id?: string
+          published_at?: string | null
+          run_at?: string
+          status?: string
+          target?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publishing_jobs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "meta_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publishing_jobs_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "generated_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           code: string
@@ -1043,6 +1253,59 @@ export type Database = {
           rewarded?: boolean
         }
         Relationships: []
+      }
+      social_connection_health: {
+        Row: {
+          connection_id: string
+          expires_at: string | null
+          instagram_linked: boolean
+          last_checked_at: string | null
+          last_error: string | null
+          last_failure_at: string | null
+          last_success_at: string | null
+          missing_scopes: string[]
+          scopes: string[]
+          token_valid: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_id: string
+          expires_at?: string | null
+          instagram_linked?: boolean
+          last_checked_at?: string | null
+          last_error?: string | null
+          last_failure_at?: string | null
+          last_success_at?: string | null
+          missing_scopes?: string[]
+          scopes?: string[]
+          token_valid?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_id?: string
+          expires_at?: string | null
+          instagram_linked?: boolean
+          last_checked_at?: string | null
+          last_error?: string | null
+          last_failure_at?: string | null
+          last_success_at?: string | null
+          missing_scopes?: string[]
+          scopes?: string[]
+          token_valid?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_connection_health_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: true
+            referencedRelation: "meta_connections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       testimonials: {
         Row: {

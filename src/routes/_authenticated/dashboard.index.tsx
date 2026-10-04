@@ -1,3 +1,4 @@
+import { MetaHealthAlert } from "@/components/MetaHealthPanel";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -107,6 +108,8 @@ function DashboardHome() {
           </ul>
         </Panel>
       )}
+
+      <MetaHealthAlert />
 
       <div className="grid gap-4 md:grid-cols-3">
         <Panel>

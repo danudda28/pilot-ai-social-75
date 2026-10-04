@@ -38,7 +38,9 @@ export const Route = createFileRoute("/api/public/cron/refresh-meta-tokens")({
               failures.push({ id: c.id, error: e?.message ?? "unknown" });
             }
           }
-          return Response.json({ checked: conns?.length ?? 0, refreshed, failures });
+          const { runHealthChecks } = await import("@/lib/meta-health.server");
+          const health = await runHealthChecks(supabaseAdmin).catch(() => ({ checked: 0 }));
+          return Response.json({ checked: conns?.length ?? 0, refreshed, failures, health });
         } catch (e: any) {
           console.error("[cron refresh-meta-tokens]", e);
           return new Response(JSON.stringify({ error: e?.message }), { status: 500 });
