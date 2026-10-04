@@ -53,6 +53,7 @@ import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
 import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
 import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
+import { Route as ApiPublicWebhooksMetaRouteImport } from './routes/api/public/webhooks/meta'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
@@ -304,6 +305,11 @@ const AuthenticatedAdminApiRunnerRoute =
     path: '/api-runner',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicWebhooksMetaRoute = ApiPublicWebhooksMetaRouteImport.update({
+  id: '/api/public/webhooks/meta',
+  path: '/api/public/webhooks/meta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronSyncMetaInsightsRoute =
   ApiPublicCronSyncMetaInsightsRouteImport.update({
     id: '/api/public/cron/sync-meta-insights',
@@ -330,9 +336,9 @@ const ApiPublicCronPublishScheduledRoute =
   } as any)
 const ApiPublicWebhooksMetaDeauthorizeRoute =
   ApiPublicWebhooksMetaDeauthorizeRouteImport.update({
-    id: '/api/public/webhooks/meta/deauthorize',
-    path: '/api/public/webhooks/meta/deauthorize',
-    getParentRoute: () => rootRouteImport,
+    id: '/deauthorize',
+    path: '/deauthorize',
+    getParentRoute: () => ApiPublicWebhooksMetaRoute,
   } as any)
 const ApiPublicAuthMetaCallbackRoute =
   ApiPublicAuthMetaCallbackRouteImport.update({
@@ -389,6 +395,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
+  '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -439,6 +446,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
+  '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -492,6 +500,7 @@ export interface FileRoutesById {
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
+  '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -545,6 +554,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
+    | '/api/public/webhooks/meta'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   fileRoutesByTo: FileRoutesByTo
@@ -595,6 +605,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
+    | '/api/public/webhooks/meta'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   id:
@@ -647,6 +658,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
+    | '/api/public/webhooks/meta'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   fileRoutesById: FileRoutesById
@@ -674,8 +686,8 @@ export interface RootRouteChildren {
   ApiPublicCronRefreshMetaTokensRoute: typeof ApiPublicCronRefreshMetaTokensRoute
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
   ApiPublicCronSyncMetaInsightsRoute: typeof ApiPublicCronSyncMetaInsightsRoute
+  ApiPublicWebhooksMetaRoute: typeof ApiPublicWebhooksMetaRouteWithChildren
   ApiPublicAuthMetaCallbackRoute: typeof ApiPublicAuthMetaCallbackRoute
-  ApiPublicWebhooksMetaDeauthorizeRoute: typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -988,6 +1000,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminApiRunnerRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/webhooks/meta': {
+      id: '/api/public/webhooks/meta'
+      path: '/api/public/webhooks/meta'
+      fullPath: '/api/public/webhooks/meta'
+      preLoaderRoute: typeof ApiPublicWebhooksMetaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/sync-meta-insights': {
       id: '/api/public/cron/sync-meta-insights'
       path: '/api/public/cron/sync-meta-insights'
@@ -1018,10 +1037,10 @@ declare module '@tanstack/react-router' {
     }
     '/api/public/webhooks/meta/deauthorize': {
       id: '/api/public/webhooks/meta/deauthorize'
-      path: '/api/public/webhooks/meta/deauthorize'
+      path: '/deauthorize'
       fullPath: '/api/public/webhooks/meta/deauthorize'
       preLoaderRoute: typeof ApiPublicWebhooksMetaDeauthorizeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ApiPublicWebhooksMetaRoute
     }
     '/api/public/auth/meta/callback': {
       id: '/api/public/auth/meta/callback'
@@ -1125,6 +1144,19 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface ApiPublicWebhooksMetaRouteChildren {
+  ApiPublicWebhooksMetaDeauthorizeRoute: typeof ApiPublicWebhooksMetaDeauthorizeRoute
+}
+
+const ApiPublicWebhooksMetaRouteChildren: ApiPublicWebhooksMetaRouteChildren = {
+  ApiPublicWebhooksMetaDeauthorizeRoute: ApiPublicWebhooksMetaDeauthorizeRoute,
+}
+
+const ApiPublicWebhooksMetaRouteWithChildren =
+  ApiPublicWebhooksMetaRoute._addFileChildren(
+    ApiPublicWebhooksMetaRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1148,8 +1180,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronRefreshMetaTokensRoute: ApiPublicCronRefreshMetaTokensRoute,
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
   ApiPublicCronSyncMetaInsightsRoute: ApiPublicCronSyncMetaInsightsRoute,
+  ApiPublicWebhooksMetaRoute: ApiPublicWebhooksMetaRouteWithChildren,
   ApiPublicAuthMetaCallbackRoute: ApiPublicAuthMetaCallbackRoute,
-  ApiPublicWebhooksMetaDeauthorizeRoute: ApiPublicWebhooksMetaDeauthorizeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
