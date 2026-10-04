@@ -8,7 +8,7 @@ export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
       { title: "Abonamente — Social Spark" },
-      { name: "description", content: "Alege abonamentul potrivit afacerii tale: Basic 99 lei, Pro 225 lei, Business 299 lei pe lună. 30 zile gratuit, anulezi oricând." },
+      { name: "description", content: "Alege abonamentul potrivit afacerii tale: Basic 99 lei, Pro 250 lei, Business 350 lei pe lună. 30 zile gratuit, anulezi oricând." },
       { property: "og:title", content: "Abonamente — Social Spark" },
       { property: "og:description", content: "3 abonamente clare, 30 zile gratis pe fiecare. Anulezi oricând în perioada de probă." },
     ],
@@ -33,7 +33,7 @@ const plans = [
     cta: "Începe gratis 30 zile",
   },
   {
-    id: "pro", name: "Pro", price: "225 lei", featured: true,
+    id: "pro", name: "Pro", price: "250 lei", featured: true,
     tagline: "Cel mai ales plan. Pentru afaceri care vor să crească serios pe Instagram și Facebook.",
     description:
       "Primești 30 de postări lunar — text + design grafic generat de AI + idei de Reels. Postările se publică automat la ora pe care o alegi tu, fără să mai intri manual pe telefon. În plus, AI-ul îți analizează pagina și îți spune ce să schimbi ca să ai mai mulți followeri și mai multă interacțiune. Recomandat pentru saloane, restaurante, cabinete, magazine online și freelanceri activi.",
@@ -50,7 +50,7 @@ const plans = [
     cta: "Începe gratis 30 zile",
   },
   {
-    id: "business", name: "Business", price: "299 lei", featured: false,
+    id: "business", name: "Business", price: "350 lei", featured: false,
     tagline: "Pentru agenții, firme cu mai multe locații sau brand-uri și antreprenori serioși.",
     description:
       "90 de postări pe lună și posibilitatea de a gestiona mai multe pagini sau brand-uri din același cont (perfect dacă ai mai multe afaceri sau ești agenție de marketing). Pe lângă postări și design, primești scripturi gata scrise pentru Reels, rapoarte lunare cu rezultatele tale și recomandări personalizate de la AI. Suport prioritar — îți răspundem primii când ai o întrebare.",
