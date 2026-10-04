@@ -52,6 +52,7 @@ import { Route as AuthenticatedDashboardBrandBrainRouteImport } from './routes/_
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard.approvals'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
 import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
+import { Route as AuthenticatedDashboardAgentRouteImport } from './routes/_authenticated/dashboard.agent'
 import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
 import { Route as ApiPublicWebhooksMetaRouteImport } from './routes/api/public/webhooks/meta'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
@@ -299,6 +300,12 @@ const AuthenticatedDashboardAiToolsRoute =
     path: '/ai-tools',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardAgentRoute =
+  AuthenticatedDashboardAgentRouteImport.update({
+    id: '/agent',
+    path: '/agent',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedAdminApiRunnerRoute =
   AuthenticatedAdminApiRunnerRouteImport.update({
     id: '/api-runner',
@@ -368,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -419,6 +427,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -473,6 +482,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/_authenticated/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/_authenticated/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
@@ -527,6 +537,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
+    | '/dashboard/agent'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
@@ -578,6 +589,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
+    | '/dashboard/agent'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
@@ -631,6 +643,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/_authenticated/admin/api-runner'
+    | '/_authenticated/dashboard/agent'
     | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
@@ -993,6 +1006,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAiToolsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/agent': {
+      id: '/_authenticated/dashboard/agent'
+      path: '/agent'
+      fullPath: '/dashboard/agent'
+      preLoaderRoute: typeof AuthenticatedDashboardAgentRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/admin/api-runner': {
       id: '/_authenticated/admin/api-runner'
       path: '/api-runner'
@@ -1064,6 +1084,7 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAgentRoute: typeof AuthenticatedDashboardAgentRoute
   AuthenticatedDashboardAiToolsRoute: typeof AuthenticatedDashboardAiToolsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
@@ -1090,6 +1111,7 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardAgentRoute: AuthenticatedDashboardAgentRoute,
     AuthenticatedDashboardAiToolsRoute: AuthenticatedDashboardAiToolsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,

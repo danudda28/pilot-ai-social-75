@@ -76,7 +76,7 @@ export const sendReply = createServerFn({ method: "POST" })
     const { data: ok } = await sb.rpc("has_org_role", { _org: conv.organization_id, _roles: RESP_ROLES as any });
     if (!ok) throw new Error("Nu ai drept să răspunzi în această afacere.");
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
-    const { data: conn } = await admin.from("meta_connections").select("page_id,page_access_token").eq("id", conv.connection_id).maybeSingle();
+    const { data: conn } = await admin.from("meta_connections").select("page_id,page_access_token").eq("id", conv.connection_id ?? "").maybeSingle();
     if (!conn) throw new Error("Pagina nu mai este conectată. Reconecteaz-o din Integrări.");
     const meta = await import("./meta.server");
     const { friendlyMetaError } = await import("./publishing-queue.server");
@@ -85,7 +85,7 @@ export const sendReply = createServerFn({ method: "POST" })
       if (conv.channel === "messenger" || conv.channel === "instagram") {
         if (!conv.last_inbound_at || Date.now() - new Date(conv.last_inbound_at).getTime() > 24 * 3600 * 1000)
           throw new Error("Au trecut peste 24 de ore de la ultimul mesaj al clientului. Meta nu mai permite răspunsul din aplicație.");
-        externalId = (await meta.sendDirectMessage({ pageId: conn.page_id, pageAccessToken: conn.page_access_token, recipientId: conv.customer_id, text: data.text })).id;
+        externalId = (await meta.sendDirectMessage({ pageId: conn.page_id, pageAccessToken: conn.page_access_token, recipientId: conv.customer_id ?? "", text: data.text })).id;
       } else {
         externalId = (await meta.replyToComment({ commentId: conv.external_id, pageAccessToken: conn.page_access_token, text: data.text, kind: conv.channel === "fb_comment" ? "fb" : "ig" })).id;
       }
@@ -147,7 +147,7 @@ export const hideCommentFn = createServerFn({ method: "POST" })
     const { data: ok } = await context.supabase.rpc("has_org_role", { _org: conv.organization_id, _roles: RESP_ROLES as any });
     if (!ok) throw new Error("Nu ai drept pentru această acțiune.");
     const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
-    const { data: conn } = await admin.from("meta_connections").select("page_access_token").eq("id", conv.connection_id).maybeSingle();
+    const { data: conn } = await admin.from("meta_connections").select("page_access_token").eq("id", conv.connection_id ?? "").maybeSingle();
     if (!conn) throw new Error("Pagina nu mai este conectată.");
     const { hideComment } = await import("./meta.server");
     const { friendlyMetaError } = await import("./publishing-queue.server");
