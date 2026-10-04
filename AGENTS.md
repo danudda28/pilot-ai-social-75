@@ -1,0 +1,4 @@
+- Multi-tenancy: data is scoped by organizations → brands; new brand-scoped tables carry organization_id (auto-filled from brand_id by trigger) and use is_org_member/has_org_role in RLS. Why: strict tenant isolation without breaking legacy brand_id-based tables.
+- Brand Brain is the single source of truth for AI; only confirmed data is used and website scan results stay draft until the user confirms. Why: AI must never invent business facts.
+- Dashboard layout renders <Outlet />; home lives in dashboard.index.tsx. Why: avoid pathname-gated layouts.
+- Design tokens are light-first with html.dark for dark mode; legacy glass utilities map to clean cards. Why: one coherent design system across old and new screens.
