@@ -59,6 +59,7 @@ import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
+import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron.daily-digest'
 import { Route as ApiPublicWebhooksMetaDeauthorizeRouteImport } from './routes/api/public/webhooks/meta.deauthorize'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 
@@ -341,6 +342,12 @@ const ApiPublicCronPublishScheduledRoute =
     path: '/api/public/cron/publish-scheduled',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronDailyDigestRoute =
+  ApiPublicCronDailyDigestRouteImport.update({
+    id: '/api/public/cron/daily-digest',
+    path: '/api/public/cron/daily-digest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicWebhooksMetaDeauthorizeRoute =
   ApiPublicWebhooksMetaDeauthorizeRouteImport.update({
     id: '/deauthorize',
@@ -399,6 +406,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -451,6 +459,7 @@ export interface FileRoutesByTo {
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -506,6 +515,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
     | '/dashboard/video'
     | '/api/public/health'
     | '/dashboard/'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -613,6 +624,7 @@ export interface FileRouteTypes {
     | '/dashboard/video'
     | '/api/public/health'
     | '/dashboard'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -667,6 +679,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
     | '/_authenticated/dashboard/'
+    | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -695,6 +708,7 @@ export interface RootRouteChildren {
   VsHootsuiteBufferRoute: typeof VsHootsuiteBufferRoute
   InvitatieTokenRoute: typeof InvitatieTokenRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
+  ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
   ApiPublicCronRefreshMetaTokensRoute: typeof ApiPublicCronRefreshMetaTokensRoute
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
@@ -1055,6 +1069,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronPublishScheduledRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/daily-digest': {
+      id: '/api/public/cron/daily-digest'
+      path: '/api/public/cron/daily-digest'
+      fullPath: '/api/public/cron/daily-digest'
+      preLoaderRoute: typeof ApiPublicCronDailyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/meta/deauthorize': {
       id: '/api/public/webhooks/meta/deauthorize'
       path: '/deauthorize'
@@ -1198,6 +1219,7 @@ const rootRouteChildren: RootRouteChildren = {
   VsHootsuiteBufferRoute: VsHootsuiteBufferRoute,
   InvitatieTokenRoute: InvitatieTokenRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
+  ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,
   ApiPublicCronRefreshMetaTokensRoute: ApiPublicCronRefreshMetaTokensRoute,
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
