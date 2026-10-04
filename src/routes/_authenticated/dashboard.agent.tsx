@@ -24,6 +24,7 @@ function AgentPage() {
   const [s, setS] = useState<any>(null);
   const [topics, setTopics] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [intents, setIntents] = useState("");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
   const [testing, setTesting] = useState(false);
@@ -31,7 +32,7 @@ function AgentPage() {
   const [hook, setHook] = useState<{ path: string; verifyToken: string | null } | null>(null);
 
   useEffect(() => {
-    getFn().then((r: any) => { setBrandId(r.brandId); setS(r.settings); setTopics(r.settings.forbidden_topics.join(", ")); setKeywords(r.settings.handoff_keywords.join(", ")); })
+    getFn().then((r: any) => { setBrandId(r.brandId); setS(r.settings); setTopics(r.settings.forbidden_topics.join(", ")); setKeywords(r.settings.handoff_keywords.join(", ")); setIntents((r.settings.auto_send_intents ?? []).join(", ")); })
       .catch((e: any) => toast.error(e?.message));
     hookFn().then(setHook).catch(() => {});
   }, []);
@@ -40,7 +41,7 @@ function AgentPage() {
     if (!brandId || !s) return;
     setSaving(true);
     try {
-      await saveFn({ data: { brandId, enabled: s.enabled, working_hours: s.working_hours, forbidden_topics: split(topics), handoff_keywords: split(keywords), handoff_message: s.handoff_message } });
+      await saveFn({ data: { brandId, enabled: s.enabled, working_hours: s.working_hours, forbidden_topics: split(topics), handoff_keywords: split(keywords), handoff_message: s.handoff_message, auto_send: !!s.auto_send, auto_send_min_confidence: Number(s.auto_send_min_confidence ?? 0.85), auto_send_daily_limit: Number(s.auto_send_daily_limit ?? 20), auto_send_intents: split(intents) } });
       toast.success("Setările agentului au fost salvate.");
     } catch (e: any) { toast.error(e?.message); }
     finally { setSaving(false); }
