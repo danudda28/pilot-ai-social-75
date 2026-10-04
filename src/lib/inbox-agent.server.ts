@@ -146,9 +146,10 @@ Răspunde STRICT JSON: {"reply":"text","source_ids":["id"],"confidence":0-1,"han
   };
 }
 
-/** Creates a pending draft for the latest inbound message of a conversation (admin client). */
+/** Creates a pending draft for the latest inbound message of a conversation (admin client).
+ *  If auto-send is on and the reply is safe, sends it directly through Meta instead. */
 export async function draftForConversation(admin: any, conversationId: string, messageId: string) {
-  const { data: conv } = await admin.from("conversations").select("id,brand_id,ai_paused,status").eq("id", conversationId).maybeSingle();
+  const { data: conv } = await admin.from("conversations").select("*").eq("id", conversationId).maybeSingle();
   if (!conv || conv.ai_paused || conv.status === "human" || conv.status === "closed") return null;
   const settings = await loadAgentSettings(admin, conv.brand_id);
   if (!settings.enabled) return null;
@@ -156,12 +157,56 @@ export async function draftForConversation(admin: any, conversationId: string, m
   const list = (msgs ?? []).reverse();
   const target = list.find((m: any) => m.id === messageId) ?? list[list.length - 1];
   if (!target || target.direction !== "in" || !target.body.trim()) return null;
+
+  const intent = detectIntent(target.body);
+  await maybeCreateLead(admin, conv, target.body).catch(e => console.warn("[lead]", e?.message));
+
   const r = await runAgent(admin, conv.brand_id, target.body, list.filter((m: any) => m.id !== target.id));
   await admin.from("ai_reply_drafts").update({ status: "rejected" }).eq("conversation_id", conversationId).eq("status", "pending");
+
+  // Auto-send: doar intenții sigure, încredere mare, în program, sub limita zilnică.
+  const gate = await canAutoSend(admin, settings, conv.brand_id, intent, r);
+  if (gate.ok) {
+    try {
+      const meta = await import("./meta.server");
+      const { data: conn } = await admin.from("meta_connections").select("page_id,page_access_token").eq("id", conv.connection_id ?? "").maybeSingle();
+      if (!conn) throw new Error("Pagina nu mai este conectată.");
+      let externalId: string;
+      if (conv.channel === "messenger" || conv.channel === "instagram") {
+        if (!conv.last_inbound_at || Date.now() - new Date(conv.last_inbound_at).getTime() > 24 * 3600 * 1000)
+          throw new Error("Fereastra de 24 de ore s-a închis.");
+        externalId = (await meta.sendDirectMessage({ pageId: conn.page_id, pageAccessToken: conn.page_access_token, recipientId: conv.customer_id ?? "", text: r.reply })).id;
+      } else {
+        externalId = (await meta.replyToComment({ commentId: conv.external_id, pageAccessToken: conn.page_access_token, text: r.reply, kind: conv.channel === "fb_comment" ? "fb" : "ig" })).id;
+      }
+      const now = new Date().toISOString();
+      await admin.from("messages").insert({ brand_id: conv.brand_id, organization_id: conv.organization_id, conversation_id: conv.id, direction: "out", body: r.reply, external_id: externalId, sent_at: now });
+      await admin.from("conversations").update({ last_message_at: now }).eq("id", conv.id);
+      const { data: draft } = await admin.from("ai_reply_drafts").insert({
+        brand_id: conv.brand_id, organization_id: conv.organization_id, conversation_id: conversationId, message_id: target.id,
+        body: r.reply, sources: r.sources as any, confidence: r.confidence, handoff_suggested: false, reason: `Trimis automat (${intent})`, status: "sent", auto_sent: true,
+      }).select("id").single();
+      await admin.from("auto_send_log").insert({ brand_id: conv.brand_id, organization_id: conv.organization_id, conversation_id: conv.id, draft_id: draft?.id ?? null, body: r.reply, confidence: r.confidence });
+      const { notifyOrg } = await import("./notify.server");
+      await notifyOrg(admin, conv.organization_id, "auto_send",
+        `AI-ul a răspuns automat lui ${conv.customer_name ?? "un client"}`,
+        `„${r.reply.slice(0, 140)}”`, "/dashboard/inbox");
+      return draft?.id ?? null;
+    } catch (e: any) {
+      console.warn("[auto-send] a eșuat, rămâne draft:", e?.message);
+    }
+  }
+
   const { data } = await admin.from("ai_reply_drafts").insert({
-    brand_id: conv.brand_id, organization_id: "00000000-0000-0000-0000-000000000000", conversation_id: conversationId, message_id: target.id,
+    brand_id: conv.brand_id, organization_id: conv.organization_id, conversation_id: conversationId, message_id: target.id,
     body: r.reply, sources: r.sources as any, confidence: r.confidence, handoff_suggested: r.handoff, reason: r.reason, status: "pending",
   }).select("id").single();
-  if (r.handoff) await admin.from("conversations").update({ status: "pending" }).eq("id", conversationId);
+  if (r.handoff) {
+    await admin.from("conversations").update({ status: "pending" }).eq("id", conversationId);
+    const { notifyOrg } = await import("./notify.server");
+    await notifyOrg(admin, conv.organization_id, "handoff",
+      `${conv.customer_name ?? "Un client"} așteaptă răspuns de la un om`,
+      r.reason || "Agentul AI a predat conversația.", "/dashboard/inbox");
+  }
   return data?.id ?? null;
 }
