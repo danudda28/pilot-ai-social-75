@@ -58,6 +58,58 @@ export const adminContactMessages = createServerFn({ method: "GET" })
     return { messages: data ?? [] };
   });
 
+/** Faza 5: monitorizare globală — joburi de publicare, erori recente, utilizare AI + cost estimat. */
+export const adminMonitoring = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { estimateCostUsd } = await import("./observability.server");
+    const since7d = new Date(Date.now() - 7 * 86400000).toISOString();
+    const since30d = new Date(Date.now() - 30 * 86400000).toISOString();
+    const [jobs, errors, usage] = await Promise.all([
+      supabaseAdmin.from("publishing_jobs").select("status,last_error,updated_at").gte("created_at", since7d),
+      supabaseAdmin.from("error_log").select("id,source,message,context,created_at").order("created_at", { ascending: false }).limit(50),
+      supabaseAdmin.from("ai_usage_log").select("feature,model,tokens_in,tokens_out").gte("created_at", since30d),
+    ]);
+    const jobsByStatus: Record<string, number> = {};
+    (jobs.data ?? []).forEach((j: any) => { jobsByStatus[j.status] = (jobsByStatus[j.status] || 0) + 1; });
+    const usageByFeature: Record<string, { calls: number; tokensIn: number; tokensOut: number; costUsd: number }> = {};
+    let totalCost = 0;
+    (usage.data ?? []).forEach((u: any) => {
+      const f = usageByFeature[u.feature] ??= { calls: 0, tokensIn: 0, tokensOut: 0, costUsd: 0 };
+      f.calls += 1; f.tokensIn += u.tokens_in ?? 0; f.tokensOut += u.tokens_out ?? 0;
+      const c = estimateCostUsd(u.model, u.tokens_in ?? 0, u.tokens_out ?? 0);
+      f.costUsd += c; totalCost += c;
+    });
+    return {
+      jobsByStatus,
+      jobsTotal7d: (jobs.data ?? []).length,
+      errors: errors.data ?? [],
+      usageByFeature,
+      aiCalls30d: (usage.data ?? []).length,
+      aiCost30dUsd: Math.round(totalCost * 100) / 100,
+    };
+  });
+
+/** Reîncearcă toate joburile de publicare eșuate (admin). */
+export const adminRetryFailedJobs = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const now = new Date().toISOString();
+    const { data, error } = await supabaseAdmin.from("publishing_jobs")
+      .update({ status: "pending", attempts: 0, next_attempt_at: now, last_error: null })
+      .eq("status", "failed").select("id,post_id");
+    if (error) throw new Error(error.message);
+    const { syncPostStatus } = await import("./publishing-queue.server");
+    for (const postId of new Set((data ?? []).map((j: any) => j.post_id))) {
+      await syncPostStatus(supabaseAdmin, postId as string);
+    }
+    return { retried: data?.length ?? 0 };
+  });
+
 export const adminRecentUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {

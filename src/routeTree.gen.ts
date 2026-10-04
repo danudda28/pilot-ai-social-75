@@ -53,6 +53,7 @@ import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard.analytics'
 import { Route as AuthenticatedDashboardAiToolsRouteImport } from './routes/_authenticated/dashboard.ai-tools'
 import { Route as AuthenticatedDashboardAgentRouteImport } from './routes/_authenticated/dashboard.agent'
+import { Route as AuthenticatedAdminMonitorRouteImport } from './routes/_authenticated/admin.monitor'
 import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
 import { Route as ApiPublicWebhooksMetaRouteImport } from './routes/api/public/webhooks/meta'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
@@ -307,6 +308,12 @@ const AuthenticatedDashboardAgentRoute =
     path: '/agent',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedAdminMonitorRoute =
+  AuthenticatedAdminMonitorRouteImport.update({
+    id: '/monitor',
+    path: '/monitor',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminApiRunnerRoute =
   AuthenticatedAdminApiRunnerRouteImport.update({
     id: '/api-runner',
@@ -382,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/admin/monitor': typeof AuthenticatedAdminMonitorRoute
   '/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
@@ -435,6 +443,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/admin/monitor': typeof AuthenticatedAdminMonitorRoute
   '/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
@@ -491,6 +500,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/_authenticated/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
+  '/_authenticated/admin/monitor': typeof AuthenticatedAdminMonitorRoute
   '/_authenticated/dashboard/agent': typeof AuthenticatedDashboardAgentRoute
   '/_authenticated/dashboard/ai-tools': typeof AuthenticatedDashboardAiToolsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
@@ -547,6 +557,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
+    | '/admin/monitor'
     | '/dashboard/agent'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
@@ -600,6 +611,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
+    | '/admin/monitor'
     | '/dashboard/agent'
     | '/dashboard/ai-tools'
     | '/dashboard/analytics'
@@ -655,6 +667,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/_authenticated/admin/api-runner'
+    | '/_authenticated/admin/monitor'
     | '/_authenticated/dashboard/agent'
     | '/_authenticated/dashboard/ai-tools'
     | '/_authenticated/dashboard/analytics'
@@ -1027,6 +1040,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAgentRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/admin/monitor': {
+      id: '/_authenticated/admin/monitor'
+      path: '/monitor'
+      fullPath: '/admin/monitor'
+      preLoaderRoute: typeof AuthenticatedAdminMonitorRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/api-runner': {
       id: '/_authenticated/admin/api-runner'
       path: '/api-runner'
@@ -1095,10 +1115,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApiRunnerRoute: typeof AuthenticatedAdminApiRunnerRoute
+  AuthenticatedAdminMonitorRoute: typeof AuthenticatedAdminMonitorRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminApiRunnerRoute: AuthenticatedAdminApiRunnerRoute,
+  AuthenticatedAdminMonitorRoute: AuthenticatedAdminMonitorRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =

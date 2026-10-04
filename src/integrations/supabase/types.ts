@@ -155,6 +155,57 @@ export type Database = {
           },
         ]
       }
+      ai_usage_log: {
+        Row: {
+          brand_id: string | null
+          created_at: string
+          feature: string
+          id: string
+          model: string
+          organization_id: string | null
+          tokens_in: number | null
+          tokens_out: number | null
+          user_id: string | null
+        }
+        Insert: {
+          brand_id?: string | null
+          created_at?: string
+          feature: string
+          id?: string
+          model: string
+          organization_id?: string | null
+          tokens_in?: number | null
+          tokens_out?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          brand_id?: string | null
+          created_at?: string
+          feature?: string
+          id?: string
+          model?: string
+          organization_id?: string | null
+          tokens_in?: number | null
+          tokens_out?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_usage_log_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_usage_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -497,6 +548,57 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: true
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_webhooks: {
+        Row: {
+          active: boolean
+          brand_id: string
+          created_at: string
+          events: string[]
+          id: string
+          organization_id: string | null
+          secret: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          brand_id: string
+          created_at?: string
+          events?: string[]
+          id?: string
+          organization_id?: string | null
+          secret: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          brand_id?: string
+          created_at?: string
+          events?: string[]
+          id?: string
+          organization_id?: string | null
+          secret?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_webhooks_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_webhooks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -960,6 +1062,51 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      error_log: {
+        Row: {
+          brand_id: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          message: string
+          organization_id: string | null
+          source: string
+        }
+        Insert: {
+          brand_id?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          message: string
+          organization_id?: string | null
+          source: string
+        }
+        Update: {
+          brand_id?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          message?: string
+          organization_id?: string | null
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_log_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "error_log_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       generated_posts: {
         Row: {

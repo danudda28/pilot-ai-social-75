@@ -52,6 +52,12 @@ export async function maybeCreateLead(admin: any, conv: any, customerMessage: st
     await notifyOrg(admin, conv.organization_id, "lead",
       `Lead nou: ${conv.customer_name ?? "un client"}`,
       `Intenție: ${intent}. „${customerMessage.slice(0, 120)}”`, "/dashboard/leaduri");
+    // Notifică CRM-ul extern (webhook de ieșire), dacă e configurat.
+    const { fireBrandWebhooks } = await import("./observability.server");
+    await fireBrandWebhooks(admin, conv.brand_id, "lead.created", {
+      lead_id: data.id, customer_name: conv.customer_name, channel: conv.channel,
+      intent, summary: customerMessage.slice(0, 300),
+    });
   }
   return data?.id ?? null;
 }
@@ -118,7 +124,7 @@ export async function runAgent(sb: any, brandId: string, customerMessage: string
   const { data: voice } = await sb.from("brand_voice_rules").select("tone,address_form,emoji_level,text_length,banned_words").eq("brand_id", brandId).maybeSingle();
 
   const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
-  const { text } = await generateText({
+  const { text, usage } = await generateText({
     model: createLovableAiGatewayProvider(apiKey)("google/gemini-2.5-flash"),
     system: `Ești asistentul de mesagerie al afacerii. Răspunzi în română, scurt și politicos.
 REGULI STRICTE:
@@ -132,6 +138,8 @@ Răspunde STRICT JSON: {"reply":"text","source_ids":["id"],"confidence":0-1,"han
 <history>${JSON.stringify(history.slice(-8))}</history>
 <customer>${customerMessage.slice(0, 2000)}</customer>`,
   });
+  const { logAiUsage } = await import("./observability.server");
+  await logAiUsage(sb, { brandId, feature: "inbox_agent", model: "google/gemini-2.5-flash", usage: usage as any });
   const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
   let out: any;
   try { out = JSON.parse(cleaned); } catch { out = { reply: "", source_ids: [], confidence: 0, handoff: true, reason: "Format AI invalid" }; }
@@ -191,9 +199,16 @@ export async function draftForConversation(admin: any, conversationId: string, m
       await notifyOrg(admin, conv.organization_id, "auto_send",
         `AI-ul a răspuns automat lui ${conv.customer_name ?? "un client"}`,
         `„${r.reply.slice(0, 140)}”`, "/dashboard/inbox");
+      const { fireBrandWebhooks, logError } = await import("./observability.server");
+      await fireBrandWebhooks(admin, conv.brand_id, "reply.auto_sent", {
+        conversation_id: conv.id, customer_name: conv.customer_name, channel: conv.channel,
+        intent, reply: r.reply, confidence: r.confidence,
+      });
       return draft?.id ?? null;
     } catch (e: any) {
       console.warn("[auto-send] a eșuat, rămâne draft:", e?.message);
+      const { logError } = await import("./observability.server");
+      await logError(admin, "auto_send", e?.message ?? "auto-send eșuat", { conversation_id: conv.id, intent }, conv.brand_id);
     }
   }
 
