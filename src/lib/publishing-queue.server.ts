@@ -68,7 +68,7 @@ export async function processJobs(admin: any, opts: { postId?: string; limit?: n
 
   for (const job of jobs ?? []) {
     // claim (avoid double publish)
-    const { data: claimed } = await admin.from("publishing_jobs").update({ status: "processing", attempts: job.attempts + 1 })
+    const { data: claimed } = await admin.from("publishing_jobs").update({ status: "processing", attempts: job.attempts + 1, updated_at: new Date().toISOString() })
       .eq("id", job.id).eq("status", "pending").select("id").maybeSingle();
     if (!claimed) continue;
     touched.add(job.post_id);

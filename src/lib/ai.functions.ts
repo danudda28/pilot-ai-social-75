@@ -31,6 +31,10 @@ export const generatePost = createServerFn({ method: "POST" })
       throw new Error(`Limita planului ${profile.subscription_plan?.toUpperCase() ?? "FREE"} a fost atinsă. Fă upgrade pentru mai multe postări.`);
     }
 
+    // Limită zilnică de apeluri AI per plan (Faza 5)
+    const { checkAiDailyLimit, logAiUsage } = await import("./observability.server");
+    await checkAiDailyLimit(context.supabase, context.userId, profile?.subscription_plan ?? "free");
+
 
     const { resolveBrandId, loadBrandContext, brandContextBlock, BRAND_RULES, findBannedWords } = await import("./brand-context.server");
     const brandId = await resolveBrandId(context.supabase, context.userId);
@@ -83,10 +87,11 @@ Răspunde STRICT cu JSON valid, fără markdown, fără text înainte sau după.
   "recommended_date": "zi din săptămână + interval orar optim pentru publicare (ex: Joi între 18:00 și 20:00) cu o scurtă justificare"
 }`;
 
-    const { text } = await generateText({
+    const { text, usage } = await generateText({
       model: gateway("google/gemini-2.5-flash"),
       prompt,
     });
+    await logAiUsage(context.supabase, { brandId, userId: context.userId, feature: "generate_post", model: "google/gemini-2.5-flash", usage: usage as any });
 
     let parsed: Record<string, string>;
     try {
