@@ -29,6 +29,7 @@ import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
@@ -157,6 +158,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   id: '/api/public/health',
   path: '/api/public/health',
@@ -353,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -377,7 +385,6 @@ export interface FileRoutesByTo {
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
@@ -400,6 +407,7 @@ export interface FileRoutesByTo {
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -449,6 +457,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
@@ -498,6 +507,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
+    | '/dashboard/'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -522,7 +532,6 @@ export interface FileRouteTypes {
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
     | '/admin'
-    | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/admin/api-runner'
@@ -545,6 +554,7 @@ export interface FileRouteTypes {
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
+    | '/dashboard'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -593,6 +603,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/team'
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
+    | '/_authenticated/dashboard/'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
@@ -769,6 +780,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/api/public/health': {
       id: '/api/public/health'
@@ -985,6 +1003,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
   AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -1007,6 +1026,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
     AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
