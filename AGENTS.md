@@ -8,3 +8,4 @@
 - Observability lives in src/lib/observability.server.ts: logAiUsage/logError (best-effort, never throw), AI daily limits per plan, and fireBrandWebhooks (HMAC-signed outbound CRM events). Why: one place for cost tracking, error tracking, and external integrations.
 - Publishing queue recovers jobs stuck in "processing" >10 min back to pending at each run; retryFailedJobs resets failed jobs. Why: a crashed worker must never strand a scheduled post.
 - pg_cron jobs call /api/public/cron/* with the apikey header; new cron endpoints must be registered in pg_cron the same way. Why: cron routes are public-prefix and rely on that header on the published URL.
+- AI Team (Echipa AI): bot definitions live in src/lib/ai-team.ts (shared client/server, incl. plan gating botAllowed); chat runs via src/lib/ai-team.functions.ts using confirmed Brand Brain context, daily AI limit and usage logging. Why: one place to add/adjust bots, gating enforced server-side.
