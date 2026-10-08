@@ -56,6 +56,8 @@ import { Route as AuthenticatedDashboardStrategieRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as AuthenticatedDashboardEchipaIndexRouteImport } from './routes/_authenticated/dashboard.echipa.index'
+import { Route as AuthenticatedDashboardEchipaBotIdRouteImport } from './routes/_authenticated/dashboard.echipa.$botId'
 import { Route as ApiPublicCronDailyDigestRouteImport } from './routes/api/public/cron.daily-digest'
 import { Route as ApiPublicCronPublishScheduledRouteImport } from './routes/api/public/cron.publish-scheduled'
 import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api/public/cron.refresh-meta-tokens'
@@ -327,6 +329,18 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardEchipaIndexRoute =
+  AuthenticatedDashboardEchipaIndexRouteImport.update({
+    id: '/echipa/',
+    path: '/echipa/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardEchipaBotIdRoute =
+  AuthenticatedDashboardEchipaBotIdRouteImport.update({
+    id: '/echipa/$botId',
+    path: '/echipa/$botId',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const ApiPublicCronDailyDigestRoute =
   ApiPublicCronDailyDigestRouteImport.update({
     id: '/api/public/cron/daily-digest',
@@ -422,12 +436,14 @@ export interface FileRoutesByFullPath {
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/echipa/$botId': typeof AuthenticatedDashboardEchipaBotIdRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/dashboard/echipa/': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -477,12 +493,14 @@ export interface FileRoutesByTo {
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/echipa/$botId': typeof AuthenticatedDashboardEchipaBotIdRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/dashboard/echipa': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -535,12 +553,14 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/dashboard/echipa/$botId': typeof AuthenticatedDashboardEchipaBotIdRoute
   '/api/public/cron/daily-digest': typeof ApiPublicCronDailyDigestRoute
   '/api/public/cron/publish-scheduled': typeof ApiPublicCronPublishScheduledRoute
   '/api/public/cron/refresh-meta-tokens': typeof ApiPublicCronRefreshMetaTokensRoute
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/_authenticated/dashboard/echipa/': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
 }
@@ -593,12 +613,14 @@ export interface FileRouteTypes {
     | '/dashboard/video'
     | '/api/public/health'
     | '/dashboard/'
+    | '/dashboard/echipa/$botId'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/dashboard/echipa/'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   fileRoutesByTo: FileRoutesByTo
@@ -648,12 +670,14 @@ export interface FileRouteTypes {
     | '/dashboard/video'
     | '/api/public/health'
     | '/dashboard'
+    | '/dashboard/echipa/$botId'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/dashboard/echipa'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   id:
@@ -705,12 +729,14 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
     | '/_authenticated/dashboard/'
+    | '/_authenticated/dashboard/echipa/$botId'
     | '/api/public/cron/daily-digest'
     | '/api/public/cron/publish-scheduled'
     | '/api/public/cron/refresh-meta-tokens'
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/_authenticated/dashboard/echipa/'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
   fileRoutesById: FileRoutesById
@@ -1074,6 +1100,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard/echipa/': {
+      id: '/_authenticated/dashboard/echipa/'
+      path: '/echipa'
+      fullPath: '/dashboard/echipa/'
+      preLoaderRoute: typeof AuthenticatedDashboardEchipaIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/echipa/$botId': {
+      id: '/_authenticated/dashboard/echipa/$botId'
+      path: '/echipa/$botId'
+      fullPath: '/dashboard/echipa/$botId'
+      preLoaderRoute: typeof AuthenticatedDashboardEchipaBotIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/api/public/cron/daily-digest': {
       id: '/api/public/cron/daily-digest'
       path: '/api/public/cron/daily-digest'
@@ -1172,6 +1212,8 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
   AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardEchipaBotIdRoute: typeof AuthenticatedDashboardEchipaBotIdRoute
+  AuthenticatedDashboardEchipaIndexRoute: typeof AuthenticatedDashboardEchipaIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -1201,6 +1243,10 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
     AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardEchipaBotIdRoute:
+      AuthenticatedDashboardEchipaBotIdRoute,
+    AuthenticatedDashboardEchipaIndexRoute:
+      AuthenticatedDashboardEchipaIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
