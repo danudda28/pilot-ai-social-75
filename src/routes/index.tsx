@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { BOTS } from "@/lib/ai-team";
+import { BOT_IMAGES } from "@/lib/bot-images";
 import {
   Sparkles, Calendar, Hash, Video, Send, BarChart3, Clock, Brain,
   UserPlus, Plug, Target, Wand2, ArrowRight, Check,
@@ -49,26 +51,56 @@ function Home() {
   return (
     <PublicLayout>
       {/* HERO */}
-      <section className="relative overflow-hidden pt-20 pb-28 sm:pt-28 sm:pb-36">
+      <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-hero)" }} />
+        <div className="absolute -z-10 -top-32 -left-32 h-96 w-96 rounded-full bg-primary/25 blur-3xl animate-blob" />
+        <div className="absolute -z-10 top-20 -right-24 h-96 w-96 rounded-full bg-accent/40 blur-3xl animate-blob" style={{ animationDelay: "-6s" }} />
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs text-muted-foreground mb-6 animate-fade-in">
-            <Sparkles className="h-3.5 w-3.5 text-primary" /> Social media manager AI pentru afaceri din România
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> 8 angajați AI pentru afacerea ta din România
           </div>
-          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] animate-fade-in">
-            Postările afacerii tale, <br className="hidden sm:block" />
-            <span className="gradient-text">create automat cu AI.</span>
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] animate-fade-in">
+            Echipa ta de <span className="gradient-text">angajați AI</span>,<br className="hidden sm:block" /> care lucrează non-stop.
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground animate-fade-in">
-            Social Spark te ajută să creezi, programezi și publici postări pentru Instagram și Facebook fără să pierzi timp, fără agenție și fără idei blocate.
+            Postări, texte, răspunsuri la clienți, leaduri și strategie — fiecare robot e specialist pe treaba lui și cunoaște afacerea ta.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-            <Link to="/auth" className="inline-flex items-center justify-center gap-2 rounded-xl gradient-bg glow px-8 py-4 text-base font-semibold text-white card-hover">
-              Începe acum <ArrowRight className="h-4 w-4" />
+            <Link to="/auth" className="inline-flex items-center justify-center gap-2 rounded-full gradient-bg glow px-8 py-4 text-base font-semibold text-primary-foreground transition-transform hover:scale-105">
+              Angajează-i gratuit 30 de zile <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/preturi" className="inline-flex items-center justify-center rounded-xl glass-strong px-8 py-4 text-base font-semibold">
+            <Link to="/preturi" className="inline-flex items-center justify-center rounded-full glass-strong px-8 py-4 text-base font-semibold">
               Vezi abonamentele
             </Link>
+          </div>
+          <div className="mt-14 flex justify-center items-end -space-x-6 sm:-space-x-10">
+            {BOTS.slice(0, 5).map((b, i) => (
+              <img key={b.id} src={BOT_IMAGES[b.id]} alt={`${b.name}, ${b.role}`} width={1024} height={1024}
+                className="w-24 sm:w-40 lg:w-48 drop-shadow-2xl animate-float"
+                style={{ animationDelay: `${i * -0.8}s`, zIndex: i === 2 ? 10 : 5 - Math.abs(2 - i), transform: i === 2 ? "scale(1.15)" : undefined }} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ROBOTS MARQUEE */}
+      <section className="py-20 overflow-hidden">
+        <div className="text-center max-w-2xl mx-auto px-4">
+          <h2 className="font-display text-3xl sm:text-5xl font-extrabold">Cunoaște-ți <span className="gradient-text">echipa</span></h2>
+          <p className="mt-4 text-muted-foreground">Fiecare robot are specialitatea lui. Alegi cu cine vorbești, ei se ocupă de restul.</p>
+        </div>
+        <div className="mt-14 relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="flex w-max gap-6 animate-marquee hover:[animation-play-state:paused]">
+            {[...BOTS, ...BOTS].map((b, i) => (
+              <div key={i} className={`bot-card w-64 shrink-0 bg-gradient-to-br ${b.color}`}>
+                <img src={BOT_IMAGES[b.id]} alt={b.name} loading="lazy" width={1024} height={1024} className="h-56 w-full object-contain pt-4" />
+                <div className="p-5 pt-2">
+                  <div className="font-display text-xl font-bold">{b.name}</div>
+                  <div className="text-sm font-medium text-primary">{b.role}</div>
+                  <p className="mt-2 text-sm text-muted-foreground">{b.tagline}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
