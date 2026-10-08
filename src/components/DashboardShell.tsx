@@ -18,6 +18,7 @@ type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean; 
 
 const mainNav: NavItem[] = [
   { to: "/dashboard", label: "Acasă", icon: Home, exact: true },
+  { to: "/dashboard/echipa", label: "Echipa AI", icon: Sparkles },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
   { to: "/dashboard/generate", label: "Creează", icon: PenSquare },
   { to: "/dashboard/strategie", label: "Strategie", icon: Target },
