@@ -15,6 +15,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Generează, programează și publică postări AI pentru Instagram și Facebook. Fără agenție, fără idei blocate." },
       { property: "og:title", content: "Social Spark — Postări AI pentru Instagram și Facebook" },
       { property: "og:description", content: "Postările afacerii tale, create automat cu AI." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
