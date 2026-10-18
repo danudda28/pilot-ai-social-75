@@ -66,9 +66,9 @@ export const getMetaHealth = createServerFn({ method: "GET" })
       context.supabase.from("meta_connections").select("id,page_name,ig_username,ig_business_id,token_expires_at").eq("user_id", context.userId),
       context.supabase.from("social_connection_health").select("*").eq("user_id", context.userId),
     ]);
-    const byId = new Map((health ?? []).map(h => [h.connection_id, h]));
+    const byId = new Map((health ?? []).map((h: any) => [h.connection_id, h]));
     const soon = Date.now() + 7 * 24 * 3600 * 1000;
-    return (conns ?? []).map(c => {
+    return (conns ?? []).map((c: any) => {
       const h: any = byId.get(c.id) ?? {};
       const expires = h.expires_at ?? c.token_expires_at ?? null;
       const needs = h.token_valid === false || (h.missing_scopes?.length ?? 0) > 0 || (expires ? new Date(expires).getTime() < soon : false);

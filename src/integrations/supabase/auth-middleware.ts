@@ -51,56 +51,58 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       throw new Error('Unauthorized: No token provided');
     }
 
+    let supabase: any;
+    let userId: string;
+    let claims: { sub: string; email: string };
+
     // Cont demo local — fără cloud
     if (isLocalDevAuthEnabled() && isLocalDevToken(token)) {
       const user = getLocalDevUser();
-      const localSupabase = {
+      supabase = {
         from: (table: string) => createLocalDevQuery(table),
         rpc: (fn: string, args?: Record<string, unknown>) => localDevRpc(fn, args),
         auth: {
           getUser: async () => ({ data: { user }, error: null }),
         },
       };
-      return next({
-        context: {
-          supabase: localSupabase as any,
-          userId: LOCAL_DEV_USER_ID,
-          claims: { sub: LOCAL_DEV_USER_ID, email: user.email },
-        },
-      });
-    }
-
-    const supabase = createClient<Database>(
-      SUPABASE_URL!,
-      SUPABASE_PUBLISHABLE_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      userId = LOCAL_DEV_USER_ID;
+      claims = { sub: LOCAL_DEV_USER_ID, email: user.email };
+    } else {
+      supabase = createClient<Database>(
+        SUPABASE_URL!,
+        SUPABASE_PUBLISHABLE_KEY!,
+        {
+          global: {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-        auth: {
-          storage: undefined,
-          persistSession: false,
-          autoRefreshToken: false,
-        },
+          auth: {
+            storage: undefined,
+            persistSession: false,
+            autoRefreshToken: false,
+          },
+        }
+      );
+
+      const { data, error } = await supabase.auth.getClaims(token);
+      if (error || !data?.claims) {
+        throw new Error('Unauthorized: Invalid token');
       }
-    );
 
-    const { data, error } = await supabase.auth.getClaims(token);
-    if (error || !data?.claims) {
-      throw new Error('Unauthorized: Invalid token');
-    }
+      if (!data.claims.sub) {
+        throw new Error('Unauthorized: No user ID found in token');
+      }
 
-    if (!data.claims.sub) {
-      throw new Error('Unauthorized: No user ID found in token');
+      userId = data.claims.sub;
+      claims = { sub: data.claims.sub, email: (data.claims as { email?: string }).email ?? '' };
     }
 
     return next({
       context: {
         supabase,
-        userId: data.claims.sub,
-        claims: data.claims,
+        userId,
+        claims,
       },
     });
   },

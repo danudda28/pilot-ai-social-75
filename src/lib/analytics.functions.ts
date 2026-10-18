@@ -10,11 +10,11 @@ export const getMyAnalytics = createServerFn({ method: "GET" })
       .eq("user_id", context.userId);
 
     const all = posts ?? [];
-    const published = all.filter(p => p.status === "published");
-    const totalLikes = published.reduce((s, p) => s + (p.engagement_likes ?? 0), 0);
-    const totalComments = published.reduce((s, p) => s + (p.engagement_comments ?? 0), 0);
-    const totalShares = published.reduce((s, p) => s + (p.engagement_shares ?? 0), 0);
-    const totalReach = published.reduce((s, p) => s + (p.engagement_reach ?? 0), 0);
+    const published = all.filter((p: any) => p.status === "published");
+    const totalLikes = published.reduce((s: any, p: any) => s + (p.engagement_likes ?? 0), 0);
+    const totalComments = published.reduce((s: any, p: any) => s + (p.engagement_comments ?? 0), 0);
+    const totalShares = published.reduce((s: any, p: any) => s + (p.engagement_shares ?? 0), 0);
+    const totalReach = published.reduce((s: any, p: any) => s + (p.engagement_reach ?? 0), 0);
     const avgEng = published.length > 0 && totalReach > 0
       ? Math.round(((totalLikes + totalComments + totalShares) / totalReach) * 1000) / 10
       : 0;
@@ -27,7 +27,7 @@ export const getMyAnalytics = createServerFn({ method: "GET" })
     for (let i = 13; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
       const key = d.toISOString().slice(0, 10);
-      const count = all.filter(p => (p.published_at ?? p.created_at)?.slice(0, 10) === key).length;
+      const count = all.filter((p: any) => (p.published_at ?? p.created_at)?.slice(0, 10) === key).length;
       days.push({ date: key, count });
     }
 

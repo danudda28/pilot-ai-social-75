@@ -102,8 +102,8 @@ export const getPostAnalytics = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return {
       total: data.length,
-      published: data.filter(p => p.status === "published").length,
-      scheduled: data.filter(p => p.status === "scheduled").length,
+      published: data.filter((p: any) => p.status === "published").length,
+      scheduled: data.filter((p: any) => p.status === "scheduled").length,
       engagement_rate_placeholder: 0,
     };
   });
