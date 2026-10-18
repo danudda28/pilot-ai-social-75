@@ -27,8 +27,6 @@ const mainNav: NavItem[] = [
   { to: "/dashboard/settings", label: "Setări", icon: Settings },
 ];
 
-const toolsNav: NavItem[] = [];
-
 const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[4], mainNav[6]];
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
