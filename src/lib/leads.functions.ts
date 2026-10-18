@@ -61,7 +61,7 @@ export const exportLeadsCsv = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const header = "Nume,Canal,Intenție,Mesaj,Status,Note,Data";
-    const lines = (rows ?? []).map(r =>
+    const lines = (rows ?? []).map((r: any) =>
       [r.customer_name, r.channel, r.intent, r.summary, r.status, r.notes, new Date(r.created_at).toLocaleString("ro-RO")].map(esc).join(","));
     return { csv: [header, ...lines].join("\n") };
   });
