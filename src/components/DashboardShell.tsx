@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Home, Calendar, PenSquare, Megaphone, MessagesSquare, Brain, Image as ImageIcon, BarChart3,
-  UserRound, Plug, Users, Settings, LogOut, Shield, Layers, FileSpreadsheet, Video, History,
-  ClipboardCheck, Sparkles, Target, Bot, Building2, Gift, MoreHorizontal, X,
+  Home, Calendar, PenSquare, MessagesSquare, Image as ImageIcon,
+  Plug, Settings, LogOut, Shield, Video, Sparkles, MoreHorizontal, X,
 } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,34 +18,18 @@ type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean; 
 const mainNav: NavItem[] = [
   { to: "/dashboard", label: "Acasă", icon: Home, exact: true },
   { to: "/dashboard/studio", label: "Studio", icon: Sparkles },
+  { to: "/dashboard/generate", label: "Creează postare", icon: PenSquare },
+  { to: "/dashboard/video", label: "Video AI", icon: Video },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
-  { to: "/dashboard/generate", label: "Creează (formular)", icon: PenSquare },
-  { to: "/dashboard/echipa", label: "Echipa AI", icon: Sparkles },
-  { to: "/dashboard/strategie", label: "Strategie", icon: Target },
-  { to: "/dashboard/campanii", label: "Campanii", icon: Megaphone },
-  { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare },
-  { to: "/dashboard/agent", label: "Agent AI", icon: Bot },
-  { to: "/dashboard/brand-brain", label: "Brand Brain", icon: Brain },
   { to: "/dashboard/media", label: "Bibliotecă media", icon: ImageIcon },
-  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/dashboard/leaduri", label: "Leaduri", icon: UserRound },
+  { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare },
   { to: "/dashboard/integrari", label: "Integrări", icon: Plug },
-  { to: "/dashboard/team", label: "Echipă", icon: Users },
   { to: "/dashboard/settings", label: "Setări", icon: Settings },
 ];
 
-const toolsNav: NavItem[] = [
-  { to: "/dashboard/bulk", label: "Generare în masă", icon: Layers },
-  { to: "/dashboard/import", label: "Import CSV", icon: FileSpreadsheet },
-  { to: "/dashboard/video", label: "Video AI", icon: Video },
-  { to: "/dashboard/history", label: "Istoric postări", icon: History },
-  { to: "/dashboard/approvals", label: "Aprobări", icon: ClipboardCheck },
-  { to: "/dashboard/ai-tools", label: "Asistent AI", icon: Sparkles },
-  { to: "/dashboard/brands", label: "Branduri", icon: Building2 },
-  { to: "/dashboard/referral", label: "Recomandă", icon: Gift },
-];
+const toolsNav: NavItem[] = [];
 
-const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[2], mainNav[7]];
+const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[4], mainNav[6]];
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
   return (
