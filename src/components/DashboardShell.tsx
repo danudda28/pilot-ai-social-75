@@ -61,8 +61,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const navBody = (onClick?: () => void) => (
     <>
       <div className="space-y-0.5">{mainNav.map(n => <NavLink key={n.to} item={n} onClick={onClick} />)}</div>
-      <div className="mt-5 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">Unelte</div>
-      <div className="mt-1 space-y-0.5">{toolsNav.map(n => <NavLink key={n.to} item={n} onClick={onClick} />)}</div>
       {isAdmin && (
         <div className="mt-3"><NavLink item={{ to: "/admin", label: "Admin", icon: Shield }} onClick={onClick} /></div>
       )}
