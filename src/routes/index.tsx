@@ -377,9 +377,9 @@ function Home() {
           </Reveal>
           <Reveal delay={0.08} className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
             {[
-              { name: "Basic", price: "99", credits: "300" },
-              { name: "Pro", price: "249", credits: "1.000", featured: true },
-              { name: "Business", price: "349", credits: "2.500" },
+              { name: "Basic", price: "49", credits: "300" },
+              { name: "Pro", price: "124", credits: "1.000", featured: true },
+              { name: "Business", price: "174", credits: "2.500" },
             ].map((p) => (
               <div key={p.name} className={`rounded-2xl border p-6 ${p.featured ? "border-[var(--m-accent)] bg-[var(--m-accent-soft)]" : "border-white/8 bg-white/[0.02]"}`}>
                 {p.featured && <p className="text-[11px] uppercase tracking-[0.16em] text-[var(--m-accent)]">Recomandat</p>}
