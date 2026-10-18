@@ -1,72 +1,70 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import anpcSol from "@/assets/anpc-sol.png.asset.json";
+import { PRODUCTS, SOLUTIONS } from "@/lib/marketing";
 
 export function Footer() {
   return (
-    <footer className="mt-32 border-t border-border/50 glass-strong">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2 font-display text-lg font-bold">
-              <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
-              Social <span className="gradient-text">Spark</span>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground max-w-sm">
-              Automatizare AI pentru Instagram și Facebook. Postări generate, programate și publicate fără efort.
-            </p>
+    <footer className="relative mt-8 border-t border-white/8">
+      <div className="m-container grid gap-12 py-16 md:grid-cols-5">
+        <div className="md:col-span-2">
+          <div className="flex items-center gap-2.5 text-lg font-medium text-white">
+            <img src={logoAsset.url} alt="" className="h-7 w-7 object-contain" />
+            Social Spark
           </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-4">Navigare</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/" className="hover:text-foreground">Acasă</Link></li>
-              <li><Link to="/despre" className="hover:text-foreground">Despre noi</Link></li>
-              <li><Link to="/preturi" className="hover:text-foreground">Abonamente</Link></li>
-              <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
-              <li><Link to="/auth" className="hover:text-foreground">Login</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> 0784 227 844</li>
-              <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> bogdansergiu.arghir@gmail.com</li>
-            </ul>
-          </div>
+          <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-white/45">
+            Managerul de social media al afacerii tale. Creează, programează și publică — fără agenție.
+          </p>
+          <p className="mt-8 text-2xl font-medium tracking-tight text-white/90">Noul tău team de social.</p>
         </div>
-        <div className="mt-10 pt-6 border-t border-border/40 flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="text-xs text-muted-foreground">Protecția consumatorului:</span>
-            <a
-              href="https://eservicii.anpc.ro/?_gl=1*1w1z9e0*_ga*Mjk1NjI5ODA5LjE3ODE0NDAxNjk.*_ga_FDVTGP2007*czE3ODE0NDAxNjgkbzEkZzAkdDE3ODE0NDAxNzYkajUyJGwwJGgw"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="ANPC — Soluționarea Alternativă a Litigiilor"
-              className="block rounded-md bg-white p-1 hover:opacity-90 transition"
-            >
-              <img src={anpcSol.url} alt="ANPC" loading="lazy" className="h-12 w-auto object-contain" />
-            </a>
-            <a
-              href="https://eservicii.anpc.ro/?_gl=1*1w1z9e0*_ga*Mjk1NjI5ODA5LjE3ODE0NDAxNjk.*_ga_FDVTGP2007*czE3ODE0NDAxNjgkbzEkZzAkdDE3ODE0NDAxNzYkajUyJGwwJGgw"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-foreground underline"
-            >
-              Depune o sesizare la ANPC
-            </a>
-          </div>
-          <div className="text-xs text-muted-foreground flex flex-col md:flex-row justify-between gap-3">
-            <p>© {new Date().getFullYear()} Social Spark. Toate drepturile rezervate.</p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/politica-confidentialitate" className="hover:text-foreground">Politica de confidențialitate</Link>
-              <Link to="/termeni-si-conditii" className="hover:text-foreground">Termeni și condiții</Link>
-              <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
-              <Link to="/status" className="hover:text-foreground">Status</Link>
-            </div>
-          </div>
+        <Col title="Produse" items={PRODUCTS} to="/produse/$slug" />
+        <Col title="Soluții" items={SOLUTIONS} to="/solutii/$slug" />
+        <div>
+          <h2 className="text-[13px] font-medium text-white">Companie</h2>
+          <ul className="mt-4 space-y-2.5 text-[14px] text-white/45">
+            <li><Link to="/preturi" className="hover:text-white">Prețuri</Link></li>
+            <li><Link to="/faq" className="hover:text-white">FAQ</Link></li>
+            <li><Link to="/despre" className="hover:text-white">Despre</Link></li>
+            <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
+            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+          </ul>
+          <h2 className="mt-8 text-[13px] font-medium text-white">Politici</h2>
+          <ul className="mt-4 space-y-2.5 text-[14px] text-white/45">
+            <li><Link to="/termeni-si-conditii" className="hover:text-white">Termeni</Link></li>
+            <li><Link to="/politica-confidentialitate" className="hover:text-white">Confidențialitate</Link></li>
+            <li><Link to="/cookies" className="hover:text-white">Cookies</Link></li>
+          </ul>
         </div>
       </div>
+      <div className="m-container flex flex-col gap-4 border-t border-white/8 py-6 text-[12px] text-white/35 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} Social Spark. Toate drepturile rezervate.</p>
+        <a href="https://eservicii.anpc.ro/" target="_blank" rel="noopener noreferrer" className="inline-flex rounded bg-white p-1">
+          <img src={anpcSol.url} alt="ANPC" className="h-8 w-auto" />
+        </a>
+      </div>
     </footer>
+  );
+}
+
+function Col({
+  title,
+  items,
+  to,
+}: {
+  title: string;
+  items: { slug: string; nav: string }[];
+  to: "/produse/$slug" | "/solutii/$slug";
+}) {
+  return (
+    <div>
+      <h2 className="text-[13px] font-medium text-white">{title}</h2>
+      <ul className="mt-4 space-y-2.5 text-[14px] text-white/45">
+        {items.map((item) => (
+          <li key={item.slug}>
+            <Link to={to} params={{ slug: item.slug }} className="hover:text-white">{item.nav}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

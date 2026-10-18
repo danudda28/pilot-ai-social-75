@@ -2,6 +2,15 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { brokeredPreviewStorage } from './previewAuthStorage';
+import {
+  buildLocalDevSession,
+  createLocalDevQuery,
+  isLocalDevAuthEnabled,
+  localDevCredentialsMatch,
+  localDevRpc,
+  readLocalDevSession,
+  writeLocalDevSession,
+} from '@/lib/local-dev-auth';
 
 function createSupabaseClient() {
   // Use import.meta.env for client-side (Vite build-time replacement)
@@ -30,12 +39,80 @@ function createSupabaseClient() {
 
 let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
 
+function getReal() {
+  if (!_supabase) _supabase = createSupabaseClient();
+  return _supabase;
+}
+
+function wrapAuth(realAuth: ReturnType<typeof createSupabaseClient>['auth']) {
+  return new Proxy(realAuth, {
+    get(target, prop, receiver) {
+      if (prop === 'getSession') {
+        return async () => {
+          const local = readLocalDevSession();
+          if (local) return { data: { session: local }, error: null };
+          return Reflect.apply(target.getSession, target, []);
+        };
+      }
+      if (prop === 'getUser') {
+        return async () => {
+          const local = readLocalDevSession();
+          if (local) return { data: { user: local.user }, error: null };
+          return Reflect.apply(target.getUser, target, []);
+        };
+      }
+      if (prop === 'signInWithPassword') {
+        return async (creds: { email: string; password: string }) => {
+          if (isLocalDevAuthEnabled() && localDevCredentialsMatch(creds.email, creds.password)) {
+            const session = buildLocalDevSession();
+            writeLocalDevSession(session);
+            return { data: { session, user: session.user }, error: null };
+          }
+          return Reflect.apply(target.signInWithPassword, target, [creds]);
+        };
+      }
+      if (prop === 'signUp') {
+        return async (args: { email: string; password: string; options?: unknown }) => {
+          if (isLocalDevAuthEnabled() && localDevCredentialsMatch(args.email, args.password)) {
+            const session = buildLocalDevSession();
+            writeLocalDevSession(session);
+            return { data: { session, user: session.user }, error: null };
+          }
+          return Reflect.apply(target.signUp, target, [args]);
+        };
+      }
+      if (prop === 'signOut') {
+        return async () => {
+          writeLocalDevSession(null);
+          return Reflect.apply(target.signOut, target, []);
+        };
+      }
+      if (prop === 'onAuthStateChange') {
+        return (callback: (event: string, session: unknown) => void) => {
+          const local = readLocalDevSession();
+          if (local) {
+            queueMicrotask(() => callback('SIGNED_IN', local));
+          }
+          return Reflect.apply(target.onAuthStateChange, target, [callback]);
+        };
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  });
+}
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
   get(_, prop, receiver) {
-    if (!_supabase) _supabase = createSupabaseClient();
-    return Reflect.get(_supabase, prop, receiver);
+    const real = getReal();
+    if (prop === 'auth') return wrapAuth(real.auth);
+    if (prop === 'from' && readLocalDevSession()) {
+      return (table: string) => createLocalDevQuery(table);
+    }
+    if (prop === 'rpc' && readLocalDevSession()) {
+      return (fn: string, args?: Record<string, unknown>) => localDevRpc(fn, args);
+    }
+    return Reflect.get(real, prop, receiver);
   },
 });
-

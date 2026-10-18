@@ -5,14 +5,13 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Social Spark" },
-      { name: "description", content: "Contactează-ne pentru o demonstrație sau întrebări. Telefon 0784227844, email bogdansergiu.arghir@gmail.com." },
-      { property: "og:title", content: "Contact — Social Spark" },
-      { property: "og:description", content: "Vorbește cu noi despre automatizarea social media." },
+      { name: "description", content: "Contactează-ne pentru o demonstrație sau întrebări. Telefon 0784227844." },
     ],
   }),
   component: Contact,
@@ -43,64 +42,86 @@ function Contact() {
 
   return (
     <PublicLayout>
-      <section className="pt-20 pb-10">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <h1 className="font-display text-4xl sm:text-6xl font-bold">
-            Hai să <span className="gradient-text">discutăm</span>
-          </h1>
-          <p className="mt-6 text-muted-foreground max-w-2xl mx-auto">
-            Vrei să vezi cum poate Social Spark să îți automatizeze prezența online? Contactează-ne și îți arătăm cum poți economisi timp, bani și energie în fiecare lună.
-          </p>
-        </div>
-      </section>
+      <section className="relative overflow-hidden pb-24 pt-16 sm:pt-24">
+        <div className="m-hero-glow opacity-50" />
+        <div className="m-container relative z-10">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <Eyebrow>Contact</Eyebrow>
+            <h1 className="mt-5 text-5xl tracking-[-0.045em] sm:text-6xl">Hai să discutăm.</h1>
+            <p className="mt-6 text-white/50">
+              Vrei o demonstrație sau ai o întrebare? Îți răspundem în maxim 24h.
+            </p>
+          </Reveal>
 
-      <section className="py-12">
-        <div className="mx-auto max-w-6xl px-4 grid gap-8 lg:grid-cols-3">
-          <div className="space-y-4">
-            <a href="tel:0784227844" className="glass rounded-2xl p-6 card-hover block">
-              <Phone className="h-6 w-6 text-primary mb-3" />
-              <div className="text-xs text-muted-foreground">Telefon</div>
-              <div className="font-semibold">0784 227 844</div>
-            </a>
-            <a href="mailto:bogdansergiu.arghir@gmail.com" className="glass rounded-2xl p-6 card-hover block">
-              <Mail className="h-6 w-6 text-primary mb-3" />
-              <div className="text-xs text-muted-foreground">Email</div>
-              <div className="font-semibold break-all">bogdansergiu.arghir@gmail.com</div>
-            </a>
-            <div className="glass rounded-2xl p-6">
-              <MessageCircle className="h-6 w-6 text-primary mb-3" />
-              <div className="text-xs text-muted-foreground">Răspuns</div>
-              <div className="font-semibold">În maxim 24h</div>
-            </div>
+          <div className="mt-12 grid gap-4 lg:grid-cols-3">
+            <Reveal className="space-y-3">
+              <a href="tel:0784227844" className="m-panel block p-5 transition hover:border-white/20">
+                <Phone className="mb-3 h-5 w-5 text-[var(--m-accent)]" />
+                <p className="text-[12px] text-white/40">Telefon</p>
+                <p className="mt-1 text-white">0784 227 844</p>
+              </a>
+              <a href="mailto:bogdansergiu.arghir@gmail.com" className="m-panel block p-5 transition hover:border-white/20">
+                <Mail className="mb-3 h-5 w-5 text-[var(--m-accent)]" />
+                <p className="text-[12px] text-white/40">Email</p>
+                <p className="mt-1 break-all text-white">bogdansergiu.arghir@gmail.com</p>
+              </a>
+              <div className="m-panel p-5">
+                <MessageCircle className="mb-3 h-5 w-5 text-[var(--m-accent)]" />
+                <p className="text-[12px] text-white/40">Răspuns</p>
+                <p className="mt-1 text-white">În maxim 24h</p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.08} className="lg:col-span-2">
+              <form onSubmit={submit} className="m-panel space-y-4 p-6 sm:p-8">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Nume" v={form.name} on={(v) => setForm({ ...form, name: v })} />
+                  <Field label="Email" type="email" v={form.email} on={(v) => setForm({ ...form, email: v })} />
+                </div>
+                <Field label="Telefon (opțional)" v={form.phone} on={(v) => setForm({ ...form, phone: v })} />
+                <div>
+                  <label className="text-xs text-white/40">Mesaj</label>
+                  <textarea
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    required
+                    rows={5}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]"
+                  />
+                </div>
+                <button disabled={loading} className="m-pill m-pill-solid text-sm disabled:opacity-50">
+                  {loading ? "Se trimite..." : "Trimite mesajul"}
+                </button>
+              </form>
+            </Reveal>
           </div>
-
-          <form onSubmit={submit} className="lg:col-span-2 glass-strong rounded-2xl p-8 space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="Nume" v={form.name} on={(v) => setForm({...form, name: v})} />
-              <Field label="Email" type="email" v={form.email} on={(v) => setForm({...form, email: v})} />
-            </div>
-            <Field label="Telefon (opțional)" v={form.phone} on={(v) => setForm({...form, phone: v})} />
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Mesaj</label>
-              <textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} rows={6} required
-                className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
-            </div>
-            <button disabled={loading} className="w-full rounded-xl gradient-bg glow px-6 py-3.5 text-sm font-semibold text-white disabled:opacity-50">
-              {loading ? "Se trimite..." : "Trimite mesaj"}
-            </button>
-          </form>
         </div>
       </section>
     </PublicLayout>
   );
 }
 
-function Field({ label, v, on, type = "text" }: { label: string; v: string; on: (v: string) => void; type?: string }) {
+function Field({
+  label,
+  v,
+  on,
+  type = "text",
+}: {
+  label: string;
+  v: string;
+  on: (v: string) => void;
+  type?: string;
+}) {
   return (
     <div>
-      <label className="text-xs font-medium text-muted-foreground">{label}</label>
-      <input type={type} value={v} onChange={e => on(e.target.value)}
-        className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+      <label className="text-xs text-white/40">{label}</label>
+      <input
+        type={type}
+        value={v}
+        onChange={(e) => on(e.target.value)}
+        required={type === "email" || label === "Nume"}
+        className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]"
+      />
     </div>
   );
 }

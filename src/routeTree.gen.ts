@@ -16,6 +16,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DespreRouteImport } from './routes/despre'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as InstagramAutomationRestauranteRouteImport } from './routes/instagram-automation-restaurante'
 import { Route as PoliticaConfidentialitateRouteImport } from './routes/politica-confidentialitate'
 import { Route as PostariAiSaloaneRouteImport } from './routes/postari-ai-saloane'
@@ -29,6 +30,8 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
+import { Route as ProduseSlugRouteImport } from './routes/produse.$slug'
+import { Route as SolutiiSlugRouteImport } from './routes/solutii.$slug'
 import { Route as AuthenticatedAdminApiRunnerRouteImport } from './routes/_authenticated/admin.api-runner'
 import { Route as AuthenticatedAdminMetaRunnerRouteImport } from './routes/_authenticated/admin.meta-runner'
 import { Route as AuthenticatedAdminMonitorRouteImport } from './routes/_authenticated/admin.monitor'
@@ -53,6 +56,7 @@ import { Route as AuthenticatedDashboardOnboardingRouteImport } from './routes/_
 import { Route as AuthenticatedDashboardReferralRouteImport } from './routes/_authenticated/dashboard.referral'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardStrategieRouteImport } from './routes/_authenticated/dashboard.strategie'
+import { Route as AuthenticatedDashboardStudioRouteImport } from './routes/_authenticated/dashboard.studio'
 import { Route as AuthenticatedDashboardTeamRouteImport } from './routes/_authenticated/dashboard.team'
 import { Route as AuthenticatedDashboardVideoRouteImport } from './routes/_authenticated/dashboard.video'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -99,6 +103,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DespreRoute = DespreRouteImport.update({
   id: '/despre',
   path: '/despre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstagramAutomationRestauranteRoute =
@@ -166,6 +175,16 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
 const InvitatieTokenRoute = InvitatieTokenRouteImport.update({
   id: '/invitatie/$token',
   path: '/invitatie/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProduseSlugRoute = ProduseSlugRouteImport.update({
+  id: '/produse/$slug',
+  path: '/produse/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolutiiSlugRoute = SolutiiSlugRouteImport.update({
+  id: '/solutii/$slug',
+  path: '/solutii/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminApiRunnerRoute =
@@ -312,6 +331,12 @@ const AuthenticatedDashboardStrategieRoute =
     path: '/strategie',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardStudioRoute =
+  AuthenticatedDashboardStudioRouteImport.update({
+    id: '/studio',
+    path: '/studio',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardTeamRoute =
   AuthenticatedDashboardTeamRouteImport.update({
     id: '/team',
@@ -396,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
+  '/faq': typeof FaqRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/postari-ai-saloane': typeof PostariAiSaloaneRoute
@@ -409,6 +435,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/produse/$slug': typeof ProduseSlugRoute
+  '/solutii/$slug': typeof SolutiiSlugRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/admin/meta-runner': typeof AuthenticatedAdminMetaRunnerRoute
   '/admin/monitor': typeof AuthenticatedAdminMonitorRoute
@@ -432,6 +460,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
+  '/dashboard/studio': typeof AuthenticatedDashboardStudioRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -454,6 +483,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
+  '/faq': typeof FaqRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/postari-ai-saloane': typeof PostariAiSaloaneRoute
@@ -466,6 +496,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/produse/$slug': typeof ProduseSlugRoute
+  '/solutii/$slug': typeof SolutiiSlugRoute
   '/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/admin/meta-runner': typeof AuthenticatedAdminMetaRunnerRoute
   '/admin/monitor': typeof AuthenticatedAdminMonitorRoute
@@ -489,6 +521,7 @@ export interface FileRoutesByTo {
   '/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
+  '/dashboard/studio': typeof AuthenticatedDashboardStudioRoute
   '/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -513,6 +546,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/despre': typeof DespreRoute
+  '/faq': typeof FaqRoute
   '/instagram-automation-restaurante': typeof InstagramAutomationRestauranteRoute
   '/politica-confidentialitate': typeof PoliticaConfidentialitateRoute
   '/postari-ai-saloane': typeof PostariAiSaloaneRoute
@@ -526,6 +560,8 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
+  '/produse/$slug': typeof ProduseSlugRoute
+  '/solutii/$slug': typeof SolutiiSlugRoute
   '/_authenticated/admin/api-runner': typeof AuthenticatedAdminApiRunnerRoute
   '/_authenticated/admin/meta-runner': typeof AuthenticatedAdminMetaRunnerRoute
   '/_authenticated/admin/monitor': typeof AuthenticatedAdminMonitorRoute
@@ -549,6 +585,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/referral': typeof AuthenticatedDashboardReferralRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/strategie': typeof AuthenticatedDashboardStrategieRoute
+  '/_authenticated/dashboard/studio': typeof AuthenticatedDashboardStudioRoute
   '/_authenticated/dashboard/team': typeof AuthenticatedDashboardTeamRoute
   '/_authenticated/dashboard/video': typeof AuthenticatedDashboardVideoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
@@ -573,6 +610,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/despre'
+    | '/faq'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
     | '/postari-ai-saloane'
@@ -586,6 +624,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/produse/$slug'
+    | '/solutii/$slug'
     | '/admin/api-runner'
     | '/admin/meta-runner'
     | '/admin/monitor'
@@ -609,6 +649,7 @@ export interface FileRouteTypes {
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/strategie'
+    | '/dashboard/studio'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
@@ -631,6 +672,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/despre'
+    | '/faq'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
     | '/postari-ai-saloane'
@@ -643,6 +685,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/produse/$slug'
+    | '/solutii/$slug'
     | '/admin/api-runner'
     | '/admin/meta-runner'
     | '/admin/monitor'
@@ -666,6 +710,7 @@ export interface FileRouteTypes {
     | '/dashboard/referral'
     | '/dashboard/settings'
     | '/dashboard/strategie'
+    | '/dashboard/studio'
     | '/dashboard/team'
     | '/dashboard/video'
     | '/api/public/health'
@@ -689,6 +734,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/despre'
+    | '/faq'
     | '/instagram-automation-restaurante'
     | '/politica-confidentialitate'
     | '/postari-ai-saloane'
@@ -702,6 +748,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
+    | '/produse/$slug'
+    | '/solutii/$slug'
     | '/_authenticated/admin/api-runner'
     | '/_authenticated/admin/meta-runner'
     | '/_authenticated/admin/monitor'
@@ -725,6 +773,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/referral'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/strategie'
+    | '/_authenticated/dashboard/studio'
     | '/_authenticated/dashboard/team'
     | '/_authenticated/dashboard/video'
     | '/api/public/health'
@@ -749,6 +798,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   DespreRoute: typeof DespreRoute
+  FaqRoute: typeof FaqRoute
   InstagramAutomationRestauranteRoute: typeof InstagramAutomationRestauranteRoute
   PoliticaConfidentialitateRoute: typeof PoliticaConfidentialitateRoute
   PostariAiSaloaneRoute: typeof PostariAiSaloaneRoute
@@ -759,6 +809,8 @@ export interface RootRouteChildren {
   TermeniSiConditiiRoute: typeof TermeniSiConditiiRoute
   VsHootsuiteBufferRoute: typeof VsHootsuiteBufferRoute
   InvitatieTokenRoute: typeof InvitatieTokenRoute
+  ProduseSlugRoute: typeof ProduseSlugRoute
+  SolutiiSlugRoute: typeof SolutiiSlugRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicCronDailyDigestRoute: typeof ApiPublicCronDailyDigestRoute
   ApiPublicCronPublishScheduledRoute: typeof ApiPublicCronPublishScheduledRoute
@@ -818,6 +870,13 @@ declare module '@tanstack/react-router' {
       path: '/despre'
       fullPath: '/despre'
       preLoaderRoute: typeof DespreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/instagram-automation-restaurante': {
@@ -909,6 +968,20 @@ declare module '@tanstack/react-router' {
       path: '/invitatie/$token'
       fullPath: '/invitatie/$token'
       preLoaderRoute: typeof InvitatieTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produse/$slug': {
+      id: '/produse/$slug'
+      path: '/produse/$slug'
+      fullPath: '/produse/$slug'
+      preLoaderRoute: typeof ProduseSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutii/$slug': {
+      id: '/solutii/$slug'
+      path: '/solutii/$slug'
+      fullPath: '/solutii/$slug'
+      preLoaderRoute: typeof SolutiiSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/api-runner': {
@@ -1079,6 +1152,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardStrategieRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/studio': {
+      id: '/_authenticated/dashboard/studio'
+      path: '/studio'
+      fullPath: '/dashboard/studio'
+      preLoaderRoute: typeof AuthenticatedDashboardStudioRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/team': {
       id: '/_authenticated/dashboard/team'
       path: '/team'
@@ -1209,6 +1289,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardReferralRoute: typeof AuthenticatedDashboardReferralRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardStrategieRoute: typeof AuthenticatedDashboardStrategieRoute
+  AuthenticatedDashboardStudioRoute: typeof AuthenticatedDashboardStudioRoute
   AuthenticatedDashboardTeamRoute: typeof AuthenticatedDashboardTeamRoute
   AuthenticatedDashboardVideoRoute: typeof AuthenticatedDashboardVideoRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
@@ -1240,6 +1321,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardReferralRoute: AuthenticatedDashboardReferralRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardStrategieRoute: AuthenticatedDashboardStrategieRoute,
+    AuthenticatedDashboardStudioRoute: AuthenticatedDashboardStudioRoute,
     AuthenticatedDashboardTeamRoute: AuthenticatedDashboardTeamRoute,
     AuthenticatedDashboardVideoRoute: AuthenticatedDashboardVideoRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
@@ -1298,6 +1380,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   DespreRoute: DespreRoute,
+  FaqRoute: FaqRoute,
   InstagramAutomationRestauranteRoute: InstagramAutomationRestauranteRoute,
   PoliticaConfidentialitateRoute: PoliticaConfidentialitateRoute,
   PostariAiSaloaneRoute: PostariAiSaloaneRoute,
@@ -1308,6 +1391,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermeniSiConditiiRoute: TermeniSiConditiiRoute,
   VsHootsuiteBufferRoute: VsHootsuiteBufferRoute,
   InvitatieTokenRoute: InvitatieTokenRoute,
+  ProduseSlugRoute: ProduseSlugRoute,
+  SolutiiSlugRoute: SolutiiSlugRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicCronDailyDigestRoute: ApiPublicCronDailyDigestRoute,
   ApiPublicCronPublishScheduledRoute: ApiPublicCronPublishScheduledRoute,

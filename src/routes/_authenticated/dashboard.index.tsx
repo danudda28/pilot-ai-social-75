@@ -73,7 +73,7 @@ function DashboardHome() {
     { label: "Confirmă informațiile din Brand Brain (minim 70%)", done: score >= 70, to: "/dashboard/brand-brain" },
     { label: "Setează tonul și vocea brandului", done: !!brain?.voice, to: "/dashboard/brand-brain" },
     { label: "Conectează Facebook / Instagram", done: metaConnected, to: "/dashboard/integrari" },
-    { label: "Programează prima postare", done: scheduled + posts.filter(p => p.status === "published").length > 0, to: "/dashboard/calendar" },
+    { label: "Creează și publică prima postare din Studio", done: scheduled + posts.filter(p => p.status === "published").length > 0, to: "/dashboard/studio" },
   ];
   const doneCount = checklist.filter(c => c.done).length;
 
@@ -85,7 +85,7 @@ function DashboardHome() {
   return (
     <div className="space-y-6">
       <PageHeader title={`Bun venit${name ? `, ${name}` : ""}`} description={brain ? `Iată ce se întâmplă cu ${brain.brand.name}.` : undefined}
-        actions={<Link to="/dashboard/generate" className="inline-flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-sm font-semibold text-primary-foreground glow"><PenSquare className="h-4 w-4" />Creează postare</Link>} />
+        actions={<Link to="/dashboard/studio" className="inline-flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-sm font-semibold text-primary-foreground glow"><PenSquare className="h-4 w-4" />Deschide Studio</Link>} />
 
       {doneCount < checklist.length && (
         <Panel>
@@ -152,7 +152,7 @@ function DashboardHome() {
           </div>
           {nextPosts.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-              Nicio postare programată. <Link to="/dashboard/history" className="text-primary">Programează un draft</Link> sau <Link to="/dashboard/generate" className="text-primary">creează unul nou</Link>.
+              Nicio postare programată. <Link to="/dashboard/studio" className="text-primary">Pornește o conversație în Studio</Link>.
             </div>
           ) : (
             <ul className="divide-y divide-border">

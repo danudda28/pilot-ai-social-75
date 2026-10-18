@@ -128,6 +128,123 @@ html.dark {
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
 }
 
+/* ─── Marketing surface — Larven-inspired dark system ─── */
+.marketing {
+  --m-bg: oklch(0.141 0.005 285);
+  --m-fg: oklch(0.96 0.004 286);
+  --m-muted: oklch(0.72 0.015 286);
+  --m-faint: oklch(0.55 0.015 286);
+  --m-card: oklch(0.18 0.008 285);
+  --m-line: oklch(1 0 0 / 10%);
+  --m-accent: oklch(0.72 0.16 250);
+  --m-accent-soft: oklch(0.72 0.16 250 / 18%);
+  --m-glow: oklch(0.45 0.18 250 / 45%);
+  --font-display: "Host Grotesk", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Host Grotesk", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  background: var(--m-bg);
+  color: var(--m-fg);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+.marketing h1,
+.marketing h2,
+.marketing h3,
+.marketing h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.marketing .m-container {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 640px) {
+  .marketing .m-container { padding-inline: 2rem; }
+}
+.marketing .m-hero-glow {
+  position: absolute;
+  inset: -20% 10% auto;
+  height: 70%;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, var(--m-glow), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 70% 20%, oklch(0.4 0.12 280 / 25%), transparent 70%);
+  pointer-events: none;
+  filter: blur(8px);
+}
+.marketing .m-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.marketing .m-pill:hover { transform: translateY(-1px); }
+.marketing .m-pill-solid {
+  background: #fff;
+  color: oklch(0.14 0.005 285);
+  padding: 0.75rem 1.75rem;
+}
+.marketing .m-pill-solid:hover { background: oklch(0.96 0 0); }
+.marketing .m-pill-ghost {
+  border: 1px solid var(--m-line);
+  color: var(--m-fg);
+  padding: 0.75rem 1.5rem;
+  background: oklch(1 0 0 / 3%);
+}
+.marketing .m-pill-ghost:hover { background: oklch(1 0 0 / 7%); }
+.marketing .m-panel {
+  background: linear-gradient(180deg, oklch(0.2 0.01 285), oklch(0.16 0.008 285));
+  border: 1px solid var(--m-line);
+  border-radius: 1.5rem;
+  box-shadow: 0 30px 80px -40px oklch(0 0 0 / 80%), inset 0 1px 0 oklch(1 0 0 / 6%);
+}
+.marketing .m-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--m-line);
+  background: oklch(0.1 0.005 285 / 80%);
+  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  box-shadow: 0 20px 50px -30px oklch(0 0 0 / 80%), inset 0 1px 0 oklch(1 0 0 / 5%);
+  backdrop-filter: blur(12px);
+}
+.marketing .m-mark {
+  color: var(--m-accent);
+}
+.marketing .m-muted { color: var(--m-muted); }
+.marketing .m-faint { color: var(--m-faint); }
+.marketing .m-line { border-color: var(--m-line); }
+@keyframes m-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
+}
+@keyframes m-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes m-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marketing .m-dot-live {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--m-accent);
+  box-shadow: 0 0 12px var(--m-accent);
+  animation: m-pulse 1.6s ease-in-out infinite;
+}
+.marketing .m-float { animation: m-float 6s ease-in-out infinite; }
+.marketing .m-marquee { animation: m-marquee 40s linear infinite; }
+.marketing details summary::-webkit-details-marker { display: none; }
+
 /* Legacy names kept so existing screens adopt the new clean card style. */
 @utility glass {
   background: var(--card);

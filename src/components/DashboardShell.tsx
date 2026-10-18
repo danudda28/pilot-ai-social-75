@@ -18,9 +18,10 @@ type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean; 
 
 const mainNav: NavItem[] = [
   { to: "/dashboard", label: "Acasă", icon: Home, exact: true },
-  { to: "/dashboard/echipa", label: "Echipa AI", icon: Sparkles },
+  { to: "/dashboard/studio", label: "Studio", icon: Sparkles },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
-  { to: "/dashboard/generate", label: "Creează", icon: PenSquare },
+  { to: "/dashboard/generate", label: "Creează (formular)", icon: PenSquare },
+  { to: "/dashboard/echipa", label: "Echipa AI", icon: Sparkles },
   { to: "/dashboard/strategie", label: "Strategie", icon: Target },
   { to: "/dashboard/campanii", label: "Campanii", icon: Megaphone },
   { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare },
@@ -45,7 +46,7 @@ const toolsNav: NavItem[] = [
   { to: "/dashboard/referral", label: "Recomandă", icon: Gift },
 ];
 
-const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[2], mainNav[5]];
+const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[2], mainNav[7]];
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
   return (

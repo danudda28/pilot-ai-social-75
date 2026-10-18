@@ -3,6 +3,14 @@ import { createMiddleware } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './types'
+import {
+  createLocalDevQuery,
+  getLocalDevUser,
+  isLocalDevAuthEnabled,
+  isLocalDevToken,
+  LOCAL_DEV_USER_ID,
+  localDevRpc,
+} from '@/lib/local-dev-auth'
 
 
 
@@ -41,6 +49,25 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
     const token = authHeader.replace('Bearer ', '');
     if (!token) {
       throw new Error('Unauthorized: No token provided');
+    }
+
+    // Cont demo local — fără cloud
+    if (isLocalDevAuthEnabled() && isLocalDevToken(token)) {
+      const user = getLocalDevUser();
+      const localSupabase = {
+        from: (table: string) => createLocalDevQuery(table),
+        rpc: (fn: string, args?: Record<string, unknown>) => localDevRpc(fn, args),
+        auth: {
+          getUser: async () => ({ data: { user }, error: null }),
+        },
+      };
+      return next({
+        context: {
+          supabase: localSupabase as any,
+          userId: LOCAL_DEV_USER_ID,
+          claims: { sub: LOCAL_DEV_USER_ID, email: user.email },
+        },
+      });
     }
 
     const supabase = createClient<Database>(

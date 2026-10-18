@@ -1,66 +1,65 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
-import { Heart, Zap, Palette } from "lucide-react";
+import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
 
 export const Route = createFileRoute("/despre")({
   head: () => ({
     meta: [
       { title: "Despre noi — Social Spark" },
       { name: "description", content: "Social Spark ajută antreprenorii să fie prezenți pe Instagram și Facebook fără efort, folosind AI." },
-      { property: "og:title", content: "Despre noi — Social Spark" },
-      { property: "og:description", content: "Construit pentru antreprenori care vor mai multă prezență online." },
     ],
   }),
   component: About,
 });
 
 const cards = [
-  { icon: Heart, title: "Creat pentru afaceri reale", desc: "Nu pentru agenții, nu pentru influenceri. Pentru saloane, restaurante, clinici, magazine — afaceri care vor să crească." },
-  { icon: Zap, title: "Automatizare simplă", desc: "Conectezi, alegi domeniul și AI-ul preia volanul. Tu doar aprobi sau editezi când e cazul." },
-  { icon: Palette, title: "Conținut adaptat brandului", desc: "Vocea, tonul și obiectivele tale, transpuse în fiecare postare. Nu sună a robot." },
+  { title: "Creat pentru afaceri reale", desc: "Nu pentru agenții, nu pentru influenceri. Pentru saloane, restaurante, clinici, magazine." },
+  { title: "Automatizare simplă", desc: "Conectezi, descrii afacerea, aprobi. AI-ul ține ritmul săptămânii." },
+  { title: "Conținut pe vocea ta", desc: "Brand Brain ține tonul. Fiecare postare trece prin regulile confirmate de tine." },
 ];
 
 function About() {
   return (
     <PublicLayout>
-      <section className="pt-20 pb-12">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="font-display text-4xl sm:text-6xl font-bold leading-tight">
-            Construit pentru <span className="gradient-text">antreprenori</span>, nu pentru agenții.
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground">
-            Știm cât de greu e să fii prezent pe social media când conduci o afacere. Social Spark rezolvă asta.
-          </p>
-        </div>
-      </section>
+      <section className="relative overflow-hidden pb-24 pt-16 sm:pt-24">
+        <div className="m-hero-glow opacity-50" />
+        <div className="m-container relative z-10">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <Eyebrow>Despre</Eyebrow>
+            <h1 className="mt-5 text-5xl leading-[1.05] tracking-[-0.045em] sm:text-6xl">
+              Construit pentru antreprenori,<br className="hidden sm:block" /> nu pentru agenții.
+            </h1>
+            <p className="mt-6 text-lg text-white/50">
+              Știm cât de greu e să fii prezent pe social media când conduci o afacere. Social Spark rezolvă asta.
+            </p>
+          </Reveal>
 
-      <section className="py-12">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="glass-strong rounded-2xl p-8 sm:p-12 space-y-5 text-base leading-relaxed">
+          <Reveal delay={0.08} className="m-panel mx-auto mt-12 max-w-3xl space-y-5 p-8 text-[16px] leading-relaxed text-white/60 sm:p-12">
             <p>
-              <strong>Social Spark</strong> a fost creat pentru antreprenorii care știu că prezența online contează, dar nu au timp să stea zilnic să gândească postări, texte, idei și campanii. Aplicația noastră folosește inteligența artificială pentru a transforma orice afacere într-un brand activ, coerent și profesionist pe social media.
+              Social Spark a fost creat pentru antreprenorii care știu că prezența online contează, dar nu au timp să stea zilnic să gândească postări, texte, idei și campanii.
             </p>
             <p>
-              Fie că ai un salon, restaurant, clinică, service auto, magazin online, firmă de construcții sau orice alt tip de business, Social Spark te ajută să comunici mai clar, mai des și mai convingător cu publicul tău.
+              Folosim inteligența artificială ca să transformăm orice afacere într-un brand activ, coerent și profesionist pe social media — fără să inventăm fapte. Tot ce publică AI-ul pornește din Brand Brain confirmat de tine.
             </p>
             <p>
-              Nu înlocuim creativitatea umană, ci eliminăm blocajele, lipsa de timp și haosul din postări. <span className="gradient-text font-semibold">Tu te ocupi de afacere, iar AI-ul nostru te ajută să fii prezent constant online.</span>
+              Nu înlocuim creativitatea umană. Eliminăm blocajele, lipsa de timp și haosul din postări. Tu te ocupi de afacere. Noi ținem feed-ul viu.
             </p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-3 md:grid-cols-3">
+            {cards.map((c, i) => (
+              <Reveal key={c.title} delay={i * 0.05}>
+                <div className="h-full rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+                  <h2 className="text-2xl tracking-tight text-white">{c.title}</h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-white/45">{c.desc}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </div>
-      </section>
 
-      <section className="py-16">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 grid gap-6 md:grid-cols-3">
-          {cards.map(c => (
-            <div key={c.title} className="glass rounded-2xl p-7 card-hover">
-              <div className="grid h-12 w-12 place-items-center rounded-xl gradient-bg mb-5">
-                <c.icon className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="font-semibold text-lg">{c.title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground">{c.desc}</p>
-            </div>
-          ))}
+          <Reveal className="mt-12 text-center">
+            <Link to="/auth" className="m-pill m-pill-solid inline-flex text-sm">Începe acum</Link>
+          </Reveal>
         </div>
       </section>
     </PublicLayout>

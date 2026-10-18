@@ -6,6 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { translateAuthError } from "@/lib/auth-errors";
+import {
+  isLocalDevAuthEnabled,
+  LOCAL_DEV_EMAIL,
+  LOCAL_DEV_PASSWORD,
+  readLocalDevSession,
+} from "@/lib/local-dev-auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Autentificare — Social Spark" }] }),
@@ -28,11 +34,54 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [intent, setIntent] = useState("");
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard" });
-    });
+    let cancelled = false;
+    (async () => {
+      // Cont demo local (plan Agenție) — doar pe localhost, fără cloud
+      if (isLocalDevAuthEnabled()) {
+        if (readLocalDevSession()) {
+          navigate({ to: "/dashboard" });
+          return;
+        }
+        setEmail(LOCAL_DEV_EMAIL);
+        setPassword(LOCAL_DEV_PASSWORD);
+        setFullName("Client Maxim");
+        setIntent("Cont local demo · plan Agenție (700 credite). Nu folosește Supabase cloud.");
+        const { error } = await supabase.auth.signInWithPassword({
+          email: LOCAL_DEV_EMAIL,
+          password: LOCAL_DEV_PASSWORD,
+        });
+        if (!error) {
+          toast.success("Conectat local ca Client Maxim (Agenție).");
+          navigate({ to: "/dashboard" });
+        }
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (data.session) {
+        navigate({ to: "/dashboard" });
+        return;
+      }
+      try {
+        const plan = sessionStorage.getItem("ss-plan");
+        const brief = sessionStorage.getItem("ss-brief");
+        if (plan) {
+          const saved = JSON.parse(plan) as { name?: string; cycle?: string };
+          setMode("register");
+          setIntent(`${saved.name ?? "Planul"} rămâne notat, cu facturare ${saved.cycle === "month" ? "lunară" : "anuală"}.`);
+        } else if (brief) {
+          setMode("register");
+          setIntent("Schița primului reel te așteaptă după ce intri în cont. Generarea lui nu consumă credite.");
+        }
+      } catch {
+        /* storage gol sau blocat */
+      }
+    })();
+    return () => { cancelled = true; };
   }, [navigate]);
 
   async function submit(e: React.FormEvent) {
@@ -107,59 +156,60 @@ function Auth() {
   const subtitle = mode === "login" ? "Intră în dashboard-ul tău." : mode === "register" ? "Începe gratuit, fără card." : "Îți trimitem un email cu link de resetare.";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "var(--gradient-hero)" }}>
-      <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold justify-center mb-8">
-          <img src={logoAsset.url} alt="Social Spark" className="h-10 w-10 object-contain" />
-          Social <span className="gradient-text">Spark</span>
+    <div className="marketing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <div className="m-hero-glow" />
+      <div className="relative z-10 w-full max-w-md">
+        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5 text-lg font-medium text-white">
+          <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
+          Social Spark
         </Link>
 
-        <div className="glass-strong rounded-2xl p-8">
-          <h1 className="font-display text-2xl font-bold">{title}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+        <div className="m-panel p-8">
+          <h1 className="text-3xl tracking-tight text-white">{title}</h1>
+          <p className="mt-2 text-sm text-white/45">{intent || subtitle}</p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
             {mode === "register" && (
               <div>
-                <label className="text-xs font-medium text-muted-foreground">Nume complet</label>
+                <label className="text-xs font-medium text-white/40">Nume complet</label>
                 <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
-                  className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
               </div>
             )}
             <div>
-              <label className="text-xs font-medium text-muted-foreground">Email</label>
+              <label className="text-xs font-medium text-white/40">Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+                className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
             </div>
             {mode !== "forgot" && (
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-muted-foreground">Parolă</label>
+                  <label className="text-xs font-medium text-white/40">Parolă</label>
                   {mode === "login" && (
                     <button type="button" onClick={() => setMode("forgot")}
-                      className="text-xs text-primary hover:underline">
+                      className="text-xs text-[var(--m-accent)] hover:underline">
                       Ai uitat parola?
                     </button>
                   )}
                 </div>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                  className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
               </div>
             )}
             <button disabled={loading}
-              className="w-full rounded-xl gradient-bg glow px-6 py-3.5 text-sm font-semibold text-white disabled:opacity-50">
+              className="m-pill m-pill-solid w-full text-sm disabled:opacity-50">
               {loading ? "Se procesează..." : mode === "login" ? "Intră în cont" : mode === "register" ? "Creează cont" : "Trimite link de resetare"}
             </button>
           </form>
 
           {mode === "forgot" ? (
             <button onClick={() => setMode("login")}
-              className="mt-6 w-full text-sm text-muted-foreground hover:text-foreground">
+              className="mt-6 w-full text-sm text-white/40 hover:text-white">
               Înapoi la login
             </button>
           ) : (
             <button onClick={() => setMode(mode === "login" ? "register" : "login")}
-              className="mt-6 w-full text-sm text-muted-foreground hover:text-foreground">
+              className="mt-6 w-full text-sm text-white/40 hover:text-white">
               {mode === "login" ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Login"}
             </button>
           )}
