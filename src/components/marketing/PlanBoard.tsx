@@ -36,7 +36,7 @@ export function PlanBoard() {
       navigate({ to: "/auth" });
       return;
     }
-    toast.info(`${plan.name} e notat. Stripe se deschide când cheile sunt puse.`);
+    toast.info(`${plan.name} e notat. Plata online se activează în curând — până atunci ai 30 de zile gratuite.`);
   }
 
   return (

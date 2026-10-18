@@ -9,9 +9,9 @@ export const Route = createFileRoute("/preturi")({
   head: () => ({
     meta: [
       { title: "Prețuri — Social Spark" },
-      { name: "description", content: "Cinci planuri, de la Debut la Agenție. Anualul costă jumătate. Un reel e 100 de credite, o imagine e 10." },
+      { name: "description", content: "Trei planuri simple: Basic 99 lei, Pro 249 lei, Business 349 lei pe lună. 30 de zile gratuite, fără card." },
       { property: "og:title", content: "Prețuri — Social Spark" },
-      { property: "og:description", content: "Credite clare, facturare anuală la jumătate, rambursare dacă nu ai folosit nimic." },
+      { property: "og:description", content: "Basic 99 lei, Pro 249 lei, Business 349 lei pe lună. 30 de zile gratuite, fără card." },
     ],
   }),
   component: Pricing,
@@ -26,11 +26,11 @@ function Pricing() {
           <Reveal>
             <Eyebrow>Prețuri</Eyebrow>
             <h1 className="mx-auto mt-5 max-w-3xl text-5xl leading-[1.05] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
-              Prețuri simple.<br />Fără retainer.
+              Prețuri simple.<br />În lei, fără surprize.
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/50">
-              Anualul e jumătate din prețul lunar, calculat exact. Creditele se reînnoiesc lunar.
-              Dacă nu folosești niciunul într-o perioadă facturată, factura se întoarce.
+              Începi cu 30 de zile gratuite, fără card. Anualul e jumătate din prețul lunar.
+              Creditele se reînnoiesc în fiecare lună.
             </p>
           </Reveal>
         </div>
