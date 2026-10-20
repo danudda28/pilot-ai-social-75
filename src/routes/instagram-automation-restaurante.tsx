@@ -19,7 +19,7 @@ const features = [
   "Fotografii AI ale preparatelor (când n-ai timp de food photographer)",
   "Hashtaguri locale optimizate per oraș (Cluj, București, Iași...)",
   "Programare automată în orele de vârf (12:00, 18:30)",
-  "Reels-uri pe trenduri TikTok + IG, adaptate pentru bucătăria ta",
+  "Reels-uri pe trenduri Instagram, adaptate pentru bucătăria ta",
   "Răspunsuri AI la comentarii și mesaje DM (în curând)",
 ];
 

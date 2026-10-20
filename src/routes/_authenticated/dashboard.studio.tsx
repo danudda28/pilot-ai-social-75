@@ -9,6 +9,7 @@ import {
   estimateStudioJob,
   publishStudioSelection,
   runStudioCreate,
+  runStudioOmniClip,
   selectStudioAsset,
   uploadStudioReference,
   type StudioCandidate,
@@ -62,6 +63,7 @@ function StudioPage() {
   const estimateFn = useServerFn(estimateStudioJob);
   const uploadFn = useServerFn(uploadStudioReference);
   const createFn = useServerFn(runStudioCreate);
+  const omniFn = useServerFn(runStudioOmniClip);
   const selectFn = useServerFn(selectStudioAsset);
   const publishFn = useServerFn(publishStudioSelection);
   const accountsFn = useServerFn(getConnectedAccounts);
@@ -76,8 +78,18 @@ function StudioPage() {
   const [when, setWhen] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const REF_KEY = "ss-studio-ref";
 
   useEffect(() => {
+    try {
+      const raw = localStorage.getItem(REF_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { path: string; signedUrl: string; fileName: string };
+        if (parsed?.path && parsed?.signedUrl) setRef(parsed);
+      }
+    } catch {
+      /* ignore */
+    }
     setMessages([
       {
         id: uid(),
@@ -94,6 +106,15 @@ function StudioPage() {
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    try {
+      if (ref) localStorage.setItem(REF_KEY, JSON.stringify(ref));
+      else localStorage.removeItem(REF_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [ref]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,9 +139,15 @@ function StudioPage() {
       reader.readAsDataURL(file);
     });
     try {
-      const uploaded = await uploadFn({ data: { dataUrl, mimeType: mime as "image/png" | "image/jpeg" | "image/webp", fileName: file.name } });
+      const uploaded = await uploadFn({
+        data: {
+          dataUrl,
+          mimeType: mime as "image/png" | "image/jpeg" | "image/webp",
+          fileName: file.name,
+        },
+      }) as { path: string; signedUrl: string; fileName: string; local?: boolean };
       setRef(uploaded);
-      toast.success("Referință atașată.");
+      toast.success(uploaded.local ? "Referință salvată local." : "Referință atașată.");
     } catch (e: any) {
       toast.error(e?.message ?? "Upload eșuat.");
     }
@@ -141,7 +168,7 @@ function StudioPage() {
     setBusy(true);
 
     try {
-      const eta = await estimateFn({ data: { brief } });
+      const eta = await estimateFn({ data: { brief, hasReference: !!ref } });
       const etaMsg: Msg = {
         id: uid(),
         role: "assistant",
@@ -154,7 +181,7 @@ function StudioPage() {
         id: uid(),
         role: "assistant",
         kind: "progress",
-        label: "Generez…",
+        label: "Generez pozele…",
         startedAt: Date.now(),
         totalSec: eta.totalSec,
       };
@@ -170,6 +197,11 @@ function StudioPage() {
         },
       });
 
+      if (!result?.post?.id) {
+        throw new Error(result?.reply || "Generarea nu a returnat o postare. Reîncearcă.");
+      }
+
+      const batchId = uid();
       setMessages((m) => {
         const withoutProgress = m.filter((x) => x.kind !== "progress");
         return [
@@ -181,13 +213,13 @@ function StudioPage() {
             text: result.reply,
           },
           {
-            id: uid(),
+            id: batchId,
             role: "assistant",
             kind: "batch",
             postId: result.post.id,
             copy: result.post.copy ?? "",
             title: result.post.title ?? "Postare",
-            candidates: result.candidates,
+            candidates: result.candidates ?? [],
             reel: result.reel
               ? {
                   hook: result.reel.hook,
@@ -200,8 +232,71 @@ function StudioPage() {
           },
         ];
       });
-      if (result.candidates[0]) {
+      if (result.candidates?.[0]) {
         setPicked((p) => ({ ...p, [result.post.id]: result.candidates[0].path }));
+      }
+
+      // Clip Omni în al doilea pas — nu se pierde dacă request-ul e lung
+      if (result.wantsOmni) {
+        setBusy(false);
+        const omniProgressId = uid();
+        setMessages((m) => [
+          ...m,
+          {
+            id: omniProgressId,
+            role: "assistant",
+            kind: "progress",
+            label: "Generez clipul Omni (salvat local)…",
+            startedAt: Date.now(),
+            totalSec: 55,
+          },
+        ]);
+        try {
+          const omni = await omniFn({
+            data: {
+              postId: result.post.id,
+              brief,
+              hook: result.reel?.hook,
+              scenes: result.reel?.scenes?.map((s) => s.caption),
+              referencePath: ref?.path,
+            },
+          });
+          setMessages((m) =>
+            m
+              .filter((x) => x.id !== omniProgressId)
+              .map((x) => {
+                if (x.id !== batchId || x.kind !== "batch") return x;
+                const next = [omni.candidate, ...x.candidates.filter((c) => c.id !== "reel-omni")];
+                return { ...x, candidates: next };
+              }),
+          );
+          if (omni.candidate?.path) {
+            setPicked((p) => ({ ...p, [result.post.id]: omni.candidate.path }));
+            toast.success(`Clip salvat: ${omni.candidate.signedUrl}`);
+          }
+          if ((omni as { note?: string }).note) {
+            setMessages((m) => [
+              ...m,
+              {
+                id: uid(),
+                role: "assistant",
+                kind: "text",
+                text: (omni as { note?: string }).note!,
+              },
+            ]);
+          }
+        } catch (omniErr: any) {
+          setMessages((m) => [
+            ...m.filter((x) => x.id !== omniProgressId),
+            {
+              id: uid(),
+              role: "assistant",
+              kind: "text",
+              text: `Clip Omni eșuat: ${omniErr?.message ?? "eroare necunoscută"}. Pozele rămân disponibile.`,
+            },
+          ]);
+        }
+        return;
       }
     } catch (e: any) {
       setMessages((m) => [
@@ -373,7 +468,7 @@ function StudioPage() {
                         ))}
                       </ol>
                       <p className="mt-2 text-[11px] text-muted-foreground">
-                        Publicarea pe Meta folosește cadrul ales (foto). Exportul video full vine pe același flux.
+                        Dacă apare „Clip Omni”, e video MP4 real — îl poți reda și descărca. Publicarea Meta folosește încă cadrul foto.
                       </p>
                     </div>
                   )}
@@ -382,6 +477,7 @@ function StudioPage() {
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {m.candidates.map((c) => {
                         const on = selected === c.path;
+                        const isVideo = c.kind === "reel_video";
                         return (
                           <button
                             key={c.id}
@@ -391,11 +487,32 @@ function StudioPage() {
                               on ? "border-primary ring-2 ring-primary/30" : "border-border"
                             }`}
                           >
-                            <img src={c.signedUrl} alt={c.label} className="aspect-square w-full object-cover" />
+                            {isVideo ? (
+                              <video
+                                src={c.signedUrl}
+                                className="aspect-[9/16] w-full object-cover bg-black"
+                                controls
+                                playsInline
+                                muted
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            ) : (
+                              <img src={c.signedUrl} alt={c.label} className="aspect-square w-full object-cover" />
+                            )}
                             <div className="flex items-center justify-between gap-1 px-2 py-1.5 text-[11px]">
                               <span>{c.label}</span>
                               {on && <Check className="h-3.5 w-3.5 text-primary" />}
                             </div>
+                            {isVideo && (
+                              <a
+                                href={c.signedUrl}
+                                download="omni-reel.mp4"
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-2 right-2 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white"
+                              >
+                                MP4
+                              </a>
+                            )}
                           </button>
                         );
                       })}

@@ -26,10 +26,19 @@ export function estimateSeconds(kind: StudioKind, variants: number) {
   };
 }
 
-function detectKind(text: string): StudioKind {
+function detectKind(text: string, hasReference = false): StudioKind {
   const t = text.toLowerCase();
-  if (/(reel|video|clip|filmare)/i.test(t) && /(poz[aă]|imagine|foto|poze)/i.test(t)) return "both";
-  if (/(reel|video|clip|filmare)/i.test(t)) return "reel";
+  // Explicit „doar poze”
+  if (/(doar\s+poz|doar\s+foto|fără\s+video|fara\s+video|static\s+doar)/i.test(t)) return "image";
+  const wantsVideo =
+    /(reel|video|clip|filmare|ugc|demo|saas|sass|secunde|\d+\s*s\b|walkthrough|prezentare|screen\s*record)/i.test(
+      t,
+    );
+  const wantsPhoto = /(poz[aă]|imagine|foto|poze|carousel)/i.test(t);
+  if (wantsVideo && wantsPhoto) return "both";
+  if (wantsVideo) return "reel";
+  // Cu referință produs/UI: generăm și clip (altfel SaaS rămâne doar pe poze)
+  if (hasReference) return "both";
   return "image";
 }
 
@@ -51,7 +60,22 @@ function detectGoal(text: string): "vanzare" | "awareness" | "promovare" | "educ
   return "awareness";
 }
 
-async function genImageBytes(apiKey: string, prompt: string) {
+async function genImageBytes(
+  _apiKey: string,
+  prompt: string,
+  opts?: { aspectRatio?: "1:1" | "9:16"; reference?: { bytes: Uint8Array; mimeType: string } },
+) {
+  const { getGeminiApiKey, generateGeminiImage } = await import("./gemini.server");
+  if (getGeminiApiKey()) {
+    return generateGeminiImage(prompt, {
+      aspectRatio: opts?.aspectRatio ?? "1:1",
+      reference: opts?.reference,
+    });
+  }
+
+  const apiKey = process.env.LOVABLE_API_KEY;
+  if (!apiKey) throw new Error("Missing GEMINI_API_KEY (sau LOVABLE_API_KEY)");
+
   const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -84,17 +108,23 @@ export const estimateStudioJob = createServerFn({ method: "POST" })
       brief: z.string().min(3).max(2000),
       kind: z.enum(["image", "reel", "both"]).optional(),
       variants: z.number().int().min(1).max(4).optional(),
+      hasReference: z.boolean().optional(),
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    const kind = data.kind ?? detectKind(data.brief);
+    const kind = data.kind ?? detectKind(data.brief, !!data.hasReference);
     const variants = data.variants ?? (kind === "reel" ? 2 : 3);
     const eta = estimateSeconds(kind, variants);
+    // Omni e separat (~30–90s) — nu blochează pozele
+    const omniSec = kind === "image" ? 0 : 55;
     return {
       kind,
       variants,
       ...eta,
-      human: `Cam ${Math.max(1, Math.round(eta.totalSec / 60))} ${eta.totalSec < 90 ? "minut" : "minute"} · ~${eta.totalSec}s`,
+      omniSec,
+      totalSec: eta.totalSec + omniSec,
+      human: `Cam ${Math.max(1, Math.round((eta.totalSec + omniSec) / 60))} min · poze ~${eta.totalSec}s` +
+        (omniSec ? ` + clip ~${omniSec}s` : ""),
     };
   });
 
@@ -115,21 +145,19 @@ export const uploadStudioReference = createServerFn({ method: "POST" })
     for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
     const ext = data.mimeType === "image/jpeg" ? "jpg" : data.mimeType === "image/webp" ? "webp" : "png";
     const path = `${context.userId}/refs/ref-${Date.now()}.${ext}`;
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.storage
-      .from("post-images")
-      .upload(path, bytes, { contentType: data.mimeType, upsert: true });
-    if (error) throw new Error(`Upload eșuat: ${error.message}`);
-    const { data: signed, error: sErr } = await supabaseAdmin.storage
-      .from("post-images")
-      .createSignedUrl(path, 60 * 60 * 24 * 7);
-    if (sErr) throw new Error(sErr.message);
-    return { path, signedUrl: signed.signedUrl, fileName: data.fileName ?? `referinta.${ext}` };
+    const { storeMediaBytes } = await import("./local-media.server");
+    const stored = await storeMediaBytes(path, bytes, data.mimeType);
+    return {
+      path: stored.path,
+      signedUrl: stored.url,
+      fileName: data.fileName ?? `referinta.${ext}`,
+      local: stored.url.startsWith("/local-media/"),
+    };
   });
 
 export type StudioCandidate = {
   id: string;
-  kind: "image" | "reel_frame";
+  kind: "image" | "reel_frame" | "reel_video";
   label: string;
   path: string;
   signedUrl: string;
@@ -148,10 +176,13 @@ export const runStudioCreate = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
+    const { getGeminiApiKey } = await import("./gemini.server");
     const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
+    if (!apiKey && !getGeminiApiKey()) {
+      throw new Error("Missing GEMINI_API_KEY (sau LOVABLE_API_KEY)");
+    }
 
-    const kind = data.kind ?? detectKind(data.brief);
+    const kind = data.kind ?? detectKind(data.brief, !!data.referencePath);
     const variants = data.variants ?? (kind === "reel" ? 2 : 3);
     const tone = detectTone(data.brief);
     const goal = detectGoal(data.brief);
@@ -174,12 +205,10 @@ export const runStudioCreate = createServerFn({ method: "POST" })
     const businessType = ctx?.brand?.category || ctx?.brand?.name || "afacere locală";
     const domain = ctx?.brand?.category || "servicii";
 
+    const { COPY_REF_RULES, COPY_RO_RULES, RO_TEXT_QUALITY } = await import("./identity-lock.server");
     const refNote = data.referencePath
-      ? `Clientul a încărcat o referință vizuală (${data.referenceNote || "produs/serviciu"}). Folosește-o ca ghid de stil, unghi, produs și atmosferă — nu inventa un alt produs.`
-      : "Clientul NU are referință vizuală. Construiește imaginile din descrierea verbală, realist, fără elemente inventate care contrazic brief-ul.";
-
-    const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
-    const gateway = createLovableAiGatewayProvider(apiKey);
+      ? `Clientul a încărcat o REFERINȚĂ vizuală (${data.referenceNote || "produs/serviciu"}). Produsul sau locația/serviciul din referință trebuie păstrat 100% identic în orice vizual — nu inventa alt ambalaj, alt logo sau alt spațiu.`
+      : "Clientul NU are referință vizuală. Rămâi fidel brief-ului verbal; nu inventa un brand/produs diferit.";
 
     const goalsRo: Record<string, string> = {
       vanzare: "vânzare directă",
@@ -189,7 +218,11 @@ export const runStudioCreate = createServerFn({ method: "POST" })
       testimonial: "testimonial / social proof",
     };
 
-    const prompt = `Ești un copywriter senior pentru social media în România. Scrie ÎN ROMÂNĂ.
+    const prompt = `Ești un copywriter senior pentru social media în România. Scrie EXCLUSIV în română literară corectă, cu diacritice (ă, â, î, ș, ț). Zero greșeli gramaticale.
+
+${COPY_RO_RULES}
+
+${RO_TEXT_QUALITY}
 
 CONTEXT
 - Domeniu: ${domain}
@@ -199,34 +232,52 @@ CONTEXT
 - Tip: ${kind === "image" ? "postare statică" : "reel + vizual"}
 - Brief client: ${data.brief}
 - ${refNote}
+${data.referencePath ? `\n${COPY_REF_RULES}\n` : ""}
 ${ctx ? `\nBRAND BRAIN\n${BRAND_RULES}\n${brandContextBlock(ctx)}` : ""}
 
-Răspunde STRICT cu JSON valid:
+Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corectă):
 {
-  "title": "max 60 caractere",
-  "copy": "postare completă cu \\n\\n, emoji moderate, CTA la final",
-  "short_copy": "max 2 propoziții",
+  "title": "max 60 caractere, română corectă",
+  "copy": "postare completă cu \\n\\n, emoji moderate, CTA la final — română cu diacritice",
+  "short_copy": "max 2 propoziții corecte",
   "hashtags": "#tag1 #tag2 ...",
-  "visual_idea": "descriere concretă a imaginii",
-  "call_to_action": "CTA scurt",
+  "visual_idea": "doar decor/lumină/unghi — NU redesena produsul din referință",
+  "call_to_action": "CTA scurt în română",
   "image_angles": ["unghi 1", "unghi 2", "unghi 3"],
-  "reel_hook": "hook 3s pentru reel sau string gol",
-  "reel_scenes": [{"caption":"...","imagePrompt":"english visual prompt","durationSec":4}]
+  "reel_hook": "hook 3s în română corectă sau string gol",
+  "reel_scenes": [{"caption":"română corectă, max 70 caractere","imagePrompt":"english: environment + SAME product from reference","durationSec":4}]
 }`;
 
-    const { text, usage } = await generateText({
-      model: gateway("google/gemini-2.5-flash"),
-      prompt,
-    });
+    let text: string;
+    let usage: unknown;
+    const geminiKey = getGeminiApiKey();
+    if (geminiKey && !apiKey) {
+      const { generateGeminiText } = await import("./gemini.server");
+      text = await generateGeminiText(prompt);
+      usage = undefined;
+    } else {
+      const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+      const gateway = createLovableAiGatewayProvider(apiKey!);
+      const out = await generateText({
+        model: gateway("google/gemini-2.5-flash"),
+        prompt,
+      });
+      text = out.text;
+      usage = out.usage;
+    }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await logAiUsage(supabaseAdmin, {
-      brandId,
-      userId: context.userId,
-      feature: "studio_create",
-      model: "google/gemini-2.5-flash",
-      usage: usage as any,
-    });
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await logAiUsage(supabaseAdmin, {
+        brandId,
+        userId: context.userId,
+        feature: "studio_create",
+        model: "google/gemini-2.5-flash",
+        usage: usage as any,
+      });
+    } catch {
+      /* local fără SERVICE_ROLE — skip usage log */
+    }
 
     let parsed: Record<string, any>;
     try {
@@ -254,6 +305,7 @@ Răspunde STRICT cu JSON valid:
       .select()
       .single();
     if (error) throw new Error(error.message);
+    if (!inserted?.id) throw new Error("Nu am putut salva postarea. Reîncearcă.");
 
     if (profile) {
       await context.supabase
@@ -271,26 +323,36 @@ Răspunde STRICT cu JSON valid:
         ].slice(0, variants);
 
     const candidates: StudioCandidate[] = [];
+    const { storeMediaBytes, loadMediaBytes, guessMimeFromPath } = await import("./local-media.server");
+
+    let reference: { bytes: Uint8Array; mimeType: string } | undefined;
+    if (data.referencePath) {
+      const refBytes = await loadMediaBytes(data.referencePath);
+      if (refBytes) {
+        reference = { bytes: refBytes, mimeType: guessMimeFromPath(data.referencePath) };
+      }
+    }
+
+    const { buildLockedImagePrompt } = await import("./identity-lock.server");
 
     for (let i = 0; i < angles.length; i++) {
       try {
-        const visualPrompt = `Professional editorial social media photo for Instagram/Facebook, natural lighting, high quality, no watermark, no fake logo. Subject: ${parsed.visual_idea || data.brief}. Angle: ${angles[i]}. ${data.referencePath ? "Match the client's reference product/style closely." : "Based only on the verbal brief."}`;
-        const bytes = await genImageBytes(apiKey, visualPrompt);
+        const visualPrompt = buildLockedImagePrompt({
+          brief: data.brief,
+          angle: angles[i],
+          visualIdea: parsed.visual_idea,
+          hasReference: !!reference,
+          aspect: "1:1",
+        });
+        const bytes = await genImageBytes(apiKey, visualPrompt, { aspectRatio: "1:1", reference });
         const path = `${context.userId}/${inserted.id}-v${i + 1}-${Date.now()}.png`;
-        const { error: upErr } = await supabaseAdmin.storage
-          .from("post-images")
-          .upload(path, bytes, { contentType: "image/png", upsert: true });
-        if (upErr) continue;
-        const { data: signed } = await supabaseAdmin.storage
-          .from("post-images")
-          .createSignedUrl(path, 60 * 60 * 24 * 7);
-        if (!signed?.signedUrl) continue;
+        const stored = await storeMediaBytes(path, bytes, "image/png");
         candidates.push({
           id: `img-${i + 1}`,
           kind: "image",
           label: `Poză ${i + 1}`,
-          path,
-          signedUrl: signed.signedUrl,
+          path: stored.path,
+          signedUrl: stored.url,
           angle: angles[i],
         });
       } catch {
@@ -302,6 +364,7 @@ Răspunde STRICT cu JSON valid:
       hook: string;
       scenes: { caption: string; imagePrompt: string; durationSec: number }[];
     } = null;
+    let omniNote: string | null = null;
 
     if (kind !== "image" && Array.isArray(parsed.reel_scenes) && parsed.reel_scenes.length) {
       reel = {
@@ -317,26 +380,33 @@ Răspunde STRICT cu JSON valid:
         const scene = reel.scenes[0];
         const bytes = await genImageBytes(
           apiKey,
-          `Vertical 9:16 Instagram Reel keyframe, cinematic, no text overlay. ${scene.imagePrompt}. Brief: ${data.brief.slice(0, 180)}`,
+          buildLockedImagePrompt({
+            brief: data.brief,
+            angle: scene.imagePrompt || reel.hook || "product close-up",
+            visualIdea: scene.caption,
+            hasReference: !!reference,
+            aspect: "9:16",
+            extra: "Keyframe still for a Reel. No new packaging.",
+          }),
+          { aspectRatio: "9:16", reference },
         );
         const path = `${context.userId}/${inserted.id}-reel-key-${Date.now()}.png`;
-        await supabaseAdmin.storage.from("post-images").upload(path, bytes, { contentType: "image/png", upsert: true });
-        const { data: signed } = await supabaseAdmin.storage
-          .from("post-images")
-          .createSignedUrl(path, 60 * 60 * 24 * 7);
-        if (signed?.signedUrl) {
-          candidates.push({
-            id: "reel-key",
-            kind: "reel_frame",
-            label: "Cadru Reel",
-            path,
-            signedUrl: signed.signedUrl,
-            angle: reel.hook || "Reel",
-          });
-        }
+        const stored = await storeMediaBytes(path, bytes, "image/png");
+        candidates.push({
+          id: "reel-key",
+          kind: "reel_frame",
+          label: "Cadru Reel",
+          path: stored.path,
+          signedUrl: stored.url,
+          angle: reel.hook || "Reel",
+        });
       } catch {
         /* optional */
       }
+
+      // Clip Omni = apel separat (runStudioOmniClip) ca să nu expire request-ul înainte să apară în UI
+      omniNote =
+        "Pozele sunt gata. Generez acum clipul Omni în fundal — apare mai jos în câteva zeci de secunde.";
     }
 
     if (candidates[0]) {
@@ -351,17 +421,124 @@ Răspunde STRICT cu JSON valid:
       ? findBannedWords([parsed.title, parsed.copy, parsed.short_copy, parsed.call_to_action].filter(Boolean).join(" "), ctx.bannedWords)
       : [];
 
+    const baseReply =
+      candidates.length > 0
+        ? `Gata. Am ${candidates.length} ${candidates.length === 1 ? "variantă" : "variante"} gata. Alege ce publicăm pe Facebook și Instagram — sau spune-mi ce să schimb.`
+        : "Am scris textul, dar imaginile nu au putut fi generate acum. Reîncearcă sau încarcă o referință.";
+
     return {
       post: inserted,
       candidates,
       reel,
       kind,
-      reply:
-        candidates.length > 0
-          ? `Gata. Am ${candidates.length} ${candidates.length === 1 ? "variantă" : "variante"} gata. Alege ce publicăm pe Facebook și Instagram — sau spune-mi ce să schimb.`
-          : "Am scris textul, dar imaginile nu au putut fi generate acum. Reîncearcă sau încarcă o referință.",
-      warnings: { bannedWords: bannedHits, usedBrandBrain: !!ctx },
+      wantsOmni: kind !== "image",
+      reply: omniNote ? `${baseReply}\n\n${omniNote}` : baseReply,
+      warnings: { bannedWords: bannedHits, usedBrandBrain: !!ctx, omniNote },
     };
+  });
+
+/** Clip Omni separat — salvare locală obligatorie, nu blochează pozele. */
+export const runStudioOmniClip = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      postId: z.string().uuid(),
+      brief: z.string().min(3).max(2000),
+      hook: z.string().max(300).optional(),
+      scenes: z.array(z.string().max(200)).max(8).optional(),
+      referencePath: z.string().max(500).optional(),
+      businessType: z.string().max(120).optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { getGeminiApiKey, generateAndPersistGeminiVideo } = await import("./gemini.server");
+    if (!getGeminiApiKey()) throw new Error("Missing GEMINI_API_KEY");
+
+    const { loadMediaBytes, guessMimeFromPath, storeMediaBytes } = await import("./local-media.server");
+    const { buildLockedOmniPrompt } = await import("./identity-lock.server");
+    const { sanitizeOmniPrompt } = await import("./omni-prompt.server");
+
+    let reference: { bytes: Uint8Array; mimeType: string } | undefined;
+    if (data.referencePath) {
+      if (!data.referencePath.startsWith(`${context.userId}/`)) {
+        throw new Error("Referință invalidă.");
+      }
+      const refBytes = await loadMediaBytes(data.referencePath);
+      if (refBytes) {
+        reference = { bytes: refBytes, mimeType: guessMimeFromPath(data.referencePath) };
+      }
+    }
+
+    const rawOmni = buildLockedOmniPrompt({
+      brief: data.brief,
+      hook: data.hook,
+      scenes: data.scenes,
+      businessType: data.businessType,
+      hasReference: !!reference,
+    });
+    const omniPrompt = sanitizeOmniPrompt(rawOmni);
+
+    try {
+      const persisted = await generateAndPersistGeminiVideo(omniPrompt, {
+        aspectRatio: "9:16",
+        persistUserId: context.userId,
+        persistLabel: `studio-${data.postId.slice(0, 8)}`,
+        ...(reference ? { task: "image_to_video" as const, image: reference } : {}),
+      });
+      const path =
+        persisted.path ??
+        (
+          await storeMediaBytes(
+            `${context.userId}/${data.postId}-omni-${Date.now()}.mp4`,
+            persisted.bytes,
+            "video/mp4",
+          )
+        ).path;
+      const url = persisted.url ?? `/local-media/${path}`;
+      const candidate: StudioCandidate = {
+        id: "reel-omni",
+        kind: "reel_video",
+        label: "Clip Omni",
+        path,
+        signedUrl: url,
+        angle: data.hook || "Omni",
+      };
+      return { ok: true as const, candidate };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("[studio omni]", msg);
+      // Retry fără imagine dacă block pe likeness — totuși cu identity lock pe text
+      if (reference && /content_blocked|likeness|real people|names/i.test(msg)) {
+        const persisted = await generateAndPersistGeminiVideo(sanitizeOmniPrompt(rawOmni), {
+          aspectRatio: "9:16",
+          persistUserId: context.userId,
+          persistLabel: `studio-${data.postId.slice(0, 8)}-text`,
+        });
+        const path =
+          persisted.path ??
+          (
+            await storeMediaBytes(
+              `${context.userId}/${data.postId}-omni-${Date.now()}.mp4`,
+              persisted.bytes,
+              "video/mp4",
+            )
+          ).path;
+        const url = persisted.url ?? `/local-media/${path}`;
+        return {
+          ok: true as const,
+          candidate: {
+            id: "reel-omni",
+            kind: "reel_video" as const,
+            label: "Clip Omni",
+            path,
+            signedUrl: url,
+            angle: data.hook || "Omni",
+          },
+          note: "Clip generat fără referință imagine (Google a blocat likeness). Verifică dacă produsul e corect.",
+        };
+      }
+      throw new Error(msg.slice(0, 280));
+    }
   });
 
 export const selectStudioAsset = createServerFn({ method: "POST" })

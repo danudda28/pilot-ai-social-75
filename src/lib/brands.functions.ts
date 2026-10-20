@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { brandLimitForPlan, planById } from "@/lib/credits";
 import { z } from "zod";
 
 export const listMyBrands = createServerFn({ method: "GET" })
@@ -12,6 +13,54 @@ export const listMyBrands = createServerFn({ method: "GET" })
     return (memberships ?? []).map((m: any) => ({ ...m.brands, role: m.role }));
   });
 
+/** Cotă branduri/clienți pe planul curent (pentru UI + enforce). */
+export const getBrandQuota = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: profile } = await context.supabase
+      .from("users_profiles")
+      .select("subscription_plan")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    const planId = (profile?.subscription_plan as string) ?? "free";
+    const plan = planById(planId);
+    const max = brandLimitForPlan(planId);
+
+    const { data: orgMem } = await context.supabase
+      .from("organization_members")
+      .select("organization_id, role")
+      .eq("user_id", context.userId)
+      .in("role", ["owner", "admin"])
+      .order("created_at")
+      .limit(1)
+      .maybeSingle();
+
+    let used = 0;
+    if (orgMem?.organization_id) {
+      const { count } = await context.supabase
+        .from("brands")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", orgMem.organization_id);
+      used = count ?? 0;
+    } else {
+      const { count } = await context.supabase
+        .from("brands")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", context.userId);
+      used = count ?? 0;
+    }
+
+    return {
+      planId,
+      planName: plan?.name ?? planId,
+      used,
+      max,
+      remaining: Math.max(0, max - used),
+      isAgency: planId === "agentie",
+      canCreate: used < max,
+    };
+  });
+
 export const createBrand = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
@@ -21,9 +70,42 @@ export const createBrand = createServerFn({ method: "POST" })
     domain: z.string().max(100).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
+    const { data: profile } = await context.supabase
+      .from("users_profiles")
+      .select("subscription_plan")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    const planId = (profile?.subscription_plan as string) ?? "free";
+    const max = brandLimitForPlan(planId);
+    const planName = planById(planId)?.name ?? planId;
+
     const { data: org } = await context.supabase.from("organization_members")
       .select("organization_id").eq("user_id", context.userId).in("role", ["owner", "admin"])
       .order("created_at").limit(1).maybeSingle();
+
+    let used = 0;
+    if (org?.organization_id) {
+      const { count } = await context.supabase
+        .from("brands")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", org.organization_id);
+      used = count ?? 0;
+    } else {
+      const { count } = await context.supabase
+        .from("brands")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", context.userId);
+      used = count ?? 0;
+    }
+
+    if (used >= max) {
+      throw new Error(
+        planId === "agentie"
+          ? `Planul Agenție acoperă maxim ${max} clienți (branduri). Scrie-ne pentru un plan de organizație.`
+          : `Planul ${planName} acoperă maxim ${max} ${max === 1 ? "brand" : "branduri"}. Fă upgrade ca să adaugi mai multe.`,
+      );
+    }
+
     const { data: brand, error } = await context.supabase
       .from("brands")
       .insert({ ...data, owner_id: context.userId, organization_id: org?.organization_id ?? null })

@@ -13,6 +13,7 @@ import { BrandSwitcher } from "@/components/BrandSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { checkAmAdmin } from "@/lib/admin.functions";
+import { getBrandQuota } from "@/lib/brands.functions";
 
 type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean; soon?: boolean };
 
@@ -35,16 +36,18 @@ const mainNav: NavItem[] = [
   { to: "/dashboard/settings", label: "Setări", icon: Settings },
 ];
 
-const toolsNav: NavItem[] = [
-  { to: "/dashboard/bulk", label: "Generare în masă", icon: Layers },
-  { to: "/dashboard/import", label: "Import CSV", icon: FileSpreadsheet },
-  { to: "/dashboard/video", label: "Video AI", icon: Video },
-  { to: "/dashboard/history", label: "Istoric postări", icon: History },
-  { to: "/dashboard/approvals", label: "Aprobări", icon: ClipboardCheck },
-  { to: "/dashboard/ai-tools", label: "Asistent AI", icon: Sparkles },
-  { to: "/dashboard/brands", label: "Branduri", icon: Building2 },
-  { to: "/dashboard/referral", label: "Recomandă", icon: Gift },
-];
+function toolsNavFor(isAgency: boolean): NavItem[] {
+  return [
+    { to: "/dashboard/bulk", label: "Generare în masă", icon: Layers },
+    { to: "/dashboard/import", label: "Import CSV", icon: FileSpreadsheet },
+    { to: "/dashboard/video", label: "Video AI", icon: Video },
+    { to: "/dashboard/history", label: "Istoric postări", icon: History },
+    { to: "/dashboard/approvals", label: "Aprobări", icon: ClipboardCheck },
+    { to: "/dashboard/ai-tools", label: "Asistent AI", icon: Sparkles },
+    { to: "/dashboard/brands", label: isAgency ? "Clienți" : "Branduri", icon: Building2 },
+    { to: "/dashboard/referral", label: "Recomandă", icon: Gift },
+  ];
+}
 
 const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[2], mainNav[7]];
 
@@ -63,12 +66,17 @@ function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
 export function DashboardShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const amAdmin = useServerFn(checkAmAdmin);
+  const brandQuota = useServerFn(getBrandQuota);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAgency, setIsAgency] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     amAdmin().then(r => setIsAdmin(!!(r as any).isAdmin)).catch(() => {});
+    brandQuota().then(r => setIsAgency(!!(r as any).isAgency)).catch(() => {});
   }, []);
+
+  const toolsNav = toolsNavFor(isAgency);
 
   async function signOut() {
     await supabase.auth.signOut();

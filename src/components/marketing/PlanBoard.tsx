@@ -18,6 +18,8 @@ import {
   type Plan,
 } from "@/lib/credits";
 import { Reveal } from "@/components/marketing/Reveal";
+import { DemoVisual } from "@/components/marketing/DemoVisual";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 
 export function PlanBoard() {
   const navigate = useNavigate();
@@ -118,11 +120,20 @@ export function PlanBoard() {
         })}
       </div>
 
-      <Reveal className="m-panel mt-16 grid gap-8 p-6 md:grid-cols-[1.1fr_0.9fr] md:p-10">
+      <Reveal className="mt-16">
+        <h3 className="text-3xl tracking-tight text-white">Câte piese vrei într-o lună?</h3>
+        <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/45">
+          Un reel = 100 credite. O imagine = 10. Corecturile = 0. Calculatorul îți arată planul care acoperă luna.
+        </p>
+        <div className="mt-8">
+          <DemoVisual image={MARKETING_IMAGES.crediteEcommerce} />
+        </div>
+      </Reveal>
+
+      <Reveal className="m-panel mt-8 grid gap-8 p-6 md:grid-cols-[1.1fr_0.9fr] md:p-10">
         <div>
-          <h3 className="text-3xl tracking-tight text-white">Câte piese vrei într-o lună?</h3>
-          <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/45">
-            Un reel = 100 credite. O imagine = 10. Corecturile = 0. Calculatorul îți arată planul care acoperă luna.
+          <p className="text-[14px] leading-relaxed text-white/45">
+            Ajustează reels și imagini — planul recomandat se actualizează live.
           </p>
           <label className="mt-8 block text-[14px] text-white/70">
             Reels · {reels}

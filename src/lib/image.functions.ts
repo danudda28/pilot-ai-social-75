@@ -17,9 +17,6 @@ export const generatePostImage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => Input.parse(d))
   .handler(async ({ data, context }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
-
     // Verify post belongs to user
     const { data: post, error: postErr } = await context.supabase
       .from("generated_posts")
@@ -49,48 +46,59 @@ export const generatePostImage = createServerFn({ method: "POST" })
     if (hasPromo) {
       const { headline, period } = extractPromoHeadline(data.offerText ?? data.prompt);
       promoBlock = `\n\nIMPORTANT — TEXT OVERLAY ON THE IMAGE (this is mandatory, the image MUST contain readable text):
-Add a large, bold, perfectly legible promotional badge / sticker overlay on the image with the following text rendered in clean sans-serif typography (Romanian language, with diacritics if present, spelled EXACTLY as written):
+Add a large, bold, perfectly legible promotional badge / sticker overlay on the image with the following text rendered in clean sans-serif typography in CORRECT Romanian (mandatory diacritics ă â î ș ț, no typos):
 - BIG HEADLINE: "${headline}"
 - SUBLINE (smaller, below): "${period || "Ofertă limitată"}"
-The badge should be a bright contrasting circle, rounded rectangle, or diagonal ribbon (red, yellow, or accent color) placed in a top corner of the photo so it doesn't cover the main subject. The typography must be sharp, well-kerned, and 100% spelled correctly — no missing letters, no gibberish, no fake characters. This text overlay is the most important part of the image.`;
+The badge should be a bright contrasting circle, rounded rectangle, or diagonal ribbon (red, yellow, or accent color) placed in a top corner of the photo so it doesn't cover the main subject. Typography must be sharp, well-kerned, and 100% spelled correctly — no missing letters, no gibberish, no fake characters, no English unless it's a real brand name. This text overlay is the most important part of the image.`;
     }
 
-    const visualPrompt = `Professional editorial social media photo (Instagram/Facebook), natural lighting, attractive composition, high quality. Subject: ${data.prompt}${promoBlock}`;
+    const { buildLockedImagePrompt } = await import("./identity-lock.server");
+    const visualPrompt =
+      buildLockedImagePrompt({
+        brief: data.prompt,
+        angle: "editorial product/service frame",
+        visualIdea: data.prompt,
+        hasReference: false,
+        aspect: "1:1",
+      }) + promoBlock;
 
-    // Use openai/gpt-image-2 — best in class for legible text in generated images.
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-image-2",
-        prompt: visualPrompt,
-        quality: "low",
-        size: "1024x1024",
-        n: 1,
-      }),
-    });
+    const { getGeminiApiKey, generateGeminiImage } = await import("./gemini.server");
+    let bytes: Uint8Array;
+    if (getGeminiApiKey()) {
+      bytes = await generateGeminiImage(visualPrompt, { aspectRatio: "1:1" });
+    } else {
+      const apiKey = process.env.LOVABLE_API_KEY;
+      if (!apiKey) throw new Error("Missing GEMINI_API_KEY (sau LOVABLE_API_KEY)");
 
-    if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      if (res.status === 402) throw new Error("Creditele AI s-au epuizat.");
-      if (res.status === 429) throw new Error("Prea multe cereri. Reîncearcă în câteva secunde.");
-      throw new Error(`Generare imagine eșuată: ${res.status} ${errText}`);
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-image-2",
+          prompt: visualPrompt,
+          quality: "low",
+          size: "1024x1024",
+          n: 1,
+        }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        if (res.status === 402) throw new Error("Creditele AI s-au epuizat.");
+        if (res.status === 429) throw new Error("Prea multe cereri. Reîncearcă în câteva secunde.");
+        throw new Error(`Generare imagine eșuată: ${res.status} ${errText}`);
+      }
+
+      const json = (await res.json()) as { data?: Array<{ b64_json?: string }> };
+      const b64 = json.data?.[0]?.b64_json;
+      if (!b64) throw new Error("AI nu a returnat imagine. Reîncearcă.");
+      const binary = atob(b64);
+      bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
     }
-
-    const json = (await res.json()) as { data?: Array<{ b64_json?: string }> };
-    const b64 = json.data?.[0]?.b64_json;
-    if (!b64) throw new Error("AI nu a returnat imagine. Reîncearcă.");
-
-
-
-
-    // Decode base64 to bytes
-    const binary = atob(b64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
     // Upload with admin client so we bypass RLS reliably; path is scoped per user.
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

@@ -245,6 +245,47 @@ html.dark {
 .marketing .m-marquee { animation: m-marquee 40s linear infinite; }
 .marketing details summary::-webkit-details-marker { display: none; }
 
+.marketing .m-demo { margin: 0; }
+.marketing .m-demo-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 1rem;
+  object-fit: contain;
+  background: oklch(0.12 0.01 280);
+}
+.marketing .m-demo-caption {
+  margin-top: 0.65rem;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: oklch(1 0 0 / 35%);
+}
+.marketing .m-demo-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.marketing .m-demo-scroll-inner {
+  min-width: min(100%, 36rem);
+  width: max(100%, 36rem);
+}
+@media (min-width: 640px) {
+  .marketing .m-demo-scroll-inner {
+    min-width: 0;
+    width: 100%;
+  }
+}
+.marketing .m-demo-hint {
+  margin-top: 0.4rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: oklch(1 0 0 / 35%);
+}
+
 /* Legacy names kept so existing screens adopt the new clean card style. */
 @utility glass {
   background: var(--card);
@@ -290,4 +331,8 @@ html.dark {
   border: 1px solid var(--border); background: var(--card);
   transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
   &:hover { transform: translateY(-8px) rotate(-1deg); box-shadow: var(--shadow-glow); }
+}
+
+@keyframes ws-shine {
+  to { background-position: 200% center; }
 }

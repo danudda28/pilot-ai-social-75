@@ -1,3 +1,5 @@
+import { MARKETING_IMAGES, type MarketingImage } from "@/lib/marketing-images";
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -5,7 +7,7 @@ export type BlogPost = {
   date: string;
   readMinutes: number;
   category: string;
-  emoji: string;
+  cover: MarketingImage;
 };
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -16,7 +18,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "2026-06-10",
     readMinutes: 8,
     category: "Strategie",
-    emoji: "📈",
+    cover: MARKETING_IMAGES.blogVanzari,
   },
   {
     slug: "frecventa-postari-instagram-facebook",
@@ -25,6 +27,6 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "2026-06-05",
     readMinutes: 6,
     category: "Tactici",
-    emoji: "📅",
+    cover: MARKETING_IMAGES.blogCalendar,
   },
 ];

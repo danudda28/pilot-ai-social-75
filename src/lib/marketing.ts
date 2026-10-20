@@ -1,3 +1,5 @@
+import type { MarketingImageKey } from "@/lib/marketing-images";
+
 export type Story = {
   slug: string;
   kind: "produs" | "solutie";
@@ -6,6 +8,8 @@ export type Story = {
   kicker: string;
   title: string;
   lede: string;
+  /** Vizual demo după generator, înaintea pașilor. */
+  demoImage?: MarketingImageKey;
   steps: { title: string; body: string }[];
   outcomes: { title: string; body: string }[];
   faqs: { q: string; a: string }[];
@@ -20,6 +24,7 @@ export const PRODUCTS: Story[] = [
     kicker: "Produs",
     title: "Un paragraf. Un reel gata de publicat.",
     lede: "Scrii cu ce te ocupi, unde ești și prin ce te aleg oamenii. Adaugi pozele pe care le ai deja. Social Spark compune scenariul, vocea, descrierea și ora de publicare.",
+    demoImage: "cumFunctioneaza",
     steps: [
       { title: "Spui despre afacere", body: "Un singur paragraf. Nu un brief de agenție și nu un formular cu douăzeci de câmpuri." },
       { title: "Adaugi pozele de pe telefon", body: "Masa, vitrina, produsul, mâinile la lucru. Nu e nevoie de o ședință foto." },
@@ -40,18 +45,19 @@ export const PRODUCTS: Story[] = [
     slug: "manager",
     kind: "produs",
     nav: "Social media manager",
-    hint: "Reels și postări, publicate pe Instagram, Facebook și TikTok.",
+    hint: "Reels și postări, publicate pe Instagram și Facebook.",
     kicker: "Produs",
     title: "Social media pentru afacere, rezolvată săptămânal.",
     lede: "Un manager care plănuiește, scrie și publică. Tu aprobi. Conturile rămân ale tale, conectate o singură dată prin integrările oficiale.",
+    demoImage: "managerStomatologie",
     steps: [
       { title: "Descrii afacerea o dată", body: "Ce vinzi, cui, în ce oraș și ce nu vrei să se spună niciodată." },
-      { title: "Conectezi conturile", body: "Instagram profesional, Pagina de Facebook, TikTok. Le poți deconecta oricând." },
+      { title: "Conectezi conturile", body: "Instagram profesional și Pagina de Facebook. Le poți deconecta oricând." },
       { title: "Aprobi săptămâna", body: "Vezi ce urmează să apară. O atingere publică, o alta cere o variantă nouă." },
       { title: "Ritmul continuă", body: "Săptămâna următoare vine singură. Tu nu mai deschizi o aplicație de calendar." },
     ],
     outcomes: [
-      { title: "Trei platforme, un calendar", body: "Aceeași săptămână, adaptată pentru Instagram, Facebook și TikTok." },
+      { title: "Două platforme, un calendar", body: "Aceeași săptămână, adaptată pentru Instagram și Facebook." },
       { title: "Ora potrivită", body: "Publicarea urmărește orele în care pagina ta chiar primește atenție." },
       { title: "Voce stabilă", body: "Tonul rămâne același de la o săptămână la alta, chiar dacă tu ești în salon sau în bucătărie." },
     ],
@@ -68,6 +74,7 @@ export const PRODUCTS: Story[] = [
     kicker: "Produs",
     title: "Reclama pleacă. Clientul îți scrie.",
     lede: "Alegi o postare deja făcută, setezi bugetul pe zi și oprești campania când vrei. Fiecare solicitare ajunge ca mesaj, cu detaliile, nu într-un tabel pe care nu-l deschide nimeni.",
+    demoImage: "reclameAuto",
     steps: [
       { title: "Alegi postarea", body: "Una creată deja sau una pregătită special pentru reclamă." },
       { title: "Stabilești suma pe zi", body: "Tu decizi plafonul. Îl schimbi sau pui campania pe pauză din același loc." },
@@ -92,6 +99,7 @@ export const PRODUCTS: Story[] = [
     kicker: "Produs",
     title: "Tot fluxul, din conversația pe care o ai deja deschisă.",
     lede: "Nu mai intri într-un panou ca să spui «da». Reel-ul, varianta alternativă și clientul nou ajung pe WhatsApp. Răspunsul tău e comanda.",
+    demoImage: "whatsappCofetarie",
     steps: [
       { title: "Primești varianta", body: "Un reel sau o postare, plus două alternative dacă prima nu sună a ta." },
       { title: "Răspunzi în cuvinte", body: "«Publică la 18», «schimbă prețul», «arată-mi cealaltă». Atât." },
@@ -119,6 +127,7 @@ export const SOLUTIONS: Story[] = [
     kicker: "Soluție",
     title: "Clienți în agendă, nu aplauze pe un reel.",
     lede: "Postarea bună atrage priviri. Reclama bine tăiată atrage un om care întreabă de preț. Social Spark le leagă: creează, promovează, îți aduce mesajul.",
+    demoImage: "clientiFitness",
     steps: [
       { title: "Pornești de la o postare care deja sună bine", body: "Nu de la un anunț scris de un străin care nu ți-a văzut localul." },
       { title: "Pui un plafon zilnic", body: "O sumă pe care o poți opri mâine fără un telefon cu un account manager." },
@@ -140,17 +149,18 @@ export const SOLUTIONS: Story[] = [
     kicker: "Soluție",
     title: "Postezi în fiecare săptămână, fără să-ți refaci duminica.",
     lede: "Consistența câștigă în fața unei postări perfecte uitate trei săptămâni. Setezi vocea, conectezi conturile și aprobi ce e deja așezat în calendar.",
+    demoImage: "pilotPensiune",
     steps: [
       { title: "Un plan pentru toată săptămâna", body: "Ce apare luni, ce apare joi, ce rămâne pentru story." },
       { title: "Ora e aleasă, nu ghicită", body: "Publicarea urmărește momentele în care pagina ta răspunde." },
       { title: "Săptămâna următoare se pregătește singură", body: "Tu confirmi. Nu reiei briefingul." },
     ],
     outcomes: [
-      { title: "Trei platforme, același ritm", body: "Instagram, Facebook și TikTok pleacă dintr-un singur plan." },
+      { title: "Două platforme, același ritm", body: "Instagram și Facebook pleacă dintr-un singur plan." },
       { title: "Liniște între decizii", body: "Primești un mesaj când o piesă e gata, nu un flux de remindere." },
     ],
     faqs: [
-      { q: "Câte piese pe săptămână?", a: "Depinde de creditele planului. Debut acoperă o prezență săptămânală. Maison acoperă un ritm de mai multe reels și un feed plin." },
+      { q: "Câte piese pe săptămână?", a: "Depinde de creditele planului. Debut acoperă o prezență săptămânală. Pro acoperă un ritm de mai multe reels și un feed plin." },
     ],
   },
   {
@@ -161,6 +171,7 @@ export const SOLUTIONS: Story[] = [
     kicker: "Soluție",
     title: "Videoclipuri fără să te pui în fața camerei.",
     lede: "Majoritatea afacerilor au poze și nu au chef de filmat. Din ele se taie un reel cu scenariu, voce, muzică și subtitrări pentru cei care se uită fără sunet.",
+    demoImage: "videoTreiSectoare",
     steps: [
       { title: "Pozele devin cadre", body: "Se aleg unghiurile care spun ceva, nu un slideshow cu titlu deasupra." },
       { title: "Scenariul pleacă din paragraful tău", body: "Nu dintr-un trend care n-are legătură cu ce vinzi." },
@@ -177,23 +188,24 @@ export const SOLUTIONS: Story[] = [
   {
     slug: "crestere",
     kind: "solutie",
-    nav: "Instagram, TikTok, Facebook",
-    hint: "Un manager pentru toate trei, conectate o singură dată.",
+    nav: "Instagram și Facebook",
+    hint: "Un manager pentru ambele, conectate o singură dată.",
     kicker: "Soluție",
-    title: "Trei platforme. Un singur manager.",
-    lede: "Nu rescrii aceeași ofertă de trei ori și nu ții trei calendare. Conectezi conturile, aprobi săptămâna, iar fiecare platformă primește forma ei.",
+    title: "Două platforme. Un singur manager.",
+    lede: "Nu rescrii aceeași ofertă de două ori și nu ții două calendare. Conectezi conturile, aprobi săptămâna, iar Instagram și Facebook primesc forma potrivită.",
+    demoImage: "managerStomatologie",
     steps: [
       { title: "Instagram", body: "Reels și postări, cu descriere și hashtaguri, pe contul profesional." },
-      { title: "TikTok", body: "Vertical, cu subtitrări și muzică, pe contul tău." },
       { title: "Facebook", body: "Aceeași idee, pe Pagină, în ritmul pe care pagina îl suportă." },
+      { title: "Un singur calendar", body: "Vezi tot ce urmează pe ambele conturi, fără să sari între aplicații." },
     ],
     outcomes: [
-      { title: "Conexiuni oficiale", body: "Publicarea trece prin integrările platformelor. Deconectarea e imediată." },
-      { title: "Un calendar", body: "Vezi tot ce urmează, pe toate conturile, fără să sari între aplicații." },
+      { title: "Conexiuni oficiale Meta", body: "Publicarea trece prin integrările Instagram și Facebook. Deconectarea e imediată." },
+      { title: "Un calendar", body: "Vezi tot ce urmează, pe ambele conturi, din același loc." },
     ],
     faqs: [
-      { q: "Pot conecta o singură platformă?", a: "Da. Celelalte rămân oprite până decizi tu." },
-      { q: "Am nevoie de cont de afaceri?", a: "Instagram cere un cont profesional. Facebook folosește Pagina. TikTok folosește contul pe care îl alegi." },
+      { q: "Pot conecta o singură platformă?", a: "Da. Cealaltă rămâne oprită până decizi tu." },
+      { q: "Am nevoie de cont de afaceri?", a: "Instagram cere un cont profesional asociat unei Pagini Facebook. Facebook folosește Pagina." },
     ],
   },
 ];

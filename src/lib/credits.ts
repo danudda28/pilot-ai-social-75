@@ -49,7 +49,7 @@ export const PLANS: Plan[] = [
   },
   {
     id: "maison",
-    name: "Maison",
+    name: "Pro",
     summary: "Pentru afacerea care vrea clienți, nu doar vizualizări.",
     monthly: 480,
     yearly: 240,
@@ -65,14 +65,14 @@ export const PLANS: Plan[] = [
   },
   {
     id: "semnatura",
-    name: "Semnătură",
+    name: "Premium",
     summary: "Pentru un brand cu pretenții: procesare imediată și un om care răspunde.",
     monthly: 980,
     yearly: 490,
     credits: 4200,
     brands: 3,
     includes: [
-      "Tot ce e în Maison",
+      "Tot ce e în Pro",
       "Procesare prioritară",
       "Voce de brand blocată pe cont",
       "Suport dedicat",
@@ -87,7 +87,7 @@ export const PLANS: Plan[] = [
     credits: 18000,
     brands: 12,
     includes: [
-      "Tot ce e în Semnătură",
+      "Tot ce e în Premium",
       "Locuri pentru echipă",
       "Arhitect de cont la onboarding",
     ],
@@ -102,6 +102,16 @@ export const TOP_UPS = [
 
 export const PLAN_KEY = "ss-plan";
 export const BRIEF_KEY = "ss-brief";
+
+export function planById(planId: string | null | undefined): Plan | undefined {
+  if (!planId) return undefined;
+  return PLANS.find((p) => p.id === planId);
+}
+
+/** Max branduri (clienți) pe plan. Plan necunoscut → 1. */
+export function brandLimitForPlan(planId: string | null | undefined): number {
+  return planById(planId)?.brands ?? 1;
+}
 
 export function priceOf(plan: Plan, cycle: BillingCycle) {
   return cycle === "year" ? plan.yearly : plan.monthly;

@@ -12,6 +12,7 @@ import {
   LOCAL_DEV_PASSWORD,
   readLocalDevSession,
 } from "@/lib/local-dev-auth";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Autentificare — Social Spark" }] }),
@@ -42,7 +43,7 @@ function Auth() {
       // Cont demo local (plan Agenție) — doar pe localhost, fără cloud
       if (isLocalDevAuthEnabled()) {
         if (readLocalDevSession()) {
-          navigate({ to: "/dashboard" });
+          navigate({ to: "/app" });
           return;
         }
         setEmail(LOCAL_DEV_EMAIL);
@@ -55,7 +56,7 @@ function Auth() {
         });
         if (!error) {
           toast.success("Conectat local ca Client Maxim (Agenție).");
-          navigate({ to: "/dashboard" });
+          navigate({ to: "/app" });
         }
         return;
       }
@@ -63,7 +64,7 @@ function Auth() {
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
       if (data.session) {
-        navigate({ to: "/dashboard" });
+        navigate({ to: "/app" });
         return;
       }
       try {
@@ -143,12 +144,12 @@ function Auth() {
       }
 
       toast.success("Cont creat! Te redirecționăm...");
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/app" });
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
       if (error) { toast.error(translateAuthError(error.message)); return; }
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/app" });
     }
   }
 
@@ -158,61 +159,76 @@ function Auth() {
   return (
     <div className="marketing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       <div className="m-hero-glow" />
-      <div className="relative z-10 w-full max-w-md">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5 text-lg font-medium text-white">
+      <div className="relative z-10 w-full max-w-md lg:max-w-5xl">
+        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5 text-lg font-medium text-white lg:justify-start">
           <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
           Social Spark
         </Link>
 
-        <div className="m-panel p-8">
-          <h1 className="text-3xl tracking-tight text-white">{title}</h1>
-          <p className="mt-2 text-sm text-white/45">{intent || subtitle}</p>
+        <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-8">
+          <div className="m-panel p-8">
+            <h1 className="text-3xl tracking-tight text-white">{title}</h1>
+            <p className="mt-2 text-sm text-white/45">{intent || subtitle}</p>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            {mode === "register" && (
-              <div>
-                <label className="text-xs font-medium text-white/40">Nume complet</label>
-                <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
-              </div>
-            )}
-            <div>
-              <label className="text-xs font-medium text-white/40">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
-            </div>
-            {mode !== "forgot" && (
-              <div>
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-white/40">Parolă</label>
-                  {mode === "login" && (
-                    <button type="button" onClick={() => setMode("forgot")}
-                      className="text-xs text-[var(--m-accent)] hover:underline">
-                      Ai uitat parola?
-                    </button>
-                  )}
+            <form onSubmit={submit} className="mt-6 space-y-4">
+              {mode === "register" && (
+                <div>
+                  <label className="text-xs font-medium text-white/40">Nume complet</label>
+                  <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
                 </div>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
+              )}
+              <div>
+                <label className="text-xs font-medium text-white/40">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                   className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
               </div>
-            )}
-            <button disabled={loading}
-              className="m-pill m-pill-solid w-full text-sm disabled:opacity-50">
-              {loading ? "Se procesează..." : mode === "login" ? "Intră în cont" : mode === "register" ? "Creează cont" : "Trimite link de resetare"}
-            </button>
-          </form>
+              {mode !== "forgot" && (
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-medium text-white/40">Parolă</label>
+                    {mode === "login" && (
+                      <button type="button" onClick={() => setMode("forgot")}
+                        className="text-xs text-[var(--m-accent)] hover:underline">
+                        Ai uitat parola?
+                      </button>
+                    )}
+                  </div>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
+                </div>
+              )}
+              <button disabled={loading}
+                className="m-pill m-pill-solid w-full text-sm disabled:opacity-50">
+                {loading ? "Se procesează..." : mode === "login" ? "Intră în cont" : mode === "register" ? "Creează cont" : "Trimite link de resetare"}
+              </button>
+            </form>
 
-          {mode === "forgot" ? (
-            <button onClick={() => setMode("login")}
-              className="mt-6 w-full text-sm text-white/40 hover:text-white">
-              Înapoi la login
-            </button>
-          ) : (
-            <button onClick={() => setMode(mode === "login" ? "register" : "login")}
-              className="mt-6 w-full text-sm text-white/40 hover:text-white">
-              {mode === "login" ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Login"}
-            </button>
-          )}
+            {mode === "forgot" ? (
+              <button onClick={() => setMode("login")}
+                className="mt-6 w-full text-sm text-white/40 hover:text-white">
+                Înapoi la login
+              </button>
+            ) : (
+              <button onClick={() => setMode(mode === "login" ? "register" : "login")}
+                className="mt-6 w-full text-sm text-white/40 hover:text-white">
+                {mode === "login" ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Login"}
+              </button>
+            )}
+          </div>
+
+          <aside className="hidden lg:flex lg:flex-col lg:justify-center">
+            <img
+              src={MARKETING_IMAGES.authDomenii.src}
+              alt={MARKETING_IMAGES.authDomenii.alt}
+              width={MARKETING_IMAGES.authDomenii.width}
+              height={MARKETING_IMAGES.authDomenii.height}
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full rounded-2xl object-contain"
+            />
+            <p className="mt-3 text-center text-[12px] text-white/35">Exemplu demonstrativ</p>
+          </aside>
         </div>
       </div>
     </div>

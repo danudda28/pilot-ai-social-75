@@ -18,29 +18,54 @@ export const Route = createFileRoute("/blog")({
 function BlogIndex() {
   return (
     <PublicLayout>
-      <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <header className="text-center max-w-2xl mx-auto">
-          <span className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary">Blog</span>
-          <h1 className="mt-4 font-display text-4xl sm:text-5xl font-bold leading-tight">
-            Ghiduri <span className="gradient-text">care îți cresc afacerea</span>
+      <section className="marketing mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <header className="mx-auto max-w-2xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--m-accent)]">
+            Blog
+          </span>
+          <h1 className="mt-4 text-4xl tracking-tight text-white sm:text-5xl">
+            Ghiduri care îți cresc afacerea
           </h1>
-          <p className="mt-4 text-muted-foreground">
-            Tactici concrete pentru Instagram și Facebook, testate cu antreprenori români. Fără teorie, doar ce funcționează.
+          <p className="mt-4 text-white/50">
+            Tactici concrete pentru Instagram și Facebook, pentru antreprenori români. Fără teorie, doar ce poți aplica.
           </p>
         </header>
 
-        <div className="mt-12 grid sm:grid-cols-2 gap-5">
-          {BLOG_POSTS.map(p => (
-            <Link key={p.slug} to="/blog/$slug" params={{ slug: p.slug }}
-              className="glass-strong rounded-2xl p-6 hover:scale-[1.02] transition-transform group">
-              <div className="text-4xl">{p.emoji}</div>
-              <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="rounded-full bg-primary/10 text-primary px-2 py-0.5">{p.category}</span>
-                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(p.date).toLocaleDateString("ro-RO")}</span>
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{p.readMinutes} min</span>
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+          {BLOG_POSTS.map((p) => (
+            <Link
+              key={p.slug}
+              to="/blog/$slug"
+              params={{ slug: p.slug }}
+              className="group overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02] transition hover:border-white/15"
+            >
+              <img
+                src={p.cover.src}
+                alt={p.cover.alt}
+                width={p.cover.width}
+                height={p.cover.height}
+                loading="lazy"
+                decoding="async"
+                className="aspect-[16/9] w-full object-contain bg-black/40"
+              />
+              <div className="p-5">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-white/40">
+                  <span className="rounded-full bg-[var(--m-accent-soft)] px-2 py-0.5 text-[var(--m-accent)]">{p.category}</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {new Date(p.date).toLocaleDateString("ro-RO")}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {p.readMinutes} min
+                  </span>
+                </div>
+                <h2 className="mt-3 text-xl tracking-tight text-white transition group-hover:text-[var(--m-accent)]">
+                  {p.title}
+                </h2>
+                <p className="mt-2 line-clamp-3 text-sm text-white/45">{p.description}</p>
+                <p className="mt-3 text-[11px] text-white/30">Exemplu demonstrativ pe copertă</p>
               </div>
-              <h2 className="mt-3 font-display text-xl font-bold group-hover:text-primary transition-colors">{p.title}</h2>
-              <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{p.description}</p>
             </Link>
           ))}
         </div>

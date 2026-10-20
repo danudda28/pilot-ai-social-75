@@ -81,6 +81,21 @@ function Article() {
           <p className="mt-4 text-lg text-muted-foreground">{post.description}</p>
         </header>
 
+        <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-card">
+          <img
+            src={post.cover.src}
+            alt={post.cover.alt}
+            width={post.cover.width}
+            height={post.cover.height}
+            loading="eager"
+            decoding="async"
+            className="h-auto w-full object-contain"
+          />
+          <figcaption className="px-4 py-2 text-center text-xs text-muted-foreground">
+            Exemplu demonstrativ
+          </figcaption>
+        </figure>
+
         <div className="mt-10 space-y-8 text-[15px] leading-relaxed">
           {content && (
             <>

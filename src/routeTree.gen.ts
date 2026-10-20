@@ -27,6 +27,7 @@ import { Route as StatusRouteImport } from './routes/status'
 import { Route as TermeniSiConditiiRouteImport } from './routes/termeni-si-conditii'
 import { Route as VsHootsuiteBufferRouteImport } from './routes/vs-hootsuite-buffer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as InvitatieTokenRouteImport } from './routes/invitatie.$token'
@@ -160,6 +161,11 @@ const VsHootsuiteBufferRoute = VsHootsuiteBufferRouteImport.update({
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -432,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/app': typeof AuthenticatedAppRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
@@ -494,6 +501,7 @@ export interface FileRoutesByTo {
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/app': typeof AuthenticatedAppRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
   '/produse/$slug': typeof ProduseSlugRoute
@@ -557,6 +565,7 @@ export interface FileRoutesById {
   '/termeni-si-conditii': typeof TermeniSiConditiiRoute
   '/vs-hootsuite-buffer': typeof VsHootsuiteBufferRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/app': typeof AuthenticatedAppRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/invitatie/$token': typeof InvitatieTokenRoute
@@ -621,6 +630,7 @@ export interface FileRouteTypes {
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
     | '/admin'
+    | '/app'
     | '/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
@@ -683,6 +693,7 @@ export interface FileRouteTypes {
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
     | '/admin'
+    | '/app'
     | '/blog/$slug'
     | '/invitatie/$token'
     | '/produse/$slug'
@@ -745,6 +756,7 @@ export interface FileRouteTypes {
     | '/termeni-si-conditii'
     | '/vs-hootsuite-buffer'
     | '/_authenticated/admin'
+    | '/_authenticated/app'
     | '/_authenticated/dashboard'
     | '/blog/$slug'
     | '/invitatie/$token'
@@ -947,6 +959,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -1338,11 +1357,13 @@ const AuthenticatedDashboardRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedAppRoute: typeof AuthenticatedAppRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedAppRoute: AuthenticatedAppRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
 }
 

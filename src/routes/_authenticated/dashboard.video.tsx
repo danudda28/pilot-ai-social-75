@@ -66,6 +66,7 @@ function VideoPage() {
   const [loading, setLoading] = useState(false);
   const [storyboard, setStoryboard] = useState<Storyboard | null>(null);
   const [folder, setFolder] = useState<string>("");
+  const [omniUrl, setOmniUrl] = useState<string | null>(null);
   const [renderingClips, setRenderingClips] = useState(false);
   const [renderingVoice, setRenderingVoice] = useState(false);
   const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
@@ -78,18 +79,33 @@ function VideoPage() {
     setLoading(true);
     setStoryboard(null);
     setVoiceUrl(null);
+    setOmniUrl(null);
     setFolder("");
     try {
       const res = await generate({ data: { topic, businessType, tone, format, scenes } });
-      const r = res as { storyboard: Storyboard; failedCount: number; folder: string };
+      const r = res as {
+        storyboard: Storyboard;
+        failedCount: number;
+        folder: string;
+        omniReel?: { path: string; signedUrl: string } | null;
+        omniError?: string | null;
+      };
       const sb: Storyboard = {
         ...r.storyboard,
         scenes: r.storyboard.scenes.map((s) => ({ ...s, videoStatus: "idle" as const })),
       };
       setStoryboard(sb);
       setFolder(r.folder);
-      if (r.failedCount > 0) toast.warning(`${r.failedCount} imagini nu s-au generat.`);
-      else toast.success("Storyboard generat! Apasă „Generează clipuri AI” pentru video real.");
+      if (r.omniReel?.signedUrl) {
+        setOmniUrl(r.omniReel.signedUrl);
+        toast.success(`Reel salvat local: ${r.omniReel.signedUrl}`);
+      } else if (r.omniError) {
+        toast.warning(`Omni: ${r.omniError}`);
+      } else if (r.failedCount > 0) {
+        toast.warning(`${r.failedCount} imagini nu s-au generat.`);
+      } else {
+        toast.success("Storyboard gata. Generează clipuri pe scene sau uită-te la reel-ul Omni.");
+      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Eroare generare.");
     } finally {
@@ -229,6 +245,7 @@ function VideoPage() {
           storyboard={storyboard}
           format={format}
           voiceUrl={voiceUrl}
+          omniUrl={omniUrl}
           renderingClips={renderingClips}
           renderingVoice={renderingVoice}
           onGenerateClips={onGenerateClips}
@@ -240,13 +257,14 @@ function VideoPage() {
 }
 
 function StoryboardPreview({
-  storyboard, format, voiceUrl,
+  storyboard, format, voiceUrl, omniUrl,
   renderingClips, renderingVoice,
   onGenerateClips, onGenerateVoice,
 }: {
   storyboard: Storyboard;
   format: "reel" | "square";
   voiceUrl: string | null;
+  omniUrl: string | null;
   renderingClips: boolean;
   renderingVoice: boolean;
   onGenerateClips: () => void;
@@ -259,7 +277,7 @@ function StoryboardPreview({
   const aspect = format === "reel" ? "aspect-[9/16]" : "aspect-square";
 
   const hasAllClips = storyboard.scenes.every((s) => s.videoStatus === "ready" && s.videoUrl);
-  const hasAnyClip = storyboard.scenes.some((s) => s.videoStatus === "ready" && s.videoUrl);
+  const hasAnyClip = !!omniUrl || storyboard.scenes.some((s) => s.videoStatus === "ready" && s.videoUrl);
 
   useEffect(() => {
     if (!playing) return;
@@ -304,12 +322,39 @@ function StoryboardPreview({
 
   return (
     <div className="space-y-5">
+      {omniUrl && (
+        <div className="glass-strong rounded-2xl p-4 sm:p-5 space-y-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Reel Omni (Gemini)</p>
+              <h3 className="font-display text-lg font-bold">Clip video generat</h3>
+            </div>
+            <a
+              href={omniUrl}
+              download="omni-reel.mp4"
+              className="inline-flex items-center gap-1.5 rounded-lg glass px-3 py-2 text-sm hover:bg-secondary"
+            >
+              <Download className="h-4 w-4" /> Descarcă MP4
+            </a>
+          </div>
+          <div className={`relative mx-auto w-full max-w-[360px] ${aspect} rounded-xl overflow-hidden bg-black border border-border/40`}>
+            <video
+              src={omniUrl}
+              className="w-full h-full object-cover"
+              controls
+              playsInline
+              preload="auto"
+            />
+          </div>
+        </div>
+      )}
+
       {/* AI Video + Voice actions */}
       <div className="glass-strong rounded-2xl p-4 sm:p-5 flex flex-wrap gap-3 items-center">
         <button onClick={onGenerateClips} disabled={renderingClips || hasAllClips}
           className="inline-flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
           {renderingClips ? <Loader2 className="h-4 w-4 animate-spin" /> : <Film className="h-4 w-4" />}
-          {hasAllClips ? "Clipuri AI gata ✓" : renderingClips ? "Generăm clipuri AI…" : "2. Generează clipuri AI (Replicate)"}
+          {hasAllClips ? "Clipuri AI gata ✓" : renderingClips ? "Generăm clipuri AI…" : "2. Clipuri pe scene (Omni)"}
         </button>
         <button onClick={onGenerateVoice} disabled={renderingVoice}
           className="inline-flex items-center gap-2 rounded-xl glass px-4 py-2.5 text-sm font-semibold hover:bg-secondary disabled:opacity-50">
@@ -325,14 +370,17 @@ function StoryboardPreview({
         <div className="glass-strong rounded-2xl p-4 sm:p-5 space-y-3">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">Preview</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Preview scene</p>
               <h3 className="font-display text-lg font-bold truncate">{storyboard.title}</h3>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={playing ? stopPlay : startPlay} disabled={!hasAnyClip}
-                className="inline-flex items-center gap-1.5 rounded-lg glass px-3 py-2 text-sm hover:bg-secondary disabled:opacity-50">
+              <button
+                onClick={playing ? stopPlay : startPlay}
+                disabled={!storyboard.scenes.some((s) => s.videoUrl)}
+                className="inline-flex items-center gap-1.5 rounded-lg glass px-3 py-2 text-sm hover:bg-secondary disabled:opacity-50"
+              >
                 {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                {playing ? "Pauză" : "Redă video real"}
+                {playing ? "Pauză" : "Redă scene"}
               </button>
             </div>
           </div>

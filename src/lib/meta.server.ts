@@ -173,6 +173,58 @@ export async function publishToFacebookPage(args: {
   return { id: json.id ?? json.post_id };
 }
 
+export async function publishVideoToFacebookPage(args: {
+  pageId: string;
+  pageAccessToken: string;
+  description: string;
+  videoUrl: string;
+}): Promise<{ id: string }> {
+  const body = new URLSearchParams({
+    access_token: args.pageAccessToken,
+    file_url: args.videoUrl,
+    description: args.description,
+  });
+  const res = await fetch(`${GRAPH}/${args.pageId}/videos`, { method: "POST", body });
+  const json = await res.json() as any;
+  if (!res.ok || json.error) throw new Error(`FB video: ${json.error?.message ?? res.status}`);
+  return { id: json.id };
+}
+
+/** IG Reels: container → așteaptă procesarea (FINISHED) → publish. */
+export async function publishReelToInstagram(args: {
+  igBusinessId: string;
+  pageAccessToken: string;
+  videoUrl: string;
+  caption: string;
+}): Promise<{ id: string }> {
+  const { igBusinessId, pageAccessToken, videoUrl, caption } = args;
+  const cRes = await fetch(`${GRAPH}/${igBusinessId}/media`, {
+    method: "POST",
+    body: new URLSearchParams({ media_type: "REELS", video_url: videoUrl, caption, access_token: pageAccessToken }),
+  });
+  const cJson = await cRes.json() as any;
+  if (!cRes.ok || cJson.error) throw new Error(`IG reel container: ${cJson.error?.message ?? cRes.status}`);
+
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 5000));
+    const sRes = await fetch(`${GRAPH}/${cJson.id}?fields=status_code,status&access_token=${encodeURIComponent(pageAccessToken)}`);
+    const sJson = await sRes.json() as any;
+    if (sJson.status_code === "FINISHED") break;
+    if (sJson.status_code === "ERROR" || sJson.status_code === "EXPIRED") {
+      throw new Error(`IG reel media: ${sJson.status ?? sJson.status_code}`);
+    }
+    if (i === 39) throw new Error("IG reel media: procesarea durează prea mult (rate limit)");
+  }
+
+  const pRes = await fetch(`${GRAPH}/${igBusinessId}/media_publish`, {
+    method: "POST",
+    body: new URLSearchParams({ creation_id: cJson.id, access_token: pageAccessToken }),
+  });
+  const pJson = await pRes.json() as any;
+  if (!pRes.ok || pJson.error) throw new Error(`IG reel publish: ${pJson.error?.message ?? pRes.status}`);
+  return { id: pJson.id };
+}
+
 export async function publishToInstagram(args: {
   igBusinessId: string;
   pageAccessToken: string;

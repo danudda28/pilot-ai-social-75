@@ -1,10 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Composer } from "@/components/marketing/Composer";
+import { DemoVisual } from "@/components/marketing/DemoVisual";
 import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
 import type { Story } from "@/lib/marketing";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 
 export function StoryView({ story }: { story: Story }) {
+  const demo = story.demoImage ? MARKETING_IMAGES[story.demoImage] : null;
+
   return (
     <PublicLayout>
       <article className="relative overflow-hidden pb-24 pt-16 sm:pt-24">
@@ -21,6 +25,12 @@ export function StoryView({ story }: { story: Story }) {
           <Reveal delay={0.1} className="mx-auto mt-12 max-w-2xl">
             <Composer compact />
           </Reveal>
+
+          {demo && (
+            <Reveal delay={0.14} className="mt-14">
+              <DemoVisual image={demo} />
+            </Reveal>
+          )}
 
           <ol className="mt-24 grid gap-6 md:grid-cols-2">
             {story.steps.map((step, index) => (

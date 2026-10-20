@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
+import { DemoVisual } from "@/components/marketing/DemoVisual";
 import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 
 export const Route = createFileRoute("/despre")({
   head: () => ({
@@ -43,6 +45,13 @@ function About() {
             </p>
             <p>
               Nu înlocuim creativitatea umană. Eliminăm blocajele, lipsa de timp și haosul din postări. Tu te ocupi de afacere. Noi ținem feed-ul viu.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1} className="mx-auto mt-12 max-w-5xl">
+            <DemoVisual image={MARKETING_IMAGES.despreAfaceri} />
+            <p className="mt-2 text-center text-[12px] text-white/35">
+              Ilustrație cu tipuri de afaceri — nu fotografii ale echipei Social Spark.
             </p>
           </Reveal>
 

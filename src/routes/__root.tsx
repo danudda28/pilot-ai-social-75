@@ -76,8 +76,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Social Spark — Postări AI pentru Instagram și Facebook" },
       { name: "twitter:description", content: "Automatizează postările de social media cu inteligență artificială. Generează, programează și publică conținut pentru Instagram și Facebook." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc226a76-53b0-493e-9723-f93581db235c/id-preview-096edac3--a7e78f7e-7f2c-4e33-a059-94727fc60058.lovable.app-1781366062433.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cc226a76-53b0-493e-9723-f93581db235c/id-preview-096edac3--a7e78f7e-7f2c-4e33-a059-94727fc60058.lovable.app-1781366062433.png" },
+      { property: "og:image", content: "https://socialspark.ro/marketing/22-social-sharing-og.webp" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://socialspark.ro/marketing/22-social-sharing-og.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

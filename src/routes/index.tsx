@@ -1,17 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Star } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Composer } from "@/components/marketing/Composer";
+import { DemoVisual } from "@/components/marketing/DemoVisual";
 import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
 import { PRODUCTS, SOLUTIONS, FAQS } from "@/lib/marketing";
+import {
+  MARKETING_IMAGES,
+  absoluteMarketingUrl,
+} from "@/lib/marketing-images";
+
+const ogImage = absoluteMarketingUrl(MARKETING_IMAGES.socialSharingOg.src);
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Social Spark — AI care creează, programează și publică postările tale" },
-      { name: "description", content: "Reels, postări și reclame pentru Instagram, Facebook și TikTok. Scrie un paragraf, vezi schița, publică într-un click." },
+      { name: "description", content: "Reels, postări și reclame pentru Instagram și Facebook. Scrie un paragraf, vezi schița, publică într-un click." },
       { property: "og:title", content: "Social Spark — AI care creează, programează și publică postările tale" },
       { property: "og:description", content: "Nu mai aștepta o agenție. Generează, aprobi și publici din același loc." },
+      { property: "og:image", content: ogImage },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: MARKETING_IMAGES.socialSharingOg.alt },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: ogImage },
+      { name: "twitter:image:alt", content: MARKETING_IMAGES.socialSharingOg.alt },
     ],
   }),
   component: Home,
@@ -47,13 +61,15 @@ const features = [
     body: "Scenariu, voce în română, muzică și subtitrări. Fără filmare, fără studio.",
     slug: "video-fara-filmare",
     kind: "solutie" as const,
+    image: MARKETING_IMAGES.pozeReelRestaurant,
   },
   {
     eyebrow: "Manager",
     title: "Postează peste tot, automat",
-    body: "Instagram, Facebook, TikTok. Un calendar, o voce, publicare la ora potrivită.",
+    body: "Instagram și Facebook. Un calendar, o voce, publicare la ora potrivită.",
     slug: "manager",
     kind: "produs" as const,
+    image: MARKETING_IMAGES.managerStomatologie,
   },
   {
     eyebrow: "Reclame",
@@ -61,6 +77,7 @@ const features = [
     body: "Promovezi o postare deja bună. Solicitările ajung în WhatsApp, cu detaliile.",
     slug: "reclame",
     kind: "produs" as const,
+    image: MARKETING_IMAGES.reclamaImobiliare,
   },
   {
     eyebrow: "WhatsApp",
@@ -68,6 +85,7 @@ const features = [
     body: "Primești varianta, răspunzi «publică» sau «schimbă prețul». Corectura nu costă credite.",
     slug: "whatsapp",
     kind: "produs" as const,
+    image: MARKETING_IMAGES.aprobareBeauty,
   },
 ];
 
@@ -76,7 +94,7 @@ const challenges = [
   { n: "02", problem: "Voce de brand inconsistentă", solve: "Brand Brain ține tonul. Fiecare text trece prin aceleași reguli confirmate de tine." },
   { n: "03", problem: "Feed-ul moare după o săptămână", solve: "Pilotul automat planifică săptămâna. Tu doar aprobi. Ritmul nu se rupe." },
   { n: "04", problem: "Agenții care mănâncă marja", solve: "Calitate de studio, fără retainer. Anualul e jumătate. Anulezi într-un click." },
-  { n: "05", problem: "Trei platforme, trei joburi", solve: "Un manager pentru Instagram, Facebook și TikTok. Conectezi o dată." },
+  { n: "05", problem: "Două platforme, două joburi", solve: "Un manager pentru Instagram și Facebook. Conectezi o dată." },
   { n: "06", problem: "Nu știi ce a mers", solve: "Vezi ce a fost publicat, ce a fost aprobat și ce reclamă a adus solicitări." },
 ];
 
@@ -115,7 +133,7 @@ function Home() {
 
           <Reveal delay={0.14}>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/55 sm:text-lg">
-              Reels, postări și reclame pentru <span className="m-mark">Instagram, Facebook și TikTok</span>, publicate dintr-un click.
+              Reels, postări și reclame pentru <span className="m-mark">Instagram și Facebook</span>, publicate dintr-un click.
               Primul reel îl vezi înainte să plătești.
             </p>
           </Reveal>
@@ -125,40 +143,9 @@ function Home() {
           </Reveal>
         </div>
 
-        {/* Product showcase */}
         <Reveal delay={0.28} className="m-container relative z-10 mt-14 sm:mt-20">
-          <div className="m-panel relative overflow-hidden p-3 sm:p-4">
-            <div className="flex items-center justify-between gap-3 border-b border-white/8 px-3 pb-3 sm:px-4">
-              <div className="flex items-center gap-2.5 text-[13px]">
-                <span className="m-dot-live" />
-                <span className="font-medium text-white">LIVE</span>
-                <span className="text-white/40">Generează săptămâna · 12 piese create</span>
-              </div>
-              <span className="hidden text-[12px] text-white/35 sm:inline">Brand Brain · confirmat</span>
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-              {[
-                { t: "Reel 15s", s: "2.4x", c: "from-sky-500/40 to-indigo-900/60" },
-                { t: "Carousel", s: "1.8x", c: "from-violet-500/40 to-slate-900/70" },
-                { t: "Ofertă", s: "3.1x", c: "from-emerald-500/35 to-slate-900/70" },
-                { t: "Story CTA", s: "1.6x", c: "from-amber-500/35 to-slate-900/70" },
-              ].map((tile, i) => (
-                <div
-                  key={tile.t}
-                  className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br ${tile.c} p-3 ${i === 2 ? "ring-2 ring-[var(--m-accent)]" : ""}`}
-                  style={{ animationDelay: `${i * 0.4}s` }}
-                >
-                  <p className="text-[11px] text-white/60">{tile.t}</p>
-                  <p className="mt-auto absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                    <span className="text-sm font-medium text-white">Gata</span>
-                    <span className="rounded-full bg-black/45 px-2 py-0.5 text-[11px] text-[var(--m-accent)] backdrop-blur">
-                      {tile.s}
-                    </span>
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <DemoVisual image={MARKETING_IMAGES.heroDomenii} priority showCaption={false} />
+          <p className="m-demo-caption mt-2">Exemplu demonstrativ · restaurant, fashion, beauty, auto</p>
         </Reveal>
       </section>
 
@@ -166,28 +153,7 @@ function Home() {
       <section className="relative py-20 sm:py-32">
         <div className="m-container grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <div className="m-panel p-6 sm:p-8">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-4xl tracking-tight text-white sm:text-5xl">8 teste</p>
-                  <p className="mt-1 text-sm text-white/40">săptămâna asta</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-3xl tracking-tight text-[var(--m-accent)]">1 winner</p>
-                  <p className="mt-1 text-sm text-white/40">promovat</p>
-                </div>
-              </div>
-              <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/8">
-                <div className="h-full w-[62%] rounded-full bg-[var(--m-accent)]" />
-              </div>
-              <div className="mt-5 grid grid-cols-4 gap-2">
-                {["0.9x", "1.2x", "2.6x", "1.1x"].map((v, i) => (
-                  <div key={v} className={`rounded-xl border p-3 text-center text-[12px] ${i === 2 ? "border-[var(--m-accent)] bg-[var(--m-accent-soft)] text-white" : "border-white/8 text-white/45"}`}>
-                    {v}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <DemoVisual image={MARKETING_IMAGES.varianteReclame} />
           </Reveal>
           <Reveal delay={0.1}>
             <Eyebrow>De ce mai mult conținut</Eyebrow>
@@ -217,29 +183,25 @@ function Home() {
               Același calendar, același brief. Diferența e cine execută.
             </p>
           </Reveal>
-          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {months.map((m, i) => (
-              <Reveal key={m.title} delay={i * 0.06}>
-                <div className={`h-full rounded-2xl border p-5 ${m.tone === "win" ? "border-[var(--m-accent)] bg-[var(--m-accent-soft)]" : "border-white/8 bg-white/[0.02]"}`}>
-                  <p className="text-[13px] text-white/40">0{i + 1}</p>
-                  <h3 className="mt-3 text-2xl tracking-tight text-white">{m.title}</h3>
-                  <ul className="mt-5 space-y-2.5 text-[14px] text-white/55">
-                    {m.lines.map((line) => (
-                      <li key={line} className="flex gap-2">
-                        <Check className={`mt-0.5 h-4 w-4 shrink-0 ${m.tone === "win" ? "text-[var(--m-accent)]" : "text-white/25"}`} />
-                        {line}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
+          <Reveal delay={0.08} className="mt-12">
+            <DemoVisual image={MARKETING_IMAGES.comparatieCalendar} showCaption={false} />
+          </Reveal>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {months.map((m) => (
+              <div
+                key={m.title}
+                className={`rounded-2xl border px-4 py-3 text-[13px] ${m.tone === "win" ? "border-[var(--m-accent)] bg-[var(--m-accent-soft)] text-white" : "border-white/8 text-white/55"}`}
+              >
+                <p className="font-medium text-white">{m.title}</p>
+                <p className="mt-1 text-white/45">{m.lines.join(" · ")}</p>
+              </div>
             ))}
           </div>
           <Reveal className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link to="/auth" className="m-pill m-pill-solid text-sm">Începe gratuit</Link>
             <Link to="/preturi" className="m-pill m-pill-ghost text-sm">Compară planurile</Link>
           </Reveal>
-          <p className="mt-4 text-center text-[13px] text-white/35">Fără card. Anulezi oricând.</p>
+          <p className="mt-4 text-center text-[13px] text-white/35">Fără card. Anulezi oricând. · Exemplu demonstrativ</p>
         </div>
       </section>
 
@@ -261,22 +223,7 @@ function Home() {
                     Vezi cum funcționează <ArrowUpRight className="h-4 w-4" />
                   </Link>
                 </div>
-                <div className="m-panel relative aspect-[16/11] overflow-hidden p-6">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,var(--m-glow),transparent_55%)]" />
-                  <div className="relative flex h-full flex-col justify-between">
-                    <div className="flex items-center gap-2 text-[12px] text-white/45">
-                      <span className="m-dot-live" /> Preview generat
-                    </div>
-                    <p className="max-w-xs text-2xl leading-snug tracking-tight text-white sm:text-3xl">
-                      {f.title}
-                    </p>
-                    <div className="flex gap-2">
-                      <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[12px] text-white/60">Instagram</span>
-                      <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[12px] text-white/60">TikTok</span>
-                      <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[12px] text-white/60">Facebook</span>
-                    </div>
-                  </div>
-                </div>
+                <DemoVisual image={f.image} />
               </div>
             </Reveal>
           ))}
@@ -378,8 +325,8 @@ function Home() {
           <Reveal delay={0.08} className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
             {[
               { name: "Debut", price: "45", credits: "240" },
-              { name: "Maison", price: "240", credits: "2.000", featured: true },
-              { name: "Semnătură", price: "490", credits: "4.200" },
+              { name: "Pro", price: "240", credits: "2.000", featured: true },
+              { name: "Premium", price: "490", credits: "4.200" },
             ].map((p) => (
               <div key={p.name} className={`rounded-2xl border p-6 ${p.featured ? "border-[var(--m-accent)] bg-[var(--m-accent-soft)]" : "border-white/8 bg-white/[0.02]"}`}>
                 {p.featured && <p className="text-[11px] uppercase tracking-[0.16em] text-[var(--m-accent)]">Recomandat</p>}
@@ -419,6 +366,26 @@ function Home() {
           <div className="mt-6 text-center">
             <Link to="/faq" className="text-sm text-white/50 underline underline-offset-4 hover:text-white">Toate întrebările</Link>
           </div>
+        </div>
+      </section>
+
+      {/* GALERIE DOMENII */}
+      <section className="py-16 sm:py-24">
+        <div className="m-container">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <Eyebrow>Domenii</Eyebrow>
+            <h2 className="mt-4 text-4xl leading-[1.08] sm:text-5xl">
+              Orice afacere are o poveste.
+            </h2>
+            <p className="mt-5 text-white/50">
+              Restaurant, fashion, stomatologie, fitness, imobiliare, auto, turism sau e-commerce —
+              același flux: generezi, aprobi, publici.
+            </p>
+          </Reveal>
+          <Reveal delay={0.08} className="mt-10">
+            <DemoVisual image={MARKETING_IMAGES.galerieDomenii} showCaption={false} />
+            <p className="m-demo-caption">Exemplu demonstrativ</p>
+          </Reveal>
         </div>
       </section>
 

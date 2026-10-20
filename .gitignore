@@ -16,6 +16,10 @@ dist-ssr
 .nitro
 *.local
 
+# Local media (Studio refs + generated assets fără Supabase service role)
+public/local-media/**
+!public/local-media/.gitkeep
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
@@ -30,3 +34,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Date locale spațiu de lucru (cont dev)
+.local-data/

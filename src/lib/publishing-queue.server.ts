@@ -8,6 +8,7 @@ export function friendlyMetaError(msg: string): string {
   if (m.includes("instagram necesită imagine")) return "Instagram acceptă doar postări cu imagine. Adaugă o imagine.";
   if (m.includes("fără cont ig") || m.includes("nu există cont ig")) return "Pagina nu are un cont Instagram Business legat.";
   if (m.includes("rate") || m.includes("(#4)") || m.includes("(#32)")) return "Meta limitează temporar publicările. Reîncercăm automat.";
+  if (m.includes("fb video") || m.includes("ig reel")) return "Clipul nu a putut fi preluat de Meta. Verifică formatul (MP4 vertical, sub 90 de secunde).";
   if (m.includes("image") || m.includes("media")) return "Imaginea nu a putut fi preluată de Meta. Verifică formatul (JPG/PNG).";
   return msg.length > 200 ? msg.slice(0, 200) + "…" : msg;
 }
@@ -52,7 +53,7 @@ async function recordHealth(admin: any, connId: string, userId: string, ok: bool
 
 /** Processes due jobs. Optionally limited to a single post (immediate publish). */
 export async function processJobs(admin: any, opts: { postId?: string; limit?: number } = {}) {
-  const { publishToFacebookPage, publishToInstagram } = await import("./meta.server");
+  const { publishToFacebookPage, publishToInstagram, publishVideoToFacebookPage, publishReelToInstagram } = await import("./meta.server");
   const { logError } = await import("./observability.server");
   // Recuperează joburile blocate în "processing" de >10 minute (worker căzut) înapoi în "pending".
   const stuckBefore = new Date(Date.now() - 10 * 60000).toISOString();
@@ -81,8 +82,16 @@ export async function processJobs(admin: any, opts: { postId?: string; limit?: n
       if (!conn) throw new Error("conexiune lipsă");
       const text = [post.title, post.copy ?? post.short_copy, post.hashtags, post.call_to_action].filter(Boolean).map((s: string) => s.trim()).join("\n\n");
       const imageUrl = await signedImage(admin, post.image_url);
+      const isVideo = /\.(mp4|mov|webm)$/i.test(post.image_url ?? "");
       let r: { id: string };
-      if (job.kind === "fb") {
+      if (isVideo && imageUrl) {
+        r = job.kind === "fb"
+          ? await publishVideoToFacebookPage({ pageId: conn.page_id, pageAccessToken: conn.page_access_token, description: text, videoUrl: imageUrl })
+          : await (async () => {
+              if (!conn.ig_business_id) throw new Error("Fără cont IG Business.");
+              return publishReelToInstagram({ igBusinessId: conn.ig_business_id, pageAccessToken: conn.page_access_token, videoUrl: imageUrl, caption: text });
+            })();
+      } else if (job.kind === "fb") {
         r = await publishToFacebookPage({ pageId: conn.page_id, pageAccessToken: conn.page_access_token, message: text, imageUrl });
       } else {
         if (!conn.ig_business_id) throw new Error("Fără cont IG Business.");
