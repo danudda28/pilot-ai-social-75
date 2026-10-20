@@ -344,7 +344,7 @@ Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corec
           hasReference: !!reference,
           aspect: "1:1",
         });
-        const bytes = await genImageBytes(apiKey, visualPrompt, { aspectRatio: "1:1", reference });
+        const bytes = await genImageBytes(apiKey ?? "", visualPrompt, { aspectRatio: "1:1", reference });
         const path = `${context.userId}/${inserted.id}-v${i + 1}-${Date.now()}.png`;
         const stored = await storeMediaBytes(path, bytes, "image/png");
         candidates.push({
@@ -379,7 +379,7 @@ Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corec
       try {
         const scene = reel.scenes[0];
         const bytes = await genImageBytes(
-          apiKey,
+          apiKey ?? "",
           buildLockedImagePrompt({
             brief: data.brief,
             angle: scene.imagePrompt || reel.hook || "product close-up",

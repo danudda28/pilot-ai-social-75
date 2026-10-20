@@ -21,7 +21,7 @@ export const listCampaigns = createServerFn({ method: "POST" })
     if (!brandId) return { brandId: null, campaigns: [] };
     const { data: rows, error } = await context.supabase.from("campaigns").select("*").eq("brand_id", brandId).order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    const ids = (rows ?? []).map(r => r.id);
+    const ids = (rows ?? []).map((r: any) => r.id);
     const { data: posts } = ids.length
       ? await context.supabase.from("generated_posts").select("campaign_id,status").in("campaign_id", ids)
       : { data: [] as { campaign_id: string | null; status: string }[] };
@@ -32,7 +32,7 @@ export const listCampaigns = createServerFn({ method: "POST" })
       c[p.status] = (c[p.status] ?? 0) + 1;
       counts.set(p.campaign_id, c);
     }
-    return { brandId, campaigns: (rows ?? []).map(r => ({ ...r, counts: counts.get(r.id) ?? { draft: 0, scheduled: 0, published: 0, failed: 0 } })) };
+    return { brandId, campaigns: (rows ?? []).map((r: any) => ({ ...r, counts: counts.get(r.id) ?? { draft: 0, scheduled: 0, published: 0, failed: 0 } })) };
   });
 
 export const saveCampaign = createServerFn({ method: "POST" })

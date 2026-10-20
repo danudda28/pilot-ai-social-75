@@ -14,9 +14,9 @@ export const getInboxStatus = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const sb = context.supabase;
     const { data: conns } = await sb.from("meta_connections").select("id").eq("user_id", context.userId);
-    const ids = (conns ?? []).map(c => c.id);
+    const ids = (conns ?? []).map((c: any) => c.id);
     const { data: health } = ids.length ? await sb.from("social_connection_health").select("scopes").in("connection_id", ids) : { data: [] as { scopes: string[] }[] };
-    const scopes = new Set((health ?? []).flatMap(h => h.scopes ?? []));
+    const scopes = new Set((health ?? []).flatMap((h: any) => h.scopes ?? []));
     const needed = ["pages_messaging", "pages_manage_metadata", "instagram_manage_messages", "pages_manage_engagement", "instagram_manage_comments"];
     return {
       connected: ids.length > 0,
@@ -42,11 +42,11 @@ export const listConversations = createServerFn({ method: "POST" })
     else q = q.neq("status", "closed");
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    const ids = (rows ?? []).map(r => r.id);
+    const ids = (rows ?? []).map((r: any) => r.id);
     const { data: last } = ids.length ? await context.supabase.from("messages").select("conversation_id,body,direction,sent_at").in("conversation_id", ids).order("sent_at", { ascending: false }).limit(300) : { data: [] as any[] };
     const preview = new Map<string, string>();
     for (const m of last ?? []) if (!preview.has(m.conversation_id)) preview.set(m.conversation_id, (m.direction === "out" ? "Tu: " : "") + m.body);
-    return (rows ?? []).map(r => ({ ...r, preview: preview.get(r.id) ?? "" }));
+    return (rows ?? []).map((r: any) => ({ ...r, preview: preview.get(r.id) ?? "" }));
   });
 
 export const getConversation = createServerFn({ method: "POST" })
