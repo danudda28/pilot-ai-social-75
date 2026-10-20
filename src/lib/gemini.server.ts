@@ -11,7 +11,7 @@ function imageModel() {
 }
 
 function videoModel() {
-  return process.env.GEMINI_VIDEO_MODEL?.trim() || "gemini-omni-1.1-flash";
+  return process.env.GEMINI_VIDEO_MODEL?.trim() || "veo-3.1-fast-generate-preview";
 }
 
 function textModel() {
