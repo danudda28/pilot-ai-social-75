@@ -152,27 +152,6 @@ export async function generateGeminiImage(
   return bytes;
 }
 
-type InteractionStep = {
-  type?: string;
-  content?: Array<{ type?: string; mime_type?: string; data?: string }>;
-};
-
-function extractVideoB64(json: unknown): string | null {
-  const root = json as {
-    output_video?: { data?: string };
-    steps?: InteractionStep[];
-    status?: string;
-  };
-  if (root.output_video?.data) return root.output_video.data;
-  for (const step of root.steps ?? []) {
-    if (step.type !== "model_output") continue;
-    for (const part of step.content ?? []) {
-      if (part.type === "video" && part.data) return part.data;
-    }
-  }
-  return null;
-}
-
 export type GeminiVideoOptions = {
   aspectRatio?: "9:16" | "16:9";
   /** Optional still as first frame / guide */
@@ -200,9 +179,20 @@ export async function generateGeminiVideo(
   return result.bytes;
 }
 
+type VeoOperation = {
+  name?: string;
+  done?: boolean;
+  error?: { message?: string };
+  response?: {
+    generateVideoResponse?: {
+      generatedSamples?: Array<{ video?: { uri?: string } }>;
+    };
+  };
+};
+
 /**
- * Generează video Omni și, dacă e dat persistUserId, salvează MP4 pe disc
- * în aceeași secundă în care vine răspunsul — înainte de orice alt pas.
+ * Generează video cu Veo (predictLongRunning) prin cheia GEMINI_API_KEY și,
+ * dacă e dat persistUserId, salvează MP4 pe disc înainte de return.
  */
 export async function generateAndPersistGeminiVideo(
   prompt: string,
@@ -212,105 +202,82 @@ export async function generateAndPersistGeminiVideo(
   const aspectRatio = opts?.aspectRatio ?? "9:16";
   const hasImage = !!opts?.image;
 
-  const input: unknown = hasImage
-    ? [
-        {
-          type: "image",
-          data: bytesToB64(opts!.image!.bytes),
-          mime_type: opts!.image!.mimeType,
-        },
-        { type: "text", text: prompt },
-      ]
-    : prompt;
-
-  const body: Record<string, unknown> = {
-    model: videoModel(),
-    input,
-    response_format: {
-      type: "video",
-      aspect_ratio: aspectRatio,
-    },
-  };
-
-  if (hasImage || opts?.task === "image_to_video") {
-    body.generation_config = {
-      video_config: { task: "image_to_video" },
+  const instance: Record<string, unknown> = { prompt };
+  if (hasImage) {
+    instance.image = {
+      bytesBase64Encoded: bytesToB64(opts!.image!.bytes),
+      mimeType: opts!.image!.mimeType,
     };
   }
 
-  const res = await fetch(`${GEMINI_BASE}/interactions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": apiKey,
+  const createRes = await fetch(
+    `${GEMINI_BASE}/models/${encodeURIComponent(videoModel())}:predictLongRunning`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        instances: [instance],
+        parameters: { aspectRatio, resolution: "720p" },
+      }),
     },
-    body: JSON.stringify(body),
-  });
+  );
 
-  const rawText = await res.text();
-
-  if (!res.ok) {
-    if (res.status === 429) throw new Error("Prea multe cereri Gemini video. Reîncearcă în câteva secunde.");
-    if (res.status === 403 || res.status === 401) {
-      throw new Error("GEMINI_API_KEY invalidă sau fără acces la Omni video.");
+  const createText = await createRes.text();
+  if (!createRes.ok) {
+    if (createRes.status === 429) throw new Error("Prea multe cereri Gemini video. Reîncearcă în câteva secunde.");
+    if (createRes.status === 403 || createRes.status === 401) {
+      throw new Error("GEMINI_API_KEY invalidă sau fără acces la Veo video.");
     }
-    throw new Error(`Gemini video ${res.status}: ${rawText.slice(0, 400)}`);
+    throw new Error(`Gemini video ${createRes.status}: ${createText.slice(0, 400)}`);
   }
 
-  let json: unknown;
+  let op: VeoOperation;
   try {
-    json = JSON.parse(rawText);
+    op = JSON.parse(createText);
   } catch {
-    // backup brut ca să nu pierzi răspunsul dacă JSON-ul e ciudat
-    if (opts?.persistUserId) {
-      const { saveLocalMedia } = await import("./local-media.server");
-      await saveLocalMedia(
-        `${opts.persistUserId}/omni/raw-fail-${Date.now()}.txt`,
-        new TextEncoder().encode(rawText.slice(0, 5_000_000)),
-        "text/plain",
-      );
-    }
-    throw new Error("Răspuns Omni invalid (JSON). Am salvat raw pe disc dacă era posibil.");
+    throw new Error("Răspuns Veo invalid (JSON).");
   }
+  const opName = op.name;
+  if (!opName) throw new Error("Veo nu a returnat un id de operațiune.");
 
-  let b64 = extractVideoB64(json);
-  const id = (json as { id?: string; status?: string }).id;
-  let status = (json as { status?: string }).status;
-
-  if (!b64 && id && status && status !== "completed" && status !== "failed") {
-    for (let i = 0; i < 90; i++) {
-      await new Promise((r) => setTimeout(r, 3000));
-      const poll = await fetch(`${GEMINI_BASE}/interactions/${encodeURIComponent(id)}`, {
-        headers: { "x-goog-api-key": apiKey },
-      });
-      if (!poll.ok) continue;
-      const pollText = await poll.text();
-      let pj: unknown;
-      try {
-        pj = JSON.parse(pollText);
-      } catch {
-        continue;
-      }
-      status = (pj as { status?: string }).status;
-      b64 = extractVideoB64(pj);
-      if (b64 || status === "completed" || status === "failed") break;
+  // Poll până e gata (Veo durează de obicei 1-3 minute)
+  let videoUri: string | null = null;
+  for (let i = 0; i < 100; i++) {
+    await new Promise((r) => setTimeout(r, 5000));
+    const poll = await fetch(`${GEMINI_BASE}/${opName}`, {
+      headers: { "x-goog-api-key": apiKey },
+    });
+    if (!poll.ok) continue;
+    let pj: VeoOperation;
+    try {
+      pj = (await poll.json()) as VeoOperation;
+    } catch {
+      continue;
+    }
+    if (pj.error) throw new Error(`Veo eșuat: ${pj.error.message ?? "necunoscut"}`);
+    if (pj.done) {
+      videoUri =
+        pj.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri ?? null;
+      break;
     }
   }
+  if (!videoUri) throw new Error("Generarea video a depășit timpul alocat. Reîncearcă.");
 
-  if (!b64) throw new Error("Gemini Omni nu a returnat video. Reîncearcă.");
-
-  const bytes = b64ToBytes(b64);
+  // Descarcă MP4-ul (URI-ul cere cheia API)
+  const vidRes = await fetch(videoUri, { headers: { "x-goog-api-key": apiKey } });
+  if (!vidRes.ok) throw new Error("Nu pot descărca clipul generat de Veo.");
+  const bytes = new Uint8Array(await vidRes.arrayBuffer());
 
   // CRITICAL: salvează pe disc ÎNAINTE să returnăm / să facă altceva caller-ul
   if (opts?.persistUserId) {
     const { saveOmniClipLocal } = await import("./local-media.server");
     const saved = await saveOmniClipLocal(opts.persistUserId, bytes, {
-      label: opts.persistLabel ?? "omni",
-      interactionId: id,
+      label: opts.persistLabel ?? "veo",
+      interactionId: opName,
       prompt,
     });
-    return { bytes, path: saved.path, url: saved.publicUrl, interactionId: id };
+    return { bytes, path: saved.path, url: saved.publicUrl, interactionId: opName };
   }
 
-  return { bytes, interactionId: id };
+  return { bytes, interactionId: opName };
 }
