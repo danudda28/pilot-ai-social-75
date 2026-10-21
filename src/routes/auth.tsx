@@ -43,7 +43,7 @@ function Auth() {
       // Cont demo local (plan Agenție) — doar pe localhost, fără cloud
       if (isLocalDevAuthEnabled()) {
         if (readLocalDevSession()) {
-          navigate({ to: "/app" });
+          navigate({ to: "/dashboard/studio" });
           return;
         }
         setEmail(LOCAL_DEV_EMAIL);
@@ -56,7 +56,7 @@ function Auth() {
         });
         if (!error) {
           toast.success("Conectat local ca Client Maxim (Agenție).");
-          navigate({ to: "/app" });
+          navigate({ to: "/dashboard/studio" });
         }
         return;
       }
@@ -64,7 +64,7 @@ function Auth() {
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
       if (data.session) {
-        navigate({ to: "/app" });
+        navigate({ to: "/dashboard/studio" });
         return;
       }
       try {
@@ -144,12 +144,12 @@ function Auth() {
       }
 
       toast.success("Cont creat! Te redirecționăm...");
-      navigate({ to: "/app" });
+      navigate({ to: "/dashboard/studio" });
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
       if (error) { toast.error(translateAuthError(error.message)); return; }
-      navigate({ to: "/app" });
+      navigate({ to: "/dashboard/studio" });
     }
   }
 

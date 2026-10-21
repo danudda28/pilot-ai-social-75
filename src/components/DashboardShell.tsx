@@ -1,11 +1,8 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  Home, Calendar, PenSquare, MessagesSquare, Image as ImageIcon,
-  Plug, Settings, LogOut, Shield, Video, Sparkles, MoreHorizontal, X,
-} from "lucide-react";
+import { Calendar, Plug, Settings, LogOut, Shield, Sparkles, MoreHorizontal, X } from "lucide-react";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandSwitcher } from "@/components/BrandSwitcher";
@@ -13,26 +10,27 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { checkAmAdmin } from "@/lib/admin.functions";
 
-type NavItem = { to: string; label: string; icon: typeof Home; exact?: boolean; soon?: boolean };
+type NavItem = { to: string; label: string; icon: typeof Settings; exact?: boolean; soon?: boolean; alsoActiveOn?: string[] };
 
 const mainNav: NavItem[] = [
-  { to: "/dashboard", label: "Acasă", icon: Home, exact: true },
   { to: "/dashboard/studio", label: "Studio", icon: Sparkles },
-  { to: "/dashboard/generate", label: "Creează postare", icon: PenSquare },
-  { to: "/dashboard/video", label: "Video AI", icon: Video },
   { to: "/dashboard/calendar", label: "Calendar", icon: Calendar },
-  { to: "/dashboard/media", label: "Bibliotecă media", icon: ImageIcon },
-  { to: "/dashboard/inbox", label: "Inbox AI", icon: MessagesSquare },
   { to: "/dashboard/integrari", label: "Integrări", icon: Plug },
-  { to: "/dashboard/settings", label: "Setări", icon: Settings },
+  { to: "/dashboard/settings", label: "Setări", icon: Settings, alsoActiveOn: ["/dashboard/brand-brain", "/dashboard/brands"] },
 ];
 
-const bottomNav: NavItem[] = [mainNav[0], mainNav[1], mainNav[4], mainNav[6]];
+const bottomNav: NavItem[] = mainNav;
+
+function useAlsoActive(item: NavItem) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return !!item.alsoActiveOn?.some((p) => pathname.startsWith(p));
+}
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
+  const alsoActive = useAlsoActive(item);
   return (
     <Link to={item.to} onClick={onClick} activeOptions={{ exact: !!item.exact }}
-      className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+      className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors ${alsoActive ? "bg-secondary !text-foreground font-medium" : ""}`}
       activeProps={{ className: "bg-secondary !text-foreground font-medium" }}>
       <item.icon className="h-4 w-4 shrink-0" />
       <span className="flex-1 truncate">{item.label}</span>
@@ -104,13 +102,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom nav */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background/95 backdrop-blur grid grid-cols-5 pb-[env(safe-area-inset-bottom)]">
-        {bottomNav.map(n => (
-          <Link key={n.to} to={n.to} activeOptions={{ exact: !!n.exact }}
-            className="flex flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground"
-            activeProps={{ className: "!text-primary font-medium" }}>
-            <n.icon className="h-5 w-5" />{n.label}
-          </Link>
-        ))}
+        {bottomNav.map(n => <BottomLink key={n.to} item={n} />)}
         <button onClick={() => setMoreOpen(true)} className="flex flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground">
           <MoreHorizontal className="h-5 w-5" />Mai mult
         </button>
@@ -135,5 +127,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </div>
       )}
     </div>
+  );
+}
+
+function BottomLink({ item }: { item: NavItem }) {
+  const alsoActive = useAlsoActive(item);
+  return (
+    <Link to={item.to} activeOptions={{ exact: !!item.exact }}
+      className={`flex flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground ${alsoActive ? "!text-primary font-medium" : ""}`}
+      activeProps={{ className: "!text-primary font-medium" }}>
+      <item.icon className="h-5 w-5" />{item.label}
+    </Link>
   );
 }

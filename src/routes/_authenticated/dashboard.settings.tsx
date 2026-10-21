@@ -1,12 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { Settings as SettingsIcon, Bell, Loader2, Download, Trash2, ShieldAlert, Webhook } from "lucide-react";
+import { Settings as SettingsIcon, Bell, Loader2, Download, Trash2, ShieldAlert, Webhook, Brain, Building2, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { exportMyData, deleteMyAccount } from "@/lib/account.functions";
 import { getBrandWebhook, saveBrandWebhook, deleteBrandWebhook, testBrandWebhook } from "@/lib/webhooks.functions";
 import { useNavigate } from "@tanstack/react-router";
+import { getBrandQuota } from "@/lib/brands.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/settings")({
   head: () => ({ meta: [{ title: "Setări — Social Spark" }] }),
@@ -17,6 +18,8 @@ function SettingsPage() {
   const navigate = useNavigate();
   const exportFn = useServerFn(exportMyData);
   const deleteFn = useServerFn(deleteMyAccount);
+  const brandQuotaFn = useServerFn(getBrandQuota);
+  const [isAgency, setIsAgency] = useState(false);
   const [prefs, setPrefs] = useState({
     notify_on_publish_success: true,
     notify_on_publish_failure: true,
@@ -28,6 +31,10 @@ function SettingsPage() {
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState("");
+
+  useEffect(() => {
+    brandQuotaFn().then((r) => setIsAgency(!!(r as { isAgency?: boolean }).isAgency)).catch(() => {});
+  }, []);
 
   useEffect(() => { (async () => {
     const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
@@ -84,8 +91,24 @@ function SettingsPage() {
         <SettingsIcon className="h-7 w-7 text-primary" />
         <div>
           <h1 className="font-display text-3xl font-bold">Setări cont</h1>
-          <p className="text-muted-foreground mt-1">Notificări, date personale, securitate.</p>
+          <p className="text-muted-foreground mt-1">Afacerea ta, notificări, date personale, securitate.</p>
         </div>
+      </div>
+
+      <div className="glass-strong rounded-2xl p-6 space-y-3">
+        <h2 className="font-display text-lg font-bold">Afacerea ta</h2>
+        <SettingsLink
+          to="/dashboard/brand-brain"
+          icon={Brain}
+          title="Profilul afacerii"
+          text="Serviciile, prețurile și tonul pe care AI-ul le folosește în postări. Doar informațiile confirmate de tine."
+        />
+        <SettingsLink
+          to="/dashboard/brands"
+          icon={Building2}
+          title={isAgency ? "Clienți" : "Branduri"}
+          text={isAgency ? "Adaugă și administrează clienții agenției tale." : "Administrează brandurile din cont."}
+        />
       </div>
 
       <div className="glass-strong rounded-2xl p-6 space-y-4">
@@ -146,6 +169,21 @@ function SettingsPage() {
   );
 }
 
+
+function SettingsLink({ to, icon: Icon, title, text }: { to: string; icon: typeof Brain; title: string; text: string }) {
+  return (
+    <Link to={to} className="flex items-center gap-4 rounded-xl border border-border p-4 transition-colors hover:bg-secondary">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+        <Icon className="h-5 w-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-medium">{title}</span>
+        <span className="block text-sm text-muted-foreground">{text}</span>
+      </span>
+      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+    </Link>
+  );
+}
 
 function CrmWebhookCard() {
   const getFn = useServerFn(getBrandWebhook);

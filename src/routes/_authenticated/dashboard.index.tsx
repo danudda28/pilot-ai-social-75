@@ -1,5 +1,5 @@
 import { MetaHealthAlert } from "@/components/MetaHealthPanel";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,9 @@ import { PageHeader, Panel, ProgressBar, SkeletonBlock } from "@/components/ui-k
 import { CheckCircle2, Circle, ArrowRight, Brain, PenSquare, Plug, Calendar, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard/studio" });
+  },
   head: () => ({ meta: [{ title: "Acasă — Social Spark" }, { name: "robots", content: "noindex" }] }),
   component: DashboardHome,
 });
