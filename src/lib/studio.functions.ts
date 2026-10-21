@@ -406,7 +406,7 @@ Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corec
 
       // Clip Omni = apel separat (runStudioOmniClip) ca să nu expire request-ul înainte să apară în UI
       omniNote =
-        "Pozele sunt gata. Generez acum clipul Omni în fundal — apare mai jos în câteva zeci de secunde.";
+        "Pozele sunt gata. Creez acum clipul video — apare mai jos în 1–3 minute.";
     }
 
     if (candidates[0]) {
@@ -494,10 +494,10 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
       const candidate: StudioCandidate = {
         id: "reel-omni",
         kind: "reel_video",
-        label: "Clip Omni",
+        label: "Clip video",
         path,
         signedUrl: url,
-        angle: data.hook || "Omni",
+        angle: data.hook || "Clip video",
       };
       return { ok: true as const, candidate };
     } catch (e) {
@@ -521,10 +521,10 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
           candidate: {
             id: "reel-omni",
             kind: "reel_video" as const,
-            label: "Clip Omni",
+            label: "Clip video",
             path,
             signedUrl: url,
-            angle: data.hook || "Omni",
+            angle: data.hook || "Clip video",
           },
           note: "Clip generat fără referință imagine (Google a blocat likeness). Verifică dacă produsul e corect.",
         };

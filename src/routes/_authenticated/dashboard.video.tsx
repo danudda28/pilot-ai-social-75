@@ -98,13 +98,13 @@ function VideoPage() {
       setFolder(r.folder);
       if (r.omniReel?.signedUrl) {
         setOmniUrl(r.omniReel.signedUrl);
-        toast.success(`Reel salvat local: ${r.omniReel.signedUrl}`);
       } else if (r.omniError) {
-        toast.warning(`Omni: ${r.omniError}`);
+        console.error("[video]", r.omniError);
+        toast.warning("Clipul video nu a putut fi creat de data asta. Storyboard-ul e gata — poți reîncerca.");
       } else if (r.failedCount > 0) {
         toast.warning(`${r.failedCount} imagini nu s-au generat.`);
       } else {
-        toast.success("Storyboard gata. Generează clipuri pe scene sau uită-te la reel-ul Omni.");
+        toast.success("Storyboard gata. Poți genera clipurile pe scene.");
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Eroare generare.");
@@ -326,7 +326,7 @@ function StoryboardPreview({
         <div className="glass-strong rounded-2xl p-4 sm:p-5 space-y-3">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">Reel Omni (Gemini)</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Reel video</p>
               <h3 className="font-display text-lg font-bold">Clip video generat</h3>
             </div>
             <a
@@ -354,7 +354,7 @@ function StoryboardPreview({
         <button onClick={onGenerateClips} disabled={renderingClips || hasAllClips}
           className="inline-flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
           {renderingClips ? <Loader2 className="h-4 w-4 animate-spin" /> : <Film className="h-4 w-4" />}
-          {hasAllClips ? "Clipuri AI gata ✓" : renderingClips ? "Generăm clipuri AI…" : "2. Clipuri pe scene (Omni)"}
+          {hasAllClips ? "Clipuri AI gata ✓" : renderingClips ? "Generăm clipuri AI…" : "2. Clipuri pe scene"}
         </button>
         <button onClick={onGenerateVoice} disabled={renderingVoice}
           className="inline-flex items-center gap-2 rounded-xl glass px-4 py-2.5 text-sm font-semibold hover:bg-secondary disabled:opacity-50">

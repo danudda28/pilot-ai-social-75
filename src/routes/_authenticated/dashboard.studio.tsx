@@ -147,7 +147,7 @@ function StudioPage() {
         },
       }) as { path: string; signedUrl: string; fileName: string; local?: boolean };
       setRef(uploaded);
-      toast.success(uploaded.local ? "Referință salvată local." : "Referință atașată.");
+      toast.success("Poză atașată.");
     } catch (e: any) {
       toast.error(e?.message ?? "Upload eșuat.");
     }
@@ -246,7 +246,7 @@ function StudioPage() {
             id: omniProgressId,
             role: "assistant",
             kind: "progress",
-            label: "Generez clipul Omni (salvat local)…",
+            label: "Creez clipul video…",
             startedAt: Date.now(),
             totalSec: 55,
           },
@@ -272,7 +272,6 @@ function StudioPage() {
           );
           if (omni.candidate?.path) {
             setPicked((p) => ({ ...p, [result.post.id]: omni.candidate.path }));
-            toast.success(`Clip salvat: ${omni.candidate.signedUrl}`);
           }
           if ((omni as { note?: string }).note) {
             setMessages((m) => [
@@ -286,13 +285,14 @@ function StudioPage() {
             ]);
           }
         } catch (omniErr: any) {
+          console.error("[studio video]", omniErr);
           setMessages((m) => [
             ...m.filter((x) => x.id !== omniProgressId),
             {
               id: uid(),
               role: "assistant",
               kind: "text",
-              text: `Clip Omni eșuat: ${omniErr?.message ?? "eroare necunoscută"}. Pozele rămân disponibile.`,
+              text: "Clipul video nu a putut fi creat de data asta. Pozele sunt gata și le poți folosi — încearcă din nou clipul peste câteva minute.",
             },
           ]);
         }
@@ -468,7 +468,7 @@ function StudioPage() {
                         ))}
                       </ol>
                       <p className="mt-2 text-[11px] text-muted-foreground">
-                        Dacă apare „Clip Omni”, e video MP4 real — îl poți reda și descărca. Publicarea Meta folosește încă cadrul foto.
+                        Clipul video apare aici când e gata — îl poți reda, descărca și publica.
                       </p>
                     </div>
                   )}
