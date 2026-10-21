@@ -301,15 +301,29 @@ export async function generateAndPersistGeminiVideo(
 
   const bytes = b64ToBytes(b64);
 
-  // CRITICAL: salvează pe disc ÎNAINTE să returnăm / să facă altceva caller-ul
+  // CRITICAL: salvează clipul plătit ÎNAINTE să returnăm — pe disc local, sau în Supabase Storage în cloud.
+  // Dacă salvarea eșuează, returnăm totuși bytes, ca apelantul să poată reîncerca stocarea.
   if (opts?.persistUserId) {
-    const { saveOmniClipLocal } = await import("./local-media.server");
-    const saved = await saveOmniClipLocal(opts.persistUserId, bytes, {
-      label: opts.persistLabel ?? "omni",
-      interactionId: id,
-      prompt,
-    });
-    return { bytes, path: saved.path, url: saved.publicUrl, interactionId: id };
+    const { saveOmniClipLocal, storeMediaBytes, isLocalMediaMode } = await import("./local-media.server");
+    try {
+      if (isLocalMediaMode()) {
+        const saved = await saveOmniClipLocal(opts.persistUserId, bytes, {
+          label: opts.persistLabel ?? "omni",
+          interactionId: id,
+          prompt,
+        });
+        return { bytes, path: saved.path, url: saved.publicUrl, interactionId: id };
+      }
+      const label = (opts.persistLabel ?? "omni").replace(/[^a-zA-Z0-9_-]+/g, "-").slice(0, 48) || "omni";
+      const stored = await storeMediaBytes(
+        `${opts.persistUserId}/omni/${Date.now()}-${label}.mp4`,
+        bytes,
+        "video/mp4",
+      );
+      return { bytes, path: stored.path, url: stored.url, interactionId: id };
+    } catch (e) {
+      console.error("[omni] salvarea clipului a eșuat, returnez bytes către apelant:", e);
+    }
   }
 
   return { bytes, interactionId: id };

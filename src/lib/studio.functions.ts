@@ -485,16 +485,12 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
         persistLabel: `studio-${data.postId.slice(0, 8)}`,
         ...(reference ? { task: "image_to_video" as const, image: reference } : {}),
       });
-      const path =
-        persisted.path ??
-        (
-          await storeMediaBytes(
-            `${context.userId}/${data.postId}-omni-${Date.now()}.mp4`,
-            persisted.bytes,
-            "video/mp4",
-          )
-        ).path;
-      const url = persisted.url ?? `/local-media/${path}`;
+      const stored =
+        persisted.path && persisted.url
+          ? { path: persisted.path, url: persisted.url }
+          : await storeMediaBytes(`${context.userId}/${data.postId}-omni-${Date.now()}.mp4`, persisted.bytes, "video/mp4");
+      const path = stored.path;
+      const url = stored.url;
       const candidate: StudioCandidate = {
         id: "reel-omni",
         kind: "reel_video",
@@ -514,16 +510,12 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
           persistUserId: context.userId,
           persistLabel: `studio-${data.postId.slice(0, 8)}-text`,
         });
-        const path =
-          persisted.path ??
-          (
-            await storeMediaBytes(
-              `${context.userId}/${data.postId}-omni-${Date.now()}.mp4`,
-              persisted.bytes,
-              "video/mp4",
-            )
-          ).path;
-        const url = persisted.url ?? `/local-media/${path}`;
+        const stored =
+          persisted.path && persisted.url
+            ? { path: persisted.path, url: persisted.url }
+            : await storeMediaBytes(`${context.userId}/${data.postId}-omni-${Date.now()}.mp4`, persisted.bytes, "video/mp4");
+        const path = stored.path;
+        const url = stored.url;
         return {
           ok: true as const,
           candidate: {

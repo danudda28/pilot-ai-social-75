@@ -100,20 +100,9 @@ export async function storeMediaBytes(
   bytes: Uint8Array,
   contentType: string,
 ): Promise<{ path: string; url: string }> {
-  const isVideo = contentType.startsWith("video/") || relPath.toLowerCase().endsWith(".mp4");
-
-  if (isVideo || isLocalMediaMode()) {
+  // Hosted servers have a read-only filesystem (EPERM), so disk is only for local mode.
+  if (isLocalMediaMode()) {
     const saved = await saveLocalMedia(relPath, bytes, contentType);
-    if (!isLocalMediaMode() && process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {
-      try {
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        await supabaseAdmin.storage
-          .from("post-images")
-          .upload(relPath, bytes, { contentType, upsert: true });
-      } catch (e) {
-        console.warn("[local-media] Supabase upload skip (local ok):", e);
-      }
-    }
     return { path: saved.path, url: saved.publicUrl };
   }
 
