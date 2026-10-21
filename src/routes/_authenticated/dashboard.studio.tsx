@@ -17,6 +17,8 @@ import {
 } from "@/lib/studio.functions";
 import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles.client";
 import { getConnectedAccounts } from "@/lib/publishing.functions";
+import { loadStudioHistory, resetStudioHistory, useStudioHistory } from "@/lib/studio-history.client";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/dashboard/studio")({
   head: () => ({
@@ -61,6 +63,13 @@ function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+const WELCOME_TEXT =
+  "Salut — sunt studio-ul tău. Spune-mi ce vrei să postezi: o ofertă, un produs, un reel. Poți încărca o poză de referință sau doar descrie verbal. Îți spun cât durează, îți arăt variantele, tu alegi, eu public pe Facebook și Instagram.";
+
+function welcome(): Msg[] {
+  return [{ id: uid(), role: "assistant", kind: "text", text: WELCOME_TEXT }];
+}
+
 function StudioPage() {
   const estimateFn = useServerFn(estimateStudioJob);
   const uploadFn = useServerFn(uploadStudioReference);
@@ -71,13 +80,11 @@ function StudioPage() {
   const publishFn = useServerFn(publishStudioSelection);
   const accountsFn = useServerFn(getConnectedAccounts);
 
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const { messages, setMessages, busy, setBusy, picked, setPicked } = useStudioHistory<Msg>();
   const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
   const [ref, setRef] = useState<{ path: string; signedUrl: string; fileName: string } | null>(null);
   const [targets, setTargets] = useState<Target[]>([]);
   const [selectedTargets, setSelectedTargets] = useState<Set<string>>(new Set());
-  const [picked, setPicked] = useState<Record<string, string>>({});
   const [when, setWhen] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -93,14 +100,9 @@ function StudioPage() {
     } catch {
       /* ignore */
     }
-    setMessages([
-      {
-        id: uid(),
-        role: "assistant",
-        kind: "text",
-        text: "Salut — sunt studio-ul tău. Spune-mi ce vrei să postezi: o ofertă, un produs, un reel. Poți încărca o poză de referință sau doar descrie verbal. Îți spun cât durează, îți arăt variantele, tu alegi, eu public pe Facebook și Instagram.",
-      },
-    ]);
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) loadStudioHistory<Msg>(data.user.id, welcome);
+    });
     accountsFn()
       .then((t) => {
         const list = t as Target[];
@@ -410,6 +412,17 @@ function StudioPage() {
             Ca un chat real: referință sau descriere, ETA, alegi variantele, publici pe Meta.
           </p>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+        {messages.length > 1 && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => resetStudioHistory(welcome())}
+            className="rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-secondary disabled:opacity-50"
+          >
+            Conversație nouă
+          </button>
+        )}
         {targets.length === 0 ? (
           <Link to="/dashboard/integrari" className="rounded-full border border-border px-4 py-2 text-sm hover:bg-secondary">
             Conectează Meta
@@ -439,6 +452,7 @@ function StudioPage() {
             })}
           </div>
         )}
+        </div>
       </header>
 
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card">
