@@ -15,7 +15,7 @@ import {
   uploadStudioVideo,
   type StudioCandidate,
 } from "@/lib/studio.functions";
-import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles.client";
+import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles";
 import { getConnectedAccounts } from "@/lib/publishing.functions";
 import { loadStudioHistory, resetStudioHistory, useStudioHistory } from "@/lib/studio-history.client";
 import { supabase } from "@/integrations/supabase/client";
