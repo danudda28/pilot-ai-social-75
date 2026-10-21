@@ -19,7 +19,7 @@ import {
   type WorkspacePhoto,
   type WorkspacePost,
 } from "@/lib/workspace.functions";
-import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles.client";
+import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles";
 import { publishStudioSelection, uploadStudioReference } from "@/lib/studio.functions";
 import { ChatPanel, type ChatMsg, type Progress, type QuickAction } from "@/components/workspace/ChatPanel";
 import { CalendarBoard } from "@/components/workspace/CalendarBoard";
