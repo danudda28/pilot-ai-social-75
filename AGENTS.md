@@ -9,3 +9,4 @@
 - Publishing queue recovers jobs stuck in "processing" >10 min back to pending at each run; retryFailedJobs resets failed jobs. Why: a crashed worker must never strand a scheduled post.
 - pg_cron jobs call /api/public/cron/* with the apikey header; new cron endpoints must be registered in pg_cron the same way. Why: cron routes are public-prefix and rely on that header on the published URL.
 - AI Team (Echipa AI): bot definitions live in src/lib/ai-team.ts (shared client/server, incl. plan gating botAllowed); chat runs via src/lib/ai-team.functions.ts using confirmed Brand Brain context, daily AI limit and usage logging. Why: one place to add/adjust bots, gating enforced server-side.
+- Browser subtitle utilities use an SSR-safe module with browser APIs only inside functions called by event handlers; never name SSR-reachable modules `*.client.*`. Why: the production import guard rejects that filename even when dev rendering succeeds.
