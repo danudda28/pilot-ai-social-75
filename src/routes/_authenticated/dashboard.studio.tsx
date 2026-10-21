@@ -17,7 +17,7 @@ import {
 } from "@/lib/studio.functions";
 import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles";
 import { getConnectedAccounts } from "@/lib/publishing.functions";
-import { loadStudioHistory, resetStudioHistory, useStudioHistory } from "@/lib/studio-history.client";
+import { loadStudioHistory, resetStudioHistory, useStudioHistory } from "@/lib/studio-history";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/dashboard/studio")({
