@@ -12,8 +12,10 @@ import {
   runStudioOmniClip,
   selectStudioAsset,
   uploadStudioReference,
+  uploadStudioVideo,
   type StudioCandidate,
 } from "@/lib/studio.functions";
+import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles.client";
 import { getConnectedAccounts } from "@/lib/publishing.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/studio")({
@@ -64,6 +66,7 @@ function StudioPage() {
   const uploadFn = useServerFn(uploadStudioReference);
   const createFn = useServerFn(runStudioCreate);
   const omniFn = useServerFn(runStudioOmniClip);
+  const uploadVideoFn = useServerFn(uploadStudioVideo);
   const selectFn = useServerFn(selectStudioAsset);
   const publishFn = useServerFn(publishStudioSelection);
   const accountsFn = useServerFn(getConnectedAccounts);
@@ -272,6 +275,34 @@ function StudioPage() {
           );
           if (omni.candidate?.path) {
             setPicked((p) => ({ ...p, [result.post.id]: omni.candidate.path }));
+          }
+          if (omni.candidate?.subtitles?.length && canBurnSubtitles()) {
+            const subId = uid();
+            setMessages((m) => [
+              ...m,
+              { id: subId, role: "assistant", kind: "progress", label: "Adaug subtitrarea… lasă pagina deschisă câteva secunde", startedAt: Date.now(), totalSec: 12 },
+            ]);
+            try {
+              const blob = await burnSubtitles(omni.candidate.signedUrl, omni.candidate.subtitles);
+              if (blob) {
+                const saved = await uploadVideoFn({
+                  data: { postId: result.post.id, dataUrl: await blobToDataUrl(blob), mimeType: "video/mp4" },
+                });
+                const subtitled = { ...omni.candidate, path: saved.path, signedUrl: saved.signedUrl };
+                setMessages((m) =>
+                  m.map((x) =>
+                    x.id === batchId && x.kind === "batch"
+                      ? { ...x, candidates: x.candidates.map((c) => (c.id === "reel-omni" ? subtitled : c)) }
+                      : x,
+                  ),
+                );
+                setPicked((p) => ({ ...p, [result.post.id]: saved.path }));
+              }
+            } catch (subErr) {
+              console.error("[studio subtitles]", subErr);
+            } finally {
+              setMessages((m) => m.filter((x) => x.id !== subId));
+            }
           }
           if ((omni as { note?: string }).note) {
             setMessages((m) => [

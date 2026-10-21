@@ -397,7 +397,7 @@ export const workspaceRenderVideo = createServerFn({ method: "POST" })
       if (bytes) reference = { bytes, mimeType: guessMimeFromPath(meta.ref) };
     }
 
-    const { buildLockedOmniPrompt, NATURAL_RO_VOICE } = await import("./identity-lock.server");
+    const { buildLockedOmniPrompt } = await import("./identity-lock.server");
     const { sanitizeOmniPrompt } = await import("./omni-prompt.server");
     const { generateAndPersistGeminiVideo, getGeminiApiKey } = await import("./gemini.server");
     if (!getGeminiApiKey()) throw new Error("Lipsește GEMINI_API_KEY pentru video.");
@@ -412,7 +412,6 @@ export const workspaceRenderVideo = createServerFn({ method: "POST" })
           hasReference: !!reference,
         }),
         meta.visual ? `Look & setting: ${meta.visual}` : "",
-        `Voiceover in Romanian. ${NATURAL_RO_VOICE}`,
         data.instruction ? `CLIENT CHANGE REQUEST (apply exactly, keep everything else): ${data.instruction}` : "",
       ]
         .filter(Boolean)
@@ -445,7 +444,9 @@ export const workspaceRenderVideo = createServerFn({ method: "POST" })
       image_url: stored.path,
       visual_idea: JSON.stringify({ ...meta, instruction: [meta.instruction, data.instruction].filter(Boolean).join(" · ") }),
     });
-    return { post: await toClientPost(updated ?? { ...post, image_url: stored.path }), note };
+    const { buildSubtitles } = await import("./subtitles.server");
+    const subtitles = await buildSubtitles(meta.scenes?.length ? meta.scenes : [meta.hook ?? post.title]);
+    return { post: await toClientPost(updated ?? { ...post, image_url: stored.path }), note, subtitles };
   });
 
 export const workspaceEditImage = createServerFn({ method: "POST" })
@@ -528,4 +529,26 @@ export const workspaceDeletePhoto = createServerFn({ method: "POST" })
       await supabaseAdmin.storage.from("post-images").remove([data.path]);
     }
     return { ok: true as const };
+  });
+
+/** Replaces a reel's media with its subtitled version (burned in the browser). */
+export const workspaceAttachVideo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ postId: z.string().uuid(), dataUrl: z.string().min(20) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { getWorkspaceStore } = await import("./workspace-store.server");
+    const store = await getWorkspaceStore(context.supabase, context.userId);
+    const post = await store.getPost(data.postId);
+    if (!post) throw new Error("Postarea nu există.");
+    const base64 = data.dataUrl.replace(/^data:[^;]+;base64,/, "");
+    if (base64.length > 40_000_000) throw new Error("Clip prea mare.");
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const { storeMediaBytes } = await import("./local-media.server");
+    const stored = await storeMediaBytes(`${context.userId}/posts/${post.id}-sub-${Date.now()}.mp4`, bytes, "video/mp4");
+    const updated = await store.updatePost(post.id, { image_url: stored.path });
+    return { post: await toClientPost(updated ?? { ...post, image_url: stored.path }) };
   });

@@ -96,16 +96,15 @@ export function buildLockedOmniPrompt(opts: {
   const parts = [
     "Vertical 9:16 Instagram Reel, cinematic, natural motion, product/service fidelity first.",
     IDENTITY_LOCK,
-    RO_TEXT_QUALITY,
     opts.hasReference
       ? "The attached reference image is the EXACT product/service. Animate / film THAT subject only. Do not morph it into another design."
       : "No reference image — stay strictly faithful to the brief; do not invent a different branded product.",
     opts.businessType ? `Business type: ${opts.businessType}.` : "",
     `Brief: ${opts.brief.slice(0, 500)}`,
     opts.hook ? `Hook / mood: ${opts.hook}` : "",
-    opts.scenes?.length ? `Beats (Romanian captions if shown): ${opts.scenes.join(" → ")}` : "",
+    opts.scenes?.length ? `Story beats (show them visually, never as written text): ${opts.scenes.join(" → ")}` : "",
     "Prefer close-ups that keep packaging/service details sharp and unchanged.",
-    "If you burn text on screen: Romanian only, perfect spelling and diacritics, short and legible. Prefer no new text; keep package label text unchanged.",
+    "No new text on screen — subtitles are added separately. Keep package label text unchanged.",
     "No watermark.",
   ];
   return parts.filter(Boolean).join("\n");

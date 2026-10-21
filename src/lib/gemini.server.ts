@@ -179,6 +179,75 @@ export async function generateGeminiVideo(
   return result.bytes;
 }
 
+/** Video models misspell on-screen text, so subtitles are added by us after generation. */
+const VIDEO_NO_TEXT_RULE = [
+  "STRICT: do not render any written text on screen — no subtitles, captions, titles, letters, numbers, price tags or new logos.",
+  "Text already printed on the real product or signage in the reference stays exactly as it is.",
+  "Audio: ambient sound and soft background music only, no spoken dialogue and no voice-over.",
+].join(" ");
+
+/** Width/height from PNG, JPEG or WebP headers; null when unknown. */
+export function readImageSize(bytes: Uint8Array): { width: number; height: number } | null {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (bytes.length > 24 && bytes[0] === 0x89 && bytes[1] === 0x50) {
+    return { width: dv.getUint32(16), height: dv.getUint32(20) };
+  }
+  if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+    let i = 2;
+    while (i + 9 < bytes.length) {
+      if (bytes[i] !== 0xff) {
+        i++;
+        continue;
+      }
+      const marker = bytes[i + 1];
+      const len = dv.getUint16(i + 2);
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { width: dv.getUint16(i + 7), height: dv.getUint16(i + 5) };
+      }
+      i += 2 + len;
+    }
+    return null;
+  }
+  if (bytes.length > 30 && String.fromCharCode(...bytes.subarray(8, 12)) === "WEBP") {
+    const chunk = String.fromCharCode(...bytes.subarray(12, 16));
+    if (chunk === "VP8X") {
+      return {
+        width: 1 + (bytes[24] | (bytes[25] << 8) | (bytes[26] << 16)),
+        height: 1 + (bytes[27] | (bytes[28] << 8) | (bytes[29] << 16)),
+      };
+    }
+    if (chunk === "VP8 ") return { width: dv.getUint16(26, true) & 0x3fff, height: dv.getUint16(28, true) & 0x3fff };
+    if (chunk === "VP8L") {
+      const b = dv.getUint32(21, true);
+      return { width: (b & 0x3fff) + 1, height: ((b >> 14) & 0x3fff) + 1 };
+    }
+  }
+  return null;
+}
+
+/**
+ * Landscape/square references are recomposed into a 9:16 frame (same subject, scene extended)
+ * so the clip is a true vertical shot instead of a cropped or letterboxed one.
+ */
+async function ensurePortraitReference(image: { bytes: Uint8Array; mimeType: string }) {
+  const size = readImageSize(image.bytes);
+  if (size && size.height / size.width >= 1.6) return image;
+  try {
+    const bytes = await generateGeminiImage(
+      [
+        "Recompose this exact photo as a vertical 9:16 frame for an Instagram Reel.",
+        "Keep the subject, the place and every detail identical; extend the scene naturally above and below instead of cropping the subject.",
+        "Photorealistic, same light and colors. Do not add any new text.",
+      ].join(" "),
+      { aspectRatio: "9:16", reference: image },
+    );
+    return { bytes, mimeType: "image/png" };
+  } catch (e) {
+    console.warn("[video] portrait reference failed, using original:", e);
+    return image;
+  }
+}
+
 type VeoOperation = {
   name?: string;
   done?: boolean;
@@ -199,14 +268,15 @@ export async function generateAndPersistGeminiVideo(
   opts?: GeminiVideoOptions,
 ): Promise<GeminiVideoResult> {
   const apiKey = requireGeminiApiKey();
-  const aspectRatio = opts?.aspectRatio ?? "9:16";
-  const hasImage = !!opts?.image;
+  // Every clip is a vertical Reel, whatever the caller or the reference photo says.
+  const aspectRatio = "9:16";
+  const image = opts?.image ? await ensurePortraitReference(opts.image) : undefined;
 
-  const instance: Record<string, unknown> = { prompt };
-  if (hasImage) {
+  const instance: Record<string, unknown> = { prompt: `${prompt}\n\n${VIDEO_NO_TEXT_RULE}` };
+  if (image) {
     instance.image = {
-      bytesBase64Encoded: bytesToB64(opts!.image!.bytes),
-      mimeType: opts!.image!.mimeType,
+      bytesBase64Encoded: bytesToB64(image.bytes),
+      mimeType: image.mimeType,
     };
   }
 

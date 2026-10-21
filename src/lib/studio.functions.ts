@@ -162,6 +162,8 @@ export type StudioCandidate = {
   path: string;
   signedUrl: string;
   angle: string;
+  /** Proofread Romanian lines to burn into the clip on the client. */
+  subtitles?: string[];
 };
 
 export const runStudioCreate = createServerFn({ method: "POST" })
@@ -477,6 +479,8 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
       hasReference: !!reference,
     });
     const omniPrompt = sanitizeOmniPrompt(rawOmni);
+    const { buildSubtitles } = await import("./subtitles.server");
+    const subtitlesPromise = buildSubtitles(data.scenes?.length ? data.scenes : [data.hook]);
 
     try {
       const persisted = await generateAndPersistGeminiVideo(omniPrompt, {
@@ -498,6 +502,7 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
         path,
         signedUrl: url,
         angle: data.hook || "Clip video",
+        subtitles: await subtitlesPromise,
       };
       return { ok: true as const, candidate };
     } catch (e) {
@@ -525,6 +530,7 @@ export const runStudioOmniClip = createServerFn({ method: "POST" })
             path,
             signedUrl: url,
             angle: data.hook || "Clip video",
+            subtitles: await subtitlesPromise,
           },
           note: "Clip generat fără referință imagine (Google a blocat likeness). Verifică dacă produsul e corect.",
         };
@@ -620,4 +626,29 @@ export const publishStudioSelection = createServerFn({ method: "POST" })
       mode: "published" as const,
       results: results.map((r) => ({ target: r.target, ok: r.ok, error: r.error })),
     };
+  });
+
+/** Saves the subtitled version of a Studio clip (burned in the browser) and returns its storage path. */
+export const uploadStudioVideo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      postId: z.string().uuid(),
+      dataUrl: z.string().min(20),
+      mimeType: z.enum(["video/mp4"]),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const base64 = data.dataUrl.replace(/^data:[^;]+;base64,/, "");
+    if (base64.length > 40_000_000) throw new Error("Clip prea mare.");
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const { storeMediaBytes } = await import("./local-media.server");
+    const stored = await storeMediaBytes(
+      `${context.userId}/${data.postId}-sub-${Date.now()}.mp4`,
+      bytes,
+      "video/mp4",
+    );
+    return { path: stored.path, signedUrl: stored.url };
   });

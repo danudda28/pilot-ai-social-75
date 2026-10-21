@@ -13,11 +13,13 @@ import {
   workspaceEditImage,
   workspaceGenerate,
   workspaceRenderVideo,
+  workspaceAttachVideo,
   workspaceUpdatePost,
   type ChatAction,
   type WorkspacePhoto,
   type WorkspacePost,
 } from "@/lib/workspace.functions";
+import { blobToDataUrl, burnSubtitles, canBurnSubtitles } from "@/lib/burn-subtitles.client";
 import { publishStudioSelection, uploadStudioReference } from "@/lib/studio.functions";
 import { ChatPanel, type ChatMsg, type Progress, type QuickAction } from "@/components/workspace/ChatPanel";
 import { CalendarBoard } from "@/components/workspace/CalendarBoard";
@@ -42,7 +44,7 @@ type Workspace = {
 type NewMsg = ChatMsg extends infer M ? (M extends ChatMsg ? Omit<M, "id" | "ts"> : never) : never;
 
 const IMAGE_STAGES = ["Caut idei creative pentru postări…", "Scriu descrierile în română…", "Creez vizualurile cu produsul tău…", "Verific textele și detaliile…"];
-const VIDEO_STAGES = ["Planific scenariul reelului…", "Filmez cadrele cu produsul tău…", "Adaug vocea și subtitrările…", "Montez clipul final…"];
+const VIDEO_STAGES = ["Planific scenariul reelului…", "Filmez cadrele cu produsul tău…", "Pregătesc subtitrarea corectată…", "Montez clipul final…"];
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -74,6 +76,7 @@ function WorkspacePage() {
   const chatFn = useServerFn(workspaceChat);
   const genFn = useServerFn(workspaceGenerate);
   const renderFn = useServerFn(workspaceRenderVideo);
+  const attachVideoFn = useServerFn(workspaceAttachVideo);
   const editImgFn = useServerFn(workspaceEditImage);
   const updateFn = useServerFn(workspaceUpdatePost);
   const delPostFn = useServerFn(workspaceDeletePost);
@@ -148,6 +151,18 @@ function WorkspacePage() {
       const r = await renderFn({ data: { postId, instruction } });
       mergePost(r.post);
       setSelectedId(r.post.id);
+      if (r.subtitles?.length && r.post.mediaUrl && canBurnSubtitles()) {
+        setProgress({ stages: ["Adaug subtitrarea… lasă pagina deschisă câteva secunde"], startedAt: Date.now(), etaSec: 12 });
+        try {
+          const blob = await burnSubtitles(r.post.mediaUrl, r.subtitles);
+          if (blob) {
+            const saved = await attachVideoFn({ data: { postId: r.post.id, dataUrl: await blobToDataUrl(blob) } });
+            mergePost(saved.post);
+          }
+        } catch (subErr) {
+          console.error("[workspace subtitles]", subErr);
+        }
+      }
       push({ role: "assistant", text: instruction ? "Am refilmat reelul cu modificările tale. Uită-te și spune-mi dacă mai schimbăm ceva." : "Reelul tău e gata! 🎬 Îl vezi chiar acum în dreapta — spune-mi ce părere ai." });
       if (r.note) push({ role: "system", text: r.note });
     } catch (e: any) {
