@@ -6,7 +6,9 @@ export function translateAuthError(message: string | undefined | null): string {
   if (m.includes("email not confirmed")) return "Trebuie să confirmi adresa de email înainte să te loghezi.";
   if (m.includes("user already registered") || m.includes("already been registered")) return "Există deja un cont cu acest email. Loghează-te.";
   if (m.includes("password should be at least")) return "Parola trebuie să aibă cel puțin 6 caractere.";
-  if (m.includes("rate limit") || m.includes("too many requests")) return "Prea multe încercări. Așteaptă câteva minute și reîncearcă.";
+  if (m.includes("over_email_send_rate_limit") || m.includes("rate limit") || m.includes("too many requests") || m.includes("email rate")) {
+    return "Ai cerut prea multe emailuri. Așteaptă un minut și reîncearcă.";
+  }
   if (m.includes("network") || m.includes("failed to fetch") || m.includes("load failed") || m.includes("fetch failed")) {
     return "Nu pot contacta serverul de autentificare. Reîncearcă peste câteva secunde.";
   }

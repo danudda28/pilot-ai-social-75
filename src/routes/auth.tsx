@@ -97,7 +97,7 @@ function Auth() {
       });
       setLoading(false);
       if (error) { toast.error(translateAuthError(error.message)); return; }
-      toast.success("Ți-am trimis un email cu link de resetare.");
+      toast.success("Ți-am trimis un email cu link de resetare. Verifică și folderul Spam.");
       setMode("login");
       return;
     }
