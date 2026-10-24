@@ -7,7 +7,9 @@ export function translateAuthError(message: string | undefined | null): string {
   if (m.includes("user already registered") || m.includes("already been registered")) return "Există deja un cont cu acest email. Loghează-te.";
   if (m.includes("password should be at least")) return "Parola trebuie să aibă cel puțin 6 caractere.";
   if (m.includes("rate limit") || m.includes("too many requests")) return "Prea multe încercări. Așteaptă câteva minute și reîncearcă.";
-  if (m.includes("network")) return "Conexiune instabilă. Verifică internetul.";
+  if (m.includes("network") || m.includes("failed to fetch") || m.includes("load failed") || m.includes("fetch failed")) {
+    return "Nu pot contacta serverul de autentificare. Reîncearcă peste câteva secunde.";
+  }
   if (m.includes("invalid email") || m.includes("invalid format")) return "Adresa de email nu este validă.";
   if (m.includes("signups not allowed") || m.includes("signup is disabled")) return "Înregistrările sunt momentan dezactivate. Contactează-ne.";
   if (m.includes("user not found")) return "Nu există cont cu acest email.";
