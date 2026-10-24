@@ -237,7 +237,7 @@ CONTEXT
 ${data.referencePath ? `\n${COPY_REF_RULES}\n` : ""}
 ${ctx ? `\nBRAND BRAIN\n${BRAND_RULES}\n${brandContextBlock(ctx)}` : ""}
 
-Pentru reel-uri / UGC: reel_scenes trebuie să alterneze UGC (handheld, selfie, vlog) cu cadre cinematice (dolly, beauty close-up, slow push-in). Exact 4 scene când brief-ul cere UGC/reel.
+Pentru orice reel: reel_scenes alternează OBLIGATORIU UGC (handheld, selfie, vlog) cu cadre cinematice (dolly, beauty close-up, slow push-in). Exact 4 scene: UGC → cinematic → UGC → cinematic. Clientul nu trebuie să ceară asta — e stilul implicit.
 
 Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corectă):
 {

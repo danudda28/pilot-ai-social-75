@@ -86,13 +86,6 @@ export function buildLockedImagePrompt(opts: {
     .join("\n");
 }
 
-/** Detects UGC / hybrid intent from the client's brief. */
-export function wantsUgcStyle(brief: string): boolean {
-  return /(ugc|ugs|selfie|vlog|telefon|creator|testimonial|ca\s+din\s+telefon|real\s+people|user.?generated)/i.test(
-    brief,
-  );
-}
-
 export function buildLockedOmniPrompt(opts: {
   brief: string;
   hook?: string;
@@ -100,18 +93,17 @@ export function buildLockedOmniPrompt(opts: {
   businessType?: string;
   hasReference: boolean;
 }): string {
-  const ugc = wantsUgcStyle(opts.brief);
-  const style = ugc
-    ? [
-        "Vertical 9:16 Instagram Reel that MIXES UGC + cinematic shots in one continuous cut.",
-        "Shot plan (show visually, never as written text on screen):",
-        "1) OPENING UGC (1–2s): handheld phone / selfie energy, slight natural shake, authentic creator vibe — talk-to-camera feel without spoken dialogue.",
-        "2) CINEMATIC B-ROLL (2–4s): smooth dolly / slow push-in / beauty close-up of the product or place, soft light, film look.",
-        "3) UGC DETAIL (1–2s): hands using the product / walking into the space / reaction, still handheld.",
-        "4) CINEMATIC CLOSE (1–2s): steady hero frame of the product/service, then soft settle for the CTA.",
-        "Alternate authenticity and polish — never pure ad polish for the whole clip, never pure shaky phone for the whole clip.",
-      ].join("\n")
-    : "Vertical 9:16 Instagram Reel, cinematic, natural motion, product/service fidelity first.";
+  // Every Studio/app clip is UGC + cinematic by default — clients should not have to ask for it.
+  const style = [
+    "Vertical 9:16 Instagram Reel that ALWAYS MIXES UGC + cinematic shots in one continuous cut.",
+    "This is the default look for every clip — do not make a pure cinematic ad or a pure shaky phone video.",
+    "Shot plan (show visually, never as written text on screen):",
+    "1) OPENING UGC (1–2s): handheld phone / selfie energy, slight natural shake, authentic creator vibe — talk-to-camera feel without spoken dialogue.",
+    "2) CINEMATIC B-ROLL (2–4s): smooth dolly / slow push-in / beauty close-up of the product or place, soft light, film look.",
+    "3) UGC DETAIL (1–2s): hands using the product / walking into the space / reaction, still handheld.",
+    "4) CINEMATIC CLOSE (1–2s): steady hero frame of the product/service, then soft settle for the CTA.",
+    "Alternate authenticity and polish throughout the whole clip.",
+  ].join("\n");
 
   const parts = [
     style,
