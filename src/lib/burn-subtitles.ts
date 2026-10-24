@@ -101,8 +101,12 @@ export async function burnSubtitles(videoUrl: string, lines: string[]): Promise<
     video.onerror = () => reject(new Error("Clipul nu a putut fi încărcat pentru subtitrare."));
   });
 
-  const W = video.videoWidth || 720;
-  const H = video.videoHeight || 1280;
+  const vw = video.videoWidth || 720;
+  const vh = video.videoHeight || 1280;
+  // Output is always a vertical Reel; a landscape source is center-cropped to 9:16.
+  const W = vh >= vw ? vw : Math.round((vh * 9) / 16 / 2) * 2;
+  const H = vh;
+  const cropX = (vw - W) / 2;
   // Some servers report Infinity until the file is fully read.
   const clipDuration = () => (Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 8);
   const canvas = document.createElement("canvas");
@@ -136,7 +140,7 @@ export async function burnSubtitles(videoUrl: string, lines: string[]): Promise<
 
   let raf = 0;
   const draw = () => {
-    ctx.drawImage(video, 0, 0, W, H);
+    ctx.drawImage(video, cropX, 0, W, H, 0, 0, W, H);
     const t = video.currentTime;
     const slot = clipDuration() / subtitles.length;
     const i = Math.min(subtitles.length - 1, Math.floor(t / slot));
