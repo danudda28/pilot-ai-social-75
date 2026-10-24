@@ -237,6 +237,8 @@ CONTEXT
 ${data.referencePath ? `\n${COPY_REF_RULES}\n` : ""}
 ${ctx ? `\nBRAND BRAIN\n${BRAND_RULES}\n${brandContextBlock(ctx)}` : ""}
 
+Pentru reel-uri / UGC: reel_scenes trebuie să alterneze UGC (handheld, selfie, vlog) cu cadre cinematice (dolly, beauty close-up, slow push-in). Exact 4 scene când brief-ul cere UGC/reel.
+
 Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corectă):
 {
   "title": "max 60 caractere, română corectă",
@@ -247,7 +249,7 @@ Răspunde STRICT cu JSON valid (toate stringurile pentru user în română corec
   "call_to_action": "CTA scurt în română",
   "image_angles": ["unghi 1", "unghi 2", "unghi 3"],
   "reel_hook": "hook 3s în română corectă sau string gol",
-  "reel_scenes": [{"caption":"română corectă, max 70 caractere","imagePrompt":"english: environment + SAME product from reference","durationSec":4}]
+  "reel_scenes": [{"caption":"română corectă, max 70 caractere","imagePrompt":"english: shot style (UGC handheld OR cinematic) + environment + SAME product from reference","durationSec":4}]
 }`;
 
     let text: string;
