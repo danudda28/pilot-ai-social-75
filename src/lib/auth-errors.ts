@@ -9,6 +9,9 @@ export function translateAuthError(message: string | undefined | null): string {
   if (m.includes("over_email_send_rate_limit") || m.includes("rate limit") || m.includes("too many requests") || m.includes("email rate")) {
     return "Ai cerut prea multe emailuri. Așteaptă un minut și reîncearcă.";
   }
+  if (m.includes("error sending recovery") || m.includes("error sending") || m.includes("error sending magiclink") || m.includes("error sending confirmation")) {
+    return "Emailul nu a putut fi trimis acum. Reîncearcă peste un minut.";
+  }
   if (m.includes("network") || m.includes("failed to fetch") || m.includes("load failed") || m.includes("fetch failed")) {
     return "Nu pot contacta serverul de autentificare. Reîncearcă peste câteva secunde.";
   }
