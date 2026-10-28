@@ -18,7 +18,11 @@ export const submitContactMessage = createServerFn({ method: "POST" })
     const supabaseUrl = process.env["SUPABASE_URL"];
     if (!publishableKey || !supabaseUrl) return { ok: false, error: "not_configured" };
 
-    const { createClient } = await import("@supabase/supabase-js");
+    console.log("[contact] env check:", {
+      hasKey: !!publishableKey,
+      keyIsSb: publishableKey.startsWith("sb_"),
+      urlHost: supabaseUrl.replace(/^https?:\/\//, "").slice(0, 30),
+    });
     const sb = createClient(supabaseUrl, publishableKey, {
       auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
       global: {
