@@ -21,11 +21,6 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 
     // Dev local rulează fără cloud: doar emailurile, fără salvare în baza de date
     if (!isLocalDevAuthEnabled()) {
-      console.log("[contact] env check:", {
-        hasKey: !!publishableKey,
-        keyIsSb: publishableKey.startsWith("sb_"),
-        urlHost: supabaseUrl.replace(/^https?:\/\//, "").slice(0, 30),
-      });
       const { createClient } = await import("@supabase/supabase-js");
       const sb = createClient(supabaseUrl, publishableKey, {
         auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
