@@ -43,6 +43,7 @@ export async function sendEmail({ to, subject, html, replyTo }: SendEmailInput):
       return { ok: false, error: `resend_${res.status}` };
     }
     const json = (await res.json()) as { id?: string };
+    console.log(`[email] sent to ${to} via Resend (id=${json.id ?? "?"})`);
     return { ok: true, id: json.id };
   } catch (e) {
     console.error("Resend send error", e);
