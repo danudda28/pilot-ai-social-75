@@ -88,7 +88,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div style={s.logo}>
           Social<span style={{ color: BRAND.indigo }}>Spark</span>
         </div>
-        <div style={s.card}>{children}</div>
+        <div className="dm-card" style={s.card}>{children}</div>
         <div style={s.footer}>
           SocialSpark · socialspark.ro · Postări AI pentru afacerea ta
         </div>
