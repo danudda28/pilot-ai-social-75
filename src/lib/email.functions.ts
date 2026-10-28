@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isLocalDevAuthEnabled } from "@/lib/local-dev-auth";
 import { sendEmail, contactConfirmationEmail, contactOwnerNotification, welcomeEmail } from "./email.server";
 
 const contactSchema = z.object({
@@ -18,33 +19,27 @@ export const submitContactMessage = createServerFn({ method: "POST" })
     const supabaseUrl = process.env["SUPABASE_URL"];
     if (!publishableKey || !supabaseUrl) return { ok: false, error: "not_configured" };
 
-    console.log("[contact] env check:", {
-      hasKey: !!publishableKey,
-      keyIsSb: publishableKey.startsWith("sb_"),
-      urlHost: supabaseUrl.replace(/^https?:\/\//, "").slice(0, 30),
-    });
-    const { createClient } = await import("@supabase/supabase-js");
-    const sb = createClient(supabaseUrl, publishableKey, {
-      auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-      global: {
-        fetch: (input, init) => {
-          const h = new Headers(init?.headers);
-          if (publishableKey.startsWith("sb_") && h.get("Authorization") === `Bearer ${publishableKey}`) h.delete("Authorization");
-          h.set("apikey", publishableKey);
-          return fetch(input, { ...init, headers: h });
-        },
-      },
-    });
-
-    const { error } = await sb.from("contact_messages").insert({
-      name: data.name,
-      email: data.email,
-      phone: data.phone ?? null,
-      message: data.message,
-    });
-    if ( error ) {
-      console.error("contact_messages insert failed:", error.message);
-      return { ok: false, error: "insert_failed" };
+    // Dev local rulează fără cloud: doar emailurile, fără salvare în baza de date
+    if (!isLocalDevAuthEnabled()) {
+      console.log("[contact] env check:", {
+        hasKey: !!publishableKey,
+        keyIsSb: publishableKey.startsWith("sb_"),
+        urlHost: supabaseUrl.replace(/^https?:\/\//, "").slice(0, 30),
+      });
+      const { createClient } = await import("@supabase/supabase-js");
+      const sb = createClient(supabaseUrl, publishableKey, {
+        auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+      });
+      const { error } = await sb.from("contact_messages").insert({
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? null,
+        message: data.message,
+      });
+      if (error) {
+        console.error("contact_messages insert failed:", error.message);
+        return { ok: false, error: "insert_failed" };
+      }
     }
 
     const confirm = { ...contactConfirmationEmail({ name: data.name }) };
