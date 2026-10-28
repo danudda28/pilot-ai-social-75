@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useServerFn } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Phone, Mail, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { submitContactMessage } from "@/lib/email.functions";
 import { toast } from "sonner";
 import { Eyebrow, Reveal } from "@/components/marketing/Reveal";
 
@@ -28,14 +28,22 @@ function Contact() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [loading, setLoading] = useState(false);
 
+  const submitFn = useServerFn(submitContactMessage);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     setLoading(true);
-    const { error } = await supabase.from("contact_messages").insert(parsed.data);
+    let ok = false;
+    try {
+      const res = await submitFn({ data: parsed.data });
+      ok = !!res?.ok;
+    } catch {
+      ok = false;
+    }
     setLoading(false);
-    if (error) { toast.error("Nu s-a putut trimite. Reîncearcă."); return; }
+    if (!ok) { toast.error("Nu s-a putut trimite. Reîncearcă."); return; }
     toast.success("Mesaj trimis! Te contactăm în curând.");
     setForm({ name: "", email: "", phone: "", message: "" });
   }

@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { sendWelcomeEmail } from "@/lib/email.functions";
 import { translateAuthError } from "@/lib/auth-errors";
 import {
   isLocalDevAuthEnabled,
@@ -144,6 +145,8 @@ function Auth() {
       }
 
       toast.success("Cont creat! Te redirecționăm...");
+      // Email de bun venit prin Resend (nu blochează înregistrarea)
+      void sendWelcomeEmail().catch(() => {});
       navigate({ to: "/dashboard/studio" });
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
