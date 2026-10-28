@@ -23,6 +23,7 @@ export const submitContactMessage = createServerFn({ method: "POST" })
       keyIsSb: publishableKey.startsWith("sb_"),
       urlHost: supabaseUrl.replace(/^https?:\/\//, "").slice(0, 30),
     });
+    const { createClient } = await import("@supabase/supabase-js");
     const sb = createClient(supabaseUrl, publishableKey, {
       auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
       global: {
