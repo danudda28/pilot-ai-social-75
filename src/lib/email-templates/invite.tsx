@@ -1,16 +1,6 @@
 import * as React from 'react'
-
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Link,
-  Preview,
-  Text,
-} from '@react-email/components'
+import { Head, Html, Link, Preview, Text } from '@react-email/components'
+import { Layout, darkModeCss, s } from './brand'
 
 interface InviteEmailProps {
   siteName: string
@@ -23,66 +13,36 @@ export const InviteEmail = ({
   siteUrl,
   confirmationUrl,
 }: InviteEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="ro" dir="ltr">
     <Head>
       <style>{darkModeCss}</style>
     </Head>
-    <Preview>You've been invited to join {siteName}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>You've been invited</Heading>
-        <Text style={text}>
-          You've been invited to join{' '}
-          <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
-          </Link>
-          . Click the button below to accept the invitation and create your
-          account.
-        </Text>
-        <Button className="dm-btn" style={button} href={confirmationUrl}>
-          Accept Invitation
-        </Button>
-        <Text style={footer}>
-          If you weren't expecting this invitation, you can safely ignore this
-          email.
-        </Text>
-      </Container>
-    </Body>
+    <Preview>Ai fost invitat(ă) în {siteName}</Preview>
+    <Layout>
+      <h1 className="dm-h1" style={s.h1}>
+        Ai fost invitat(ă) în {siteName}
+      </h1>
+      <Text className="dm-muted" style={s.muted}>
+        Cineva te-a invitat în{' '}
+        <Link href={siteUrl} style={s.link}>
+          <strong>{siteName}</strong>
+        </Link>
+        , platforma care creează și publică postări AI pentru afacerea ta.
+      </Text>
+      <Text className="dm-muted" style={s.muted}>
+        Apasă butonul de mai jos ca să îți activezi contul:
+      </Text>
+      <a className="dm-btn" style={s.button} href={confirmationUrl}>
+        Acceptă invitația
+      </a>
+      <Text className="dm-muted" style={{ ...s.muted, marginTop: '24px' }}>
+        Butonul nu merge? Copiază acest link în browser: <br />
+        <Link href={confirmationUrl} style={s.link}>
+          {confirmationUrl}
+        </Link>
+      </Text>
+    </Layout>
   </Html>
 )
 
 export default InviteEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  border: '1px solid #000000',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
-// Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
-const darkModeCss = `
-  @media (prefers-color-scheme: dark) {
-    .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
-  }
-  [data-ogsc] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
-  [data-ogsb] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
-`

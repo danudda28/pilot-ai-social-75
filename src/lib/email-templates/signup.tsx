@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Head, Html, Link, Preview, Text } from '@react-email/components'
-import { Layout, darkModeCss, s, BRAND } from './brand'
+import { Layout, darkModeCss, s } from './brand'
 
 interface SignupEmailProps {
   siteName: string
@@ -50,7 +50,6 @@ export const SignupEmail = ({
           {confirmationUrl}
         </Link>
       </Text>
-      <div style={{ height: BRAND.primary === '#' ? '0' : '0' }} />
     </Layout>
   </Html>
 )
