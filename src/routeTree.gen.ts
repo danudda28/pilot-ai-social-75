@@ -69,6 +69,8 @@ import { Route as ApiPublicCronRefreshMetaTokensRouteImport } from './routes/api
 import { Route as ApiPublicCronResetQuotasRouteImport } from './routes/api/public/cron.reset-quotas'
 import { Route as ApiPublicCronSyncMetaInsightsRouteImport } from './routes/api/public/cron.sync-meta-insights'
 import { Route as ApiPublicWebhooksMetaRouteImport } from './routes/api/public/webhooks/meta'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as ApiPublicAuthMetaCallbackRouteImport } from './routes/api/public/auth.meta.callback'
 import { Route as ApiPublicWebhooksMetaDeauthorizeRouteImport } from './routes/api/public/webhooks/meta.deauthorize'
 
@@ -407,6 +409,16 @@ const ApiPublicWebhooksMetaRoute = ApiPublicWebhooksMetaRouteImport.update({
   path: '/api/public/webhooks/meta',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAuthMetaCallbackRoute =
   ApiPublicAuthMetaCallbackRouteImport.update({
     id: '/api/public/auth/meta/callback',
@@ -479,6 +491,8 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/dashboard/echipa/': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
@@ -541,6 +555,8 @@ export interface FileRoutesByTo {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/dashboard/echipa': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
@@ -606,6 +622,8 @@ export interface FileRoutesById {
   '/api/public/cron/reset-quotas': typeof ApiPublicCronResetQuotasRoute
   '/api/public/cron/sync-meta-insights': typeof ApiPublicCronSyncMetaInsightsRoute
   '/api/public/webhooks/meta': typeof ApiPublicWebhooksMetaRouteWithChildren
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/_authenticated/dashboard/echipa/': typeof AuthenticatedDashboardEchipaIndexRoute
   '/api/public/auth/meta/callback': typeof ApiPublicAuthMetaCallbackRoute
   '/api/public/webhooks/meta/deauthorize': typeof ApiPublicWebhooksMetaDeauthorizeRoute
@@ -671,6 +689,8 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/dashboard/echipa/'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
@@ -733,6 +753,8 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/dashboard/echipa'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
@@ -797,6 +819,8 @@ export interface FileRouteTypes {
     | '/api/public/cron/reset-quotas'
     | '/api/public/cron/sync-meta-insights'
     | '/api/public/webhooks/meta'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/_authenticated/dashboard/echipa/'
     | '/api/public/auth/meta/callback'
     | '/api/public/webhooks/meta/deauthorize'
@@ -830,6 +854,8 @@ export interface RootRouteChildren {
   ApiPublicCronResetQuotasRoute: typeof ApiPublicCronResetQuotasRoute
   ApiPublicCronSyncMetaInsightsRoute: typeof ApiPublicCronSyncMetaInsightsRoute
   ApiPublicWebhooksMetaRoute: typeof ApiPublicWebhooksMetaRouteWithChildren
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   ApiPublicAuthMetaCallbackRoute: typeof ApiPublicAuthMetaCallbackRoute
 }
 
@@ -1255,6 +1281,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksMetaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/auth/meta/callback': {
       id: '/api/public/auth/meta/callback'
       path: '/api/public/auth/meta/callback'
@@ -1421,6 +1461,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronResetQuotasRoute: ApiPublicCronResetQuotasRoute,
   ApiPublicCronSyncMetaInsightsRoute: ApiPublicCronSyncMetaInsightsRoute,
   ApiPublicWebhooksMetaRoute: ApiPublicWebhooksMetaRouteWithChildren,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   ApiPublicAuthMetaCallbackRoute: ApiPublicAuthMetaCallbackRoute,
 }
 export const routeTree = rootRouteImport
