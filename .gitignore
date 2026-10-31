@@ -38,3 +38,4 @@ public/local-media/**
 # Date locale spațiu de lucru (cont dev)
 .local-data/
 supabase/.temp/
+.lovable-secrets-paste.env
