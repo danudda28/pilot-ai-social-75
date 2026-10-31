@@ -57,29 +57,32 @@ export function Composer({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="w-full">
-      <div className={`m-input-shell ${compact ? "" : "sm:py-1.5"} flex-col sm:flex-row`}>
-        <div className="flex w-full min-w-0 flex-1 items-start gap-3 py-2 sm:items-center sm:py-0">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={compact ? 2 : 2}
-            maxLength={800}
-            placeholder="florarie-cotroceni.ro · sau scrie două fraze despre afacere"
-            className="max-h-28 w-full resize-none bg-transparent text-[15px] leading-relaxed text-white outline-none placeholder:text-white/35 sm:text-base"
-          />
-        </div>
-        <div className="flex w-full shrink-0 items-center justify-between gap-2 sm:w-auto">
-          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-2 text-[13px] text-white/45 hover:text-white/80">
+    <div className="m-composer mx-auto flex w-full max-w-xl flex-col">
+      <div className="m-brief-box">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={compact ? 3 : 4}
+          maxLength={800}
+          placeholder="florarie-cotroceni.ro · sau scrie două fraze despre afacere"
+          className="m-brief-textarea"
+        />
+        <div className="m-brief-toolbar">
+          <label className="m-brief-photos">
             <ImagePlus className="h-4 w-4" />
             Poze
             <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => addPhotos(e.target.files)} />
           </label>
-          <button type="button" onClick={preview} className="m-pill m-pill-solid gap-1.5 text-[14px]">
-            Generează <ArrowUpRight className="h-4 w-4" />
-          </button>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={preview}
+        className="m-pill m-pill-solid m-composer-generate"
+      >
+        Generează <ArrowUpRight className="h-4 w-4" />
+      </button>
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-white/45">
         <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[var(--m-accent)]" /> Schiță gratuită</span>

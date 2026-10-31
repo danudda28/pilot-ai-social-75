@@ -138,7 +138,7 @@ function Home() {
             </p>
           </Reveal>
 
-          <Reveal delay={0.2} className="mx-auto mt-10 max-w-2xl">
+          <Reveal delay={0.2} className="mx-auto mt-8 max-w-2xl">
             <Composer />
           </Reveal>
         </div>

@@ -208,16 +208,97 @@ html.dark {
   border-radius: 1.5rem;
   box-shadow: 0 30px 80px -40px oklch(0 0 0 / 80%), inset 0 1px 0 oklch(1 0 0 / 6%);
 }
-.marketing .m-input-shell {
+.marketing .m-composer {
+  gap: 1.25rem;
+}
+@media (min-width: 640px) {
+  .marketing .m-composer {
+    gap: 1.5rem;
+  }
+}
+.marketing .m-brief-box {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  border-radius: 9999px;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  border-radius: 1.25rem;
   border: 1px solid var(--m-line);
   background: oklch(0.1 0.005 285 / 80%);
-  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  padding: 1rem 1.1rem 0.75rem;
   box-shadow: 0 20px 50px -30px oklch(0 0 0 / 80%), inset 0 1px 0 oklch(1 0 0 / 5%);
   backdrop-filter: blur(12px);
+}
+@media (min-width: 640px) {
+  .marketing .m-brief-box {
+    padding: 1.15rem 1.25rem 0.85rem;
+  }
+}
+.marketing .m-brief-textarea {
+  min-height: 5.5rem;
+  width: 100%;
+  resize: none;
+  background: transparent;
+  padding: 0.15rem 0.15rem 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #fff;
+  outline: none;
+}
+.marketing .m-brief-textarea::placeholder {
+  color: oklch(1 0 0 / 35%);
+}
+@media (min-width: 640px) {
+  .marketing .m-brief-textarea {
+    min-height: 5rem;
+    font-size: 1rem;
+  }
+}
+.marketing .m-brief-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.marketing .m-brief-photos {
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.35rem 0.5rem;
+  font-size: 13px;
+  color: oklch(1 0 0 / 45%);
+}
+.marketing .m-brief-photos:hover {
+  background: oklch(1 0 0 / 5%);
+  color: oklch(1 0 0 / 80%);
+}
+.marketing .m-composer-generate {
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.9rem 1.5rem;
+  font-size: 15px;
+  position: static;
+  margin: 0;
+}
+/* legacy alias — keep older markup from overlapping the generate CTA */
+.marketing .m-input-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--m-line);
+  background: oklch(0.1 0.005 285 / 80%);
+  padding: 1rem 1.1rem 0.75rem;
+  box-shadow: 0 20px 50px -30px oklch(0 0 0 / 80%), inset 0 1px 0 oklch(1 0 0 / 5%);
+  backdrop-filter: blur(12px);
+}
+.marketing .m-input-shell--stack {
+  /* no-op: stack is now the default brief box */
 }
 .marketing .m-mark {
   color: var(--m-accent);
