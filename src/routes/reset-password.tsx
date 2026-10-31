@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import logoAsset from "@/assets/social-spark-logo.png.asset.json";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({ meta: [{ title: "Resetare parolă — Social Spark" }] }),
@@ -37,33 +38,46 @@ function ResetPassword() {
     setLoading(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Parolă schimbată! Te redirecționăm...");
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/dashboard/studio" });
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "var(--gradient-hero)" }}>
-      <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold justify-center mb-8">
+    <div
+      className="flex min-h-[100dvh] items-center justify-center overflow-x-hidden px-4 py-8 sm:py-12"
+      style={{ background: "var(--gradient-hero)" }}
+    >
+      <div className="mx-auto w-full max-w-[22rem]">
+        <Link to="/" className="mb-6 flex items-center justify-center gap-2 font-display text-lg font-bold sm:mb-8">
           <img src={logoAsset.url} alt="Social Spark" className="h-10 w-10 object-contain" />
           Social <span className="gradient-text">Spark</span>
         </Link>
-        <div className="glass-strong rounded-2xl p-8">
-          <h1 className="font-display text-2xl font-bold">Setează o parolă nouă</h1>
+        <div className="glass-strong mx-auto w-full rounded-2xl p-6 sm:p-8">
+          <h1 className="text-center font-display text-2xl font-bold sm:text-left">Setează o parolă nouă</h1>
           {!ready ? (
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="mt-4 text-center text-sm text-muted-foreground sm:text-left">
               Link invalid sau expirat. Solicită din nou un email de resetare din pagina de login.
             </p>
           ) : (
             <form onSubmit={submit} className="mt-6 space-y-4">
               <div>
                 <label className="text-xs font-medium text-muted-foreground">Parolă nouă</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                  className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+                <PasswordInput
+                  value={password}
+                  onChange={setPassword}
+                  required
+                  autoComplete="new-password"
+                  tone="light"
+                />
               </div>
               <div>
                 <label className="text-xs font-medium text-muted-foreground">Confirmă parola</label>
-                <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required
-                  className="mt-1.5 w-full rounded-lg bg-input/50 border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+                <PasswordInput
+                  value={confirm}
+                  onChange={setConfirm}
+                  required
+                  autoComplete="new-password"
+                  tone="light"
+                />
               </div>
               <button disabled={loading}
                 className="w-full rounded-xl gradient-bg glow px-6 py-3.5 text-sm font-semibold text-white disabled:opacity-50">

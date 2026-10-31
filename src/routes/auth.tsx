@@ -16,6 +16,7 @@ import {
   readLocalDevSession,
 } from "@/lib/local-dev-auth";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Autentificare — Social Spark" }] }),
@@ -171,45 +172,52 @@ function Auth() {
   const subtitle = mode === "login" ? "Intră în dashboard-ul tău." : mode === "register" ? "Începe gratuit, fără card." : "Îți trimitem un email cu link de resetare.";
 
   return (
-    <div className="marketing relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
-      <div className="m-hero-glow" />
-      <div className="relative z-10 w-full max-w-md lg:max-w-5xl">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2.5 text-lg font-medium text-white lg:justify-start">
+    <div className="marketing relative flex min-h-[100dvh] items-center justify-center overflow-x-hidden px-4 py-8 sm:py-12">
+      <div className="m-hero-glow pointer-events-none" />
+      <div className="relative z-10 mx-auto w-full max-w-[22rem] lg:max-w-5xl">
+        <Link to="/" className="mb-6 flex items-center justify-center gap-2.5 text-lg font-medium text-white sm:mb-8 lg:justify-start">
           <img src={logoAsset.url} alt="Social Spark" className="h-9 w-9 object-contain" />
           Social Spark
         </Link>
 
         <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-8">
-          <div className="m-panel p-8">
-            <h1 className="text-3xl tracking-tight text-white">{title}</h1>
-            <p className="mt-2 text-sm text-white/45">{intent || subtitle}</p>
+          <div className="m-panel mx-auto w-full p-6 sm:p-8">
+            <h1 className="text-center text-2xl tracking-tight text-white sm:text-left sm:text-3xl">{title}</h1>
+            <p className="mt-2 text-center text-sm text-white/45 sm:text-left">{intent || subtitle}</p>
 
             <form onSubmit={submit} className="mt-6 space-y-4">
               {mode === "register" && (
                 <div>
                   <label className="text-xs font-medium text-white/40">Nume complet</label>
                   <input value={fullName} onChange={e => setFullName(e.target.value)} required minLength={2} maxLength={100}
+                    autoComplete="name"
                     className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
                 </div>
               )}
               <div>
                 <label className="text-xs font-medium text-white/40">Email</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  autoComplete="email"
                   className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
               </div>
               {mode !== "forgot" && (
                 <div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <label className="text-xs font-medium text-white/40">Parolă</label>
                     {mode === "login" && (
                       <button type="button" onClick={() => setMode("forgot")}
-                        className="text-xs text-[var(--m-accent)] hover:underline">
+                        className="shrink-0 text-xs text-[var(--m-accent)] hover:underline">
                         Ai uitat parola?
                       </button>
                     )}
                   </div>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none focus:border-[var(--m-accent)]" />
+                  <PasswordInput
+                    value={password}
+                    onChange={setPassword}
+                    required
+                    autoComplete={mode === "register" ? "new-password" : "current-password"}
+                    tone="dark"
+                  />
                 </div>
               )}
               <button disabled={loading}
@@ -219,12 +227,12 @@ function Auth() {
             </form>
 
             {mode === "forgot" ? (
-              <button onClick={() => setMode("login")}
+              <button type="button" onClick={() => setMode("login")}
                 className="mt-6 w-full text-sm text-white/40 hover:text-white">
                 Înapoi la login
               </button>
             ) : (
-              <button onClick={() => setMode(mode === "login" ? "register" : "login")}
+              <button type="button" onClick={() => setMode(mode === "login" ? "register" : "login")}
                 className="mt-6 w-full text-sm text-white/40 hover:text-white">
                 {mode === "login" ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Login"}
               </button>
