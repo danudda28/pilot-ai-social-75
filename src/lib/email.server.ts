@@ -1,7 +1,7 @@
 /** Email sending via Resend (connector gateway). Server only. */
 
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-const FROM = "SocialSpark <no-reply@socialspark.ro>";
+const FROM = "Social Spark <noreply@socialspark.ro>";
 
 export interface SendEmailResult {
   ok: boolean;
