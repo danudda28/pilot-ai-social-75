@@ -3,11 +3,15 @@
  * then processes due jobs with retries/backoff. Idempotent per (post, target).
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { assertCronAuth } from "@/lib/cron-auth.server";
 
 export const Route = createFileRoute("/api/public/cron/publish-scheduled")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        const denied = assertCronAuth(request);
+        if (denied) return denied;
+
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { enqueueJobs, processJobs } = await import("@/lib/publishing-queue.server");

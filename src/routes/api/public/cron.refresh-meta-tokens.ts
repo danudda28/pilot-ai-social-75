@@ -3,11 +3,15 @@
  * Apelat zilnic din pg_cron.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { assertCronAuth } from "@/lib/cron-auth.server";
 
 export const Route = createFileRoute("/api/public/cron/refresh-meta-tokens")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        const denied = assertCronAuth(request);
+        if (denied) return denied;
+
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { exchangeForLongLivedToken } = await import("@/lib/meta.server");

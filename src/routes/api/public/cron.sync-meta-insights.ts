@@ -3,11 +3,15 @@
  * using the Meta object id stored on the publishing job. No estimated values.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { assertCronAuth } from "@/lib/cron-auth.server";
 
 export const Route = createFileRoute("/api/public/cron/sync-meta-insights")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        const denied = assertCronAuth(request);
+        if (denied) return denied;
+
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { fetchPostInsights } = await import("@/lib/meta.server");
