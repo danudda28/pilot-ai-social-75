@@ -120,17 +120,21 @@ html.dark {
 @layer base {
   * { border-color: var(--color-border); }
   html, body {
-    background-color: var(--color-background);
+    background-color: #000;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+  /* iOS Safari overscroll / status-bar gap stays black, not white */
+  html {
+    background-color: #000;
   }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
 }
 
 /* ─── Marketing surface — Larven-inspired dark system ─── */
 .marketing {
-  --m-bg: oklch(0.141 0.005 285);
+  --m-bg: #000000;
   --m-fg: oklch(0.96 0.004 286);
   --m-muted: oklch(0.72 0.015 286);
   --m-faint: oklch(0.55 0.015 286);
