@@ -67,7 +67,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#000000" },
+      { name: "color-scheme", content: "dark" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { title: "Social Spark — Postări AI pentru Instagram și Facebook" },
       { name: "description", content: "Automatizează postările de social media cu inteligență artificială. Generează, programează și publică conținut pentru Instagram și Facebook." },
       { property: "og:title", content: "Social Spark — Postări AI pentru Instagram și Facebook" },
@@ -99,9 +103,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="ro" suppressHydrationWarning>
-      <head><HeadContent /><script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('ss-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}" }} /></head>
-      <body>
+    <html lang="ro" style={{ backgroundColor: "#000" }} suppressHydrationWarning>
+      <head>
+        <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('ss-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');document.documentElement.style.backgroundColor='#000'}catch(e){}",
+          }}
+        />
+      </head>
+      <body style={{ backgroundColor: "#000", minHeight: "100dvh" }}>
         {children}
         <Scripts />
       </body>
