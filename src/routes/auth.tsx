@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { translateAuthError } from "@/lib/auth-errors";
+import { requestPasswordReset } from "@/lib/auth.functions";
+import { useServerFn } from "@tanstack/react-start";
 import {
   isLocalDevAuthEnabled,
   LOCAL_DEV_EMAIL,
@@ -30,6 +32,7 @@ const registerSchema = schema.extend({
 
 function Auth() {
   const navigate = useNavigate();
+  const resetFn = useServerFn(requestPasswordReset);
   const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -92,12 +95,20 @@ function Auth() {
       const emailParsed = z.string().trim().email().safeParse(email);
       if (!emailParsed.success) { toast.error("Email invalid"); return; }
       setLoading(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
+      try {
+        await resetFn({
+          data: {
+            email: emailParsed.data,
+            redirectTo: `${window.location.origin}/reset-password`,
+          },
+        });
+        toast.success("Ți-am trimis un email de la Social Spark. Verifică și folderul Spam.");
+      } catch (e: any) {
+        toast.error(translateAuthError(e?.message));
+        setLoading(false);
+        return;
+      }
       setLoading(false);
-      if (error) { toast.error(translateAuthError(error.message)); return; }
-      toast.success("Ți-am trimis un email cu link de resetare. Verifică și folderul Spam.");
       setMode("login");
       return;
     }
