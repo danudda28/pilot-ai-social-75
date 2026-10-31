@@ -7,18 +7,14 @@ const recoverySchema = z.object({
 });
 
 /**
- * Password reset emails go through Resend as Social Spark — not through whatever
- * SMTP happens to be on an old / wrong Supabase project the client might still hit.
+ * Password reset emails go out as Social Spark via Lovable's Resend connector
+ * (or direct Resend when RESEND_API_KEY is a raw `re_…` key in local .env.local).
+ * Do not call supabase.auth.resetPasswordForEmail — that hits whatever SMTP is on
+ * the client Supabase project (and used to send AdPilot mail).
  */
 export const requestPasswordReset = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => recoverySchema.parse(d))
   .handler(async ({ data }) => {
-    const resendKey = process.env.RESEND_API_KEY?.trim();
-    const from = process.env.RESEND_FROM?.trim() || "Social Spark <noreply@socialspark.ro>";
-    if (!resendKey) {
-      throw new Error("Emailul de resetare nu e configurat (RESEND_API_KEY).");
-    }
-
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
@@ -46,23 +42,41 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
 <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;">socialspark.ro</p>
 </td></tr></table></body></html>`;
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: [data.email],
-        subject: "Resetează-ți parola — Social Spark",
-        html,
-      }),
+    const { sendEmail } = await import("./email.server");
+    const sent = await sendEmail({
+      to: data.email,
+      subject: "Resetează-ți parola — Social Spark",
+      html,
     });
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      console.error("[auth] resend", res.status, t.slice(0, 300));
+
+    // Local/dev: Lovable gateway needs LOVABLE_API_KEY; fall back to raw Resend `re_…` key.
+    if (!sent.ok) {
+      const rawKey = process.env.RESEND_API_KEY?.trim();
+      if (rawKey?.startsWith("re_")) {
+        const from = process.env.RESEND_FROM?.trim() || "Social Spark <noreply@socialspark.ro>";
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${rawKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from,
+            to: [data.email],
+            subject: "Resetează-ți parola — Social Spark",
+            html,
+          }),
+        });
+        if (!res.ok) {
+          const t = await res.text().catch(() => "");
+          console.error("[auth] resend direct", res.status, t.slice(0, 300));
+          throw new Error("Emailul nu a putut fi trimis acum. Reîncearcă peste un minut.");
+        }
+        return { ok: true as const };
+      }
+      console.error("[auth] sendEmail", sent.error);
       throw new Error("Emailul nu a putut fi trimis acum. Reîncearcă peste un minut.");
     }
+
     return { ok: true as const };
   });
